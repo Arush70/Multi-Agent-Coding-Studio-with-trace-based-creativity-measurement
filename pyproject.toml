@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "macs"
+version = "0.1.0"
+description = "Multi-Agent Coding Studio with trace-based creativity measurement"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+dependencies = [
+    "requests>=2.31",
+    "pyyaml>=6.0",
+    "jsonschema>=4.20",
+    "numpy>=1.26",
+    "scikit-learn>=1.4",
+    "radon>=6.0",
+    "black>=24.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+embed = ["torch", "transformers>=4.40"]   # UniXcoder; install separately on the GPU machine
+
+[tool.setuptools.packages.find]
+include = ["macs*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
