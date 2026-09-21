@@ -1,0 +1,35 @@
+# Copy to config/models.yaml and edit. models.yaml is git-ignored.
+# Every backend speaks the OpenAI chat-completions protocol, so swapping is a config change only.
+
+default_profile: local
+
+profiles:
+  local:                      # development on the laptop
+    base_url: http://localhost:11434/v1
+    api_key: ollama
+    model: qwen2.5-coder:7b-instruct-q4_K_M         
+    revision: "dae161e27b0e"                    
+    quantisation: q4_K_M
+    temperature: 0.7
+    max_tokens: 2048
+
+  kaggle:                     # main experiment; served by vLLM inside the Kaggle notebook
+    base_url: http://localhost:8000/v1
+    api_key: none
+    model: ""                        # decide and pin in week 1
+    revision: ""                     # Hugging Face commit hash
+    quantisation: 4bit
+    temperature: 0.7
+    max_tokens: 2048
+
+  deepseek:                   # optional frontier replication and the separate LLM judge
+    base_url: https://api.deepseek.com/v1
+    api_key: ${DEEPSEEK_API_KEY}     # read from environment; never commit a key
+    model: deepseek-v4-flash
+    revision: ""
+    quantisation: provider
+    temperature: 0.7
+    max_tokens: 2048
+
+seed: 20260921
+cache_dir: data/cache

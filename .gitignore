@@ -216,3 +216,9 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# --- MACS project ---
+config/models.yaml
+data/cache/
+data/traces/*.jsonl
+data/reference/*.jsonl
