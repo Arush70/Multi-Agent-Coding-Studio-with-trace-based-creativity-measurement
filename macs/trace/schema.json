@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Arush70/macs/trace/schema.json",
+  "title": "MACS trace event",
+  "description": "One JSON object per line (JSONL). Each line is one event in a session. This schema is a strict SUPERSET of what ASTRA logs: it keeps ASTRA's turn-level fields (session, condition, task, role, content, timestamp, action_tag) and adds the process events your project measures - proposal, selection, critique, revision, intervention, verification. Rule you must never break: log RAW values, never derived flags. family_id is null at logging time and filled by the analysis later; novelty and diversity are computed after the fact from these raw events, so the trace can never bias its own measurement.",
+  "type": "object",
+  "required": ["session_id", "task_id", "condition", "seq", "ts", "role", "event"],
+  "properties": {
+    "session_id": {"type": "string"},
+    "task_id": {"type": "string"},
+    "condition": {"type": "string", "enum": ["A", "B", "C", "D", "D_minus", "REF"]},
+    "seq": {"type": "integer", "minimum": 0, "description": "Monotonic counter within a session; the analysis relies on event order"},
+    "ts": {"type": "string", "format": "date-time"},
+    "role": {
+      "type": "string",
+      "enum": ["system", "learner_1", "learner_2", "tutor", "innovator", "engineer", "critic", "verifier", "facilitator"]
+    },
+    "event": {
+      "type": "string",
+      "enum": ["session_start", "turn", "proposal", "selection", "implementation", "critique", "revision", "intervention", "verification", "session_end"]
+    },
+    "content": {"type": "string"},
+    "action_tag": {
+      "type": "string",
+      "description": "ASTRA-style intervention label on a tutor or facilitator turn. Kept so this schema loses nothing ASTRA records.",
+      "enum": ["QUESTION", "HINT", "EXPLANATION", "ENCOURAGEMENT", "INVITE_QUIET_MEMBER", "SUMMARISE", "MEDIATE_CONFLICT", "ENCOURAGE_COLLAB", "NONE", "UNKNOWN"]
+    },
+    "prompt_tokens": {"type": "integer", "minimum": 0},
+    "completion_tokens": {"type": "integer", "minimum": 0},
+    "request_hash": {"type": "string", "description": "Links this event back to the exact cached model call that produced it"},
+
+    "proposal_id": {"type": "string"},
+    "parent_ids": {"type": "array", "items": {"type": "string"}, "description": "For a revision/hybrid: which proposals it came from"},
+    "family_id": {"type": ["string", "null"], "description": "Assigned post hoc by the pipeline; ALWAYS null at logging time"},
+
+    "trigger_metric": {"type": "number", "description": "Mean nearest-neighbour distance over the window when the facilitator fired"},
+    "threshold": {"type": "number", "description": "tau at trigger time"},
+    "intervention_type": {"type": "string", "enum": ["constraint", "dissent", "exclusion", "hybridisation"]},
+
+    "code_hash": {"type": "string"},
+    "tests_passed": {"type": "integer", "minimum": 0},
+    "tests_failed": {"type": "integer", "minimum": 0},
+    "test_set": {"type": "string", "enum": ["public", "heldout"]},
+    "runtime_s": {"type": "number", "minimum": 0},
+    "memory_mb": {"type": "number", "minimum": 0},
+
+    "header": {
+      "type": "object",
+      "description": "Present only on session_start; records everything needed to reproduce the run",
+      "required": ["model", "revision", "quantisation", "temperature", "seed", "prompt_hashes", "schema_version"],
+      "properties": {
+        "model": {"type": "string"},
+        "revision": {"type": "string"},
+        "quantisation": {"type": "string"},
+        "temperature": {"type": "number"},
+        "seed": {"type": "integer"},
+        "prompt_hashes": {"type": "object", "additionalProperties": {"type": "string"}},
+        "schema_version": {"type": "string"},
+        "token_ceiling": {"type": "integer"},
+        "max_revision_rounds": {"type": "integer"}
+      }
+    }
+  },
+  "allOf": [
+    {"if": {"properties": {"event": {"const": "session_start"}}}, "then": {"required": ["header"]}},
+    {"if": {"properties": {"event": {"const": "proposal"}}}, "then": {"required": ["proposal_id", "content"]}},
+    {"if": {"properties": {"event": {"const": "intervention"}}}, "then": {"required": ["trigger_metric", "threshold", "intervention_type"]}},
+    {"if": {"properties": {"event": {"const": "verification"}}}, "then": {"required": ["code_hash", "tests_passed", "tests_failed", "test_set", "runtime_s"]}}
+  ],
+  "additionalProperties": false
+}
