@@ -1,0 +1,37 @@
+# Arush - this is the TEMPLATE for every Tier 1 task. Copy this folder, rename it, and
+# fill each field. The rules that protect your result live in the comments below.
+id: t1_two_sum
+tier: 1
+source: MBPP        # where the problem came from: ASTRA | MBPP | APPS | heuristic
+title: Two sum
+entry_point: two_sum
+prompt: |
+  Given a list of integers `nums` and an integer `target`, return the indices of the
+  two distinct elements whose values sum to `target`, as a list `[i, j]` with `i < j`.
+  Exactly one valid pair exists in every input.
+
+# known_families = the DIFFERENT algorithmic strategies you can think of for this task,
+# written BEFORE you look at any model output. These are your blind labels: in Week's
+# validation (SC3) the clustering is checked against these by hand. If you write them
+# after seeing what the model did, they are worthless - so write them now, from your
+# own knowledge, and never edit them to match results.
+known_families:
+  - brute_force_pairs        # O(n^2) nested loops over every pair
+  - sort_two_pointer         # sort (value, index), walk two pointers inward, O(n log n)
+  - single_pass_hash         # dict of complements seen so far, O(n)
+
+# public_tests: shown to the agents. 2-3 simple cases that clarify the spec.
+public_tests:
+  - "assert two_sum([2, 7, 11, 15], 9) == [0, 1]"
+  - "assert two_sum([3, 2, 4], 6) == [1, 2]"
+
+# heldout_tests: NEVER shown to any agent. The loader strips these out; only the scorer
+# reads them. Include at least one edge case and one large input, so a lucky-but-wrong
+# solution fails here. These are what "correct" actually means in your results.
+heldout_tests:
+  - "assert two_sum([3, 3], 6) == [0, 1]"                       # duplicate values
+  - "assert two_sum([-1, -2, -3, -4, -5], -8) == [2, 4]"        # negatives
+  - "assert two_sum([1, 5, 1, 5], 10) == [1, 3]"                # first valid pair
+  - "assert two_sum(list(range(10000)) + [20000, 30000], 50000) == [10000, 10001]"  # large input
+
+scoring: tests        # tests = pass/fail on assert tests; heuristic = scored by a metric (see Tier 2)

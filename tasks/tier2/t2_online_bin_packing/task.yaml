@@ -1,0 +1,29 @@
+# Arush - Tier 2 example with HEURISTIC scoring (no pass/fail tests; a metric instead).
+# This is the harder "unsolved-style" task type your proposal promised - there is no
+# single right answer, only better and worse heuristics, which is exactly where
+# "creativity" has room to show up.
+id: t2_online_bin_packing
+tier: 2
+source: heuristic
+title: Online bin-packing heuristic
+entry_point: priority
+prompt: |
+  Items of size in (0, 1] arrive one at a time and must be placed immediately into a
+  bin of capacity 1.0 (bins cannot be revisited). Write `priority(item, bins)` that
+  returns, for each bin in `bins` (a list of remaining capacities), a priority score;
+  the item is placed in the feasible bin with the highest score, or a new bin is opened
+  if no bin fits. Lower total bin count is better.
+known_families:
+  - first_fit                # score = -index (prefer earliest bin)
+  - best_fit                 # score = -(remaining - item) (tightest fit)
+  - worst_fit                # score = +(remaining - item) (loosest fit)
+  - threshold_or_penalty     # non-linear: penalise leaving a near-empty sliver
+public_tests:
+  - "assert len(priority(0.5, [0.6, 0.4, 0.9])) == 3"          # returns one score per bin
+heldout_tests: []             # none for a heuristic task; correctness is the metric below
+scoring: heuristic
+heuristic:
+  instance_file: instances.json   # generated once by scripts/make_binpack_instances.py, committed, NEVER regenerated
+  seeds: [1, 2, 3, 4, 5]
+  baseline: best_fit              # score = (baseline_bins - candidate_bins) / baseline_bins, averaged over seeds
+  baseline_bins: null             # filled in when the instances are frozen (a number per seed)
