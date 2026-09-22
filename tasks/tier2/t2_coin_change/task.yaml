@@ -1,0 +1,24 @@
+# Tier 2 task (competition-level). known_families are BLIND LABELS written before any
+# model output was seen. Held-out tests are stripped by the loader; only the scorer reads them.
+id: t2_coin_change
+tier: 2
+source: curated
+title: Minimum coin change
+entry_point: coin_change
+prompt: |
+  Given a list of positive integer coin denominations `coins` and a non-negative integer
+  `amount`, return the minimum number of coins needed to make `amount`, or -1 if it cannot
+  be made. coin_change(coins, 0) == 0.
+known_families:
+  - dp_bottomup      # dp[a]=min over coins of dp[a-c]+1
+  - bfs              # shortest path over amounts 0..amount
+  - memo_recursion   # recurse on remaining amount with a cache
+public_tests:
+  - "assert coin_change([1,2,5],11)==3"
+  - "assert coin_change([2],3)==-1"
+heldout_tests:
+  - "assert coin_change([1],0)==0"
+  - "assert coin_change([1,2,5],0)==0"
+  - "assert coin_change([2,5,10,1],27)==4"
+  - "assert coin_change([1,2,5],100)==20"
+scoring: tests

@@ -1,0 +1,24 @@
+# Tier 2 task (competition-level). known_families are BLIND LABELS written before any
+# model output was seen. Held-out tests are stripped by the loader; only the scorer reads them.
+id: t2_knapsack
+tier: 2
+source: curated
+title: 0/1 knapsack
+entry_point: knapsack
+prompt: |
+  Given `weights` and `values` (equal-length lists) and an integer `capacity`, choose a
+  subset of items (each used at most once) maximising total value with total weight <=
+  capacity. Return the maximum value.
+known_families:
+  - dp_2d            # table over (item, capacity)
+  - dp_1d            # single array, iterate capacity high-to-low
+  - memo_recursion   # recurse on (index, remaining) with a cache
+public_tests:
+  - "assert knapsack([1,3,4,5],[1,4,5,7],7)==9"
+  - "assert knapsack([2,2,2],[3,3,3],1)==0"
+heldout_tests:
+  - "assert knapsack([],[],10)==0"
+  - "assert knapsack([5],[10],5)==10"
+  - "assert knapsack([1,2,3],[6,10,12],5)==22"
+  - "assert knapsack([2,3,4,5,9],[3,4,5,8,10],20)==26"
+scoring: tests

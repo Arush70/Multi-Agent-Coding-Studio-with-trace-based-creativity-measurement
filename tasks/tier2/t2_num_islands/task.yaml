@@ -1,0 +1,24 @@
+# Tier 2 task (competition-level). known_families are BLIND LABELS written before any
+# model output was seen. Held-out tests are stripped by the loader; only the scorer reads them.
+id: t2_num_islands
+tier: 2
+source: curated
+title: Number of islands
+entry_point: num_islands
+prompt: |
+  Given a 2-D grid of 0s (water) and 1s (land) as a list of lists, return the number of
+  islands. An island is a maximal group of 1s connected horizontally or vertically
+  (not diagonally). An empty grid returns 0.
+known_families:
+  - dfs          # flood-fill each unvisited land cell recursively
+  - bfs          # flood-fill with a queue
+  - union_find   # union adjacent land cells, count roots
+public_tests:
+  - "assert num_islands([[1,1,0],[0,1,0],[0,0,1]])==2"
+  - "assert num_islands([[0,0],[0,0]])==0"
+heldout_tests:
+  - "assert num_islands([])==0"
+  - "assert num_islands([[1]])==1"
+  - "assert num_islands([[1,0,1,0,1]])==3"
+  - "assert num_islands([[1,1,1],[1,0,1],[1,1,1]])==1"
+scoring: tests

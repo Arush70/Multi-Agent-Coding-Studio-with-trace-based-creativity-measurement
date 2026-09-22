@@ -1,0 +1,24 @@
+# Tier 2 task (competition-level). known_families are BLIND LABELS written before any
+# model output was seen. Held-out tests are stripped by the loader; only the scorer reads them.
+id: t2_word_break
+tier: 2
+source: curated
+title: Word break
+entry_point: word_break
+prompt: |
+  Given a string `s` and a list of words `words`, return True if `s` can be segmented into a
+  sequence of one or more words from `words` (each word may be reused). An empty string is True.
+known_families:
+  - dp               # dp[i]=True if some j<i with dp[j] and s[j:i] in words
+  - memo_recursion   # recurse on the suffix start index with a cache
+  - bfs              # BFS over reachable indices
+  - trie             # match words via a trie while scanning
+public_tests:
+  - "assert word_break('leetcode',['leet','code'])==True"
+  - "assert word_break('catsandog',['cats','dog','sand','and','cat'])==False"
+heldout_tests:
+  - "assert word_break('',['a'])==True"
+  - "assert word_break('applepenapple',['apple','pen'])==True"
+  - "assert word_break('aaaaaaa',['a','aa','aaa'])==True"
+  - "assert word_break('a'*20+'b',['a','aa','aaa'])==False"
+scoring: tests
