@@ -1,0 +1,23 @@
+# Tier 2 task (competition-level). known_families are BLIND LABELS written before any
+# model output was seen. Held-out tests are stripped by the loader; only the scorer reads them.
+id: t2_edit_distance
+tier: 2
+source: curated
+title: Edit distance
+entry_point: edit_distance
+prompt: |
+  Return the Levenshtein edit distance between strings `a` and `b`: the minimum number of
+  single-character insertions, deletions, or substitutions to turn `a` into `b`.
+known_families:
+  - dp_matrix        # full (m+1)x(n+1) table
+  - dp_two_row       # keep only current and previous row, O(min) space
+  - memo_recursion   # recurse on (i,j) with a cache
+public_tests:
+  - "assert edit_distance('horse','ros')==3"
+  - "assert edit_distance('intention','execution')==5"
+heldout_tests:
+  - "assert edit_distance('','')==0"
+  - "assert edit_distance('abc','abc')==0"
+  - "assert edit_distance('','abc')==3"
+  - "assert edit_distance('a'*100,'b'*100)==100"
+scoring: tests

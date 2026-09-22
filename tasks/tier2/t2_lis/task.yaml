@@ -1,0 +1,23 @@
+# Tier 2 task (competition-level). known_families are BLIND LABELS written before any
+# model output was seen. Held-out tests are stripped by the loader; only the scorer reads them.
+id: t2_lis
+tier: 2
+source: curated
+title: Longest increasing subsequence
+entry_point: lis
+prompt: |
+  Given a list of integers `nums`, return the length of the longest strictly increasing
+  subsequence (elements need not be contiguous). An empty list returns 0.
+known_families:
+  - dp_n2             # dp[i]=1+max(dp[j] for j<i, nums[j]<nums[i]), O(n^2)
+  - patience_binary   # maintain tails array, binary-search insert, O(n log n)
+  - memo_recursion    # recurse on (index, prev) with memoisation
+public_tests:
+  - "assert lis([10,9,2,5,3,7,101,18])==4"
+  - "assert lis([0,1,0,3,2,3])==4"
+heldout_tests:
+  - "assert lis([])==0"
+  - "assert lis([7,7,7,7])==1"
+  - "assert lis([1,2,3,4,5])==5"
+  - "assert lis(list(range(500))+list(range(500)))==500"
+scoring: tests

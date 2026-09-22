@@ -1,0 +1,29 @@
+# Tier 2 HEURISTIC task. Metric-scored (minimise the maximum machine load).
+# known_families are blind labels written before any model output was seen.
+id: t2_makespan_scheduling
+tier: 2
+source: heuristic
+title: Online load-balancing (makespan) heuristic
+entry_point: priority
+prompt: |
+  Jobs with positive processing times arrive one at a time and must each be assigned
+  immediately to one of `m` identical machines. Write `priority(job, loads)` returning, for
+  each machine in `loads` (a list of current total loads), a priority score; the job is
+  assigned to the machine with the highest score. The makespan is the maximum machine load
+  after all jobs; lower is better.
+known_families:
+  - least_loaded    # score = -load (send to the emptiest machine)
+  - round_robin     # score cycles by position regardless of load
+  - most_loaded     # score = +load (worst idea; a valid distinct strategy to detect)
+  - threshold       # non-linear: avoid pushing any machine past a running-average threshold
+public_tests:
+  - "assert len(priority(3,[0,5,2]))==3"
+  - "assert priority(3,[0,5,2]).index(max(priority(3,[0,5,2])))==0"
+heldout_tests: []
+scoring: heuristic
+heuristic:
+  instance_file: instances.json   # generated once by scripts/make_makespan_instances.py, committed, never regenerated
+  seeds: [1, 2, 3, 4, 5]
+  machines: 4
+  baseline: least_loaded          # score = (baseline_makespan - candidate_makespan) / baseline_makespan, averaged
+  baseline_makespan: null         # filled when instances are frozen
