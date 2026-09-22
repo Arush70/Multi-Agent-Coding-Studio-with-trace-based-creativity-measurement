@@ -1,0 +1,23 @@
+# Tier 1 task. known_families are BLIND LABELS: the distinct algorithmic strategies,
+# written before any model output was seen. Do not edit them to match results.
+# Held-out tests are never shown to agents (the loader strips them); only the scorer reads them.
+id: t1_factorial
+tier: 1
+source: curated
+title: Factorial
+entry_point: factorial
+prompt: |
+  Return n! (the product of all integers from 1 to n). factorial(0)=1. Assume n>=0.
+known_families:
+  - loop        # multiply in a for-loop
+  - recursion   # n*factorial(n-1)
+  - reduce      # reduce/prod over range
+public_tests:
+  - "assert factorial(0)==1"
+  - "assert factorial(5)==120"
+heldout_tests:
+  - "assert factorial(1)==1"
+  - "assert factorial(10)==3628800"
+  - "assert factorial(13)==6227020800"
+  - "assert factorial(20)==2432902008176640000"
+scoring: tests

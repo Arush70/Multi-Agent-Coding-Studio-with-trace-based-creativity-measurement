@@ -1,0 +1,25 @@
+# Tier 1 task. known_families are BLIND LABELS: the distinct algorithmic strategies,
+# written before any model output was seen. Do not edit them to match results.
+# Held-out tests are never shown to agents (the loader strips them); only the scorer reads them.
+id: t1_rotate
+tier: 1
+source: curated
+title: Rotate list right by k
+entry_point: rotate
+prompt: |
+  Return a new list equal to `nums` rotated to the right by `k` positions (k >= 0, may exceed
+  len). Rotating [1,2,3,4,5] by 2 gives [4,5,1,2,3]. An empty list returns [].
+known_families:
+  - slicing          # nums[-k:]+nums[:-k] with k%=n
+  - reverse_based    # reverse whole, then two parts
+  - deque_rotate     # collections.deque.rotate
+  - modular_gather   # place each element at (i+k)%n
+public_tests:
+  - "assert rotate([1,2,3,4,5],2)==[4,5,1,2,3]"
+  - "assert rotate([],3)==[]"
+heldout_tests:
+  - "assert rotate([1,2,3],0)==[1,2,3]"
+  - "assert rotate([1,2,3],3)==[1,2,3]"
+  - "assert rotate([1,2,3],4)==[3,1,2]"
+  - "assert rotate(list(range(1000)),1)==[999]+list(range(999))"
+scoring: tests

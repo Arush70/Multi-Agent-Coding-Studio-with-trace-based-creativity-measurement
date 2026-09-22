@@ -1,0 +1,25 @@
+# Tier 1 task. known_families are BLIND LABELS: the distinct algorithmic strategies,
+# written before any model output was seen. Do not edit them to match results.
+# Held-out tests are never shown to agents (the loader strips them); only the scorer reads them.
+id: t1_binary_search
+tier: 1
+source: curated
+title: Search in sorted list
+entry_point: search_sorted
+prompt: |
+  Given a list `nums` sorted in ascending order and a `target`, return the index of
+  `target` in `nums`, or -1 if it is not present. If duplicates exist, any valid index is accepted.
+known_families:
+  - linear_scan        # scan left to right
+  - binary_iterative   # halve the search interval in a loop
+  - binary_recursive   # recurse on half
+  - bisect             # use bisect to locate then check
+public_tests:
+  - "assert search_sorted([1,3,5,7],5)==2"
+  - "assert search_sorted([1,3,5,7],4)==-1"
+heldout_tests:
+  - "assert search_sorted([],1)==-1"
+  - "assert search_sorted([2],2)==0"
+  - "assert search_sorted([1,2,3,4,5,6,7,8,9,10],1)==0"
+  - "assert search_sorted(list(range(100000)),99999)==99999"
+scoring: tests

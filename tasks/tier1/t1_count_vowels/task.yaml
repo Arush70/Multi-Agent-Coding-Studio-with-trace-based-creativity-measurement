@@ -1,0 +1,24 @@
+# Tier 1 task. known_families are BLIND LABELS: the distinct algorithmic strategies,
+# written before any model output was seen. Do not edit them to match results.
+# Held-out tests are never shown to agents (the loader strips them); only the scorer reads them.
+id: t1_count_vowels
+tier: 1
+source: curated
+title: Count vowels
+entry_point: count_vowels
+prompt: |
+  Return the number of vowels (a, e, i, o, u, case-insensitive) in the string `s`.
+known_families:
+  - loop_set            # loop, check membership in a vowel set
+  - sum_comprehension   # sum(1 for c in s if ...)
+  - regex               # re.findall of a vowel class
+  - filter_len          # len([c for c in s if ...])
+public_tests:
+  - "assert count_vowels('hello')==2"
+  - "assert count_vowels('xyz')==0"
+heldout_tests:
+  - "assert count_vowels('')==0"
+  - "assert count_vowels('AEIOU')==5"
+  - "assert count_vowels('The quick brown fox')==5"
+  - "assert count_vowels('a'*50000)==50000"
+scoring: tests

@@ -1,0 +1,24 @@
+# Tier 1 task. known_families are BLIND LABELS: the distinct algorithmic strategies,
+# written before any model output was seen. Do not edit them to match results.
+# Held-out tests are never shown to agents (the loader strips them); only the scorer reads them.
+id: t1_remove_duplicates
+tier: 1
+source: curated
+title: Dedupe preserving order
+entry_point: remove_duplicates
+prompt: |
+  Return a new list containing the elements of `nums` with duplicates removed, keeping the
+  first occurrence of each element and preserving order.
+known_families:
+  - seen_set_loop        # loop, keep a set of seen items
+  - dict_fromkeys        # list(dict.fromkeys(nums))
+  - comprehension_seen   # comprehension with a side set
+public_tests:
+  - "assert remove_duplicates([1,2,1,3,2])==[1,2,3]"
+  - "assert remove_duplicates([])==[]"
+heldout_tests:
+  - "assert remove_duplicates([1,1,1,1])==[1]"
+  - "assert remove_duplicates([3,2,1])==[3,2,1]"
+  - "assert remove_duplicates([1,2,3,2,1,4])==[1,2,3,4]"
+  - "assert remove_duplicates(list(range(1000))+list(range(1000)))==list(range(1000))"
+scoring: tests

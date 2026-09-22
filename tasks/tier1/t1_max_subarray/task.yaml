@@ -1,0 +1,25 @@
+# Tier 1 task. known_families are BLIND LABELS: the distinct algorithmic strategies,
+# written before any model output was seen. Do not edit them to match results.
+# Held-out tests are never shown to agents (the loader strips them); only the scorer reads them.
+id: t1_max_subarray
+tier: 1
+source: curated
+title: Maximum subarray sum
+entry_point: max_subarray
+prompt: |
+  Given a non-empty list of integers `nums`, return the largest sum obtainable from a
+  contiguous non-empty subarray.
+known_families:
+  - brute_force      # try all O(n^2) subarrays
+  - kadane           # running max ending here, O(n)
+  - divide_conquer   # best in left, right, or crossing
+  - prefix_min       # prefix sums minus running min prefix
+public_tests:
+  - "assert max_subarray([-2,1,-3,4,-1,2,1,-5,4])==6"
+  - "assert max_subarray([1])==1"
+heldout_tests:
+  - "assert max_subarray([-1,-2,-3])==-1"
+  - "assert max_subarray([5,4,-1,7,8])==23"
+  - "assert max_subarray([-2,-1])==-1"
+  - "assert max_subarray(list(range(-1000,1001)))==500500"
+scoring: tests
