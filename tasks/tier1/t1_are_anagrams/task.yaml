@@ -1,0 +1,25 @@
+# Tier 1 task. known_families are BLIND LABELS: the distinct algorithmic strategies,
+# written before any model output was seen. Do not edit them to match results.
+# Held-out tests are never shown to agents (the loader strips them); only the scorer reads them.
+id: t1_are_anagrams
+tier: 1
+source: curated
+title: Anagram check
+entry_point: are_anagrams
+prompt: |
+  Return True if strings `a` and `b` are anagrams of each other (same characters with the
+  same counts), otherwise False. Compare characters exactly (case-sensitive).
+known_families:
+  - sort_compare   # sorted(a)==sorted(b)
+  - counter        # Counter(a)==Counter(b)
+  - count_array    # tally counts in a fixed array/dict and compare
+  - dict_tally     # increment for a, decrement for b, all zero
+public_tests:
+  - "assert are_anagrams('listen','silent')==True"
+  - "assert are_anagrams('abc','abd')==False"
+heldout_tests:
+  - "assert are_anagrams('','')==True"
+  - "assert are_anagrams('a','aa')==False"
+  - "assert are_anagrams('aabbcc','abcabc')==True"
+  - "assert are_anagrams('x'*50000+'y','y'+'x'*50000)==True"
+scoring: tests

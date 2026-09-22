@@ -1,0 +1,26 @@
+# Tier 1 task. known_families are BLIND LABELS: the distinct algorithmic strategies,
+# written before any model output was seen. Do not edit them to match results.
+# Held-out tests are never shown to agents (the loader strips them); only the scorer reads them.
+id: t1_gcd
+tier: 1
+source: curated
+title: Greatest common divisor
+entry_point: gcd
+prompt: |
+  Return the greatest common divisor of two non-negative integers a and b.
+  gcd(a,0)=a and gcd(0,b)=b; gcd(0,0)=0.
+known_families:
+  - euclid_mod         # repeatedly a,b = b, a%b
+  - euclid_recursive   # gcd(b, a%b)
+  - subtraction        # repeatedly subtract smaller from larger
+  - factorization      # compare prime factorisations
+public_tests:
+  - "assert gcd(12,8)==4"
+  - "assert gcd(17,5)==1"
+heldout_tests:
+  - "assert gcd(0,0)==0"
+  - "assert gcd(10,0)==10"
+  - "assert gcd(0,7)==7"
+  - "assert gcd(1071,462)==21"
+  - "assert gcd(1000000,250000)==250000"
+scoring: tests

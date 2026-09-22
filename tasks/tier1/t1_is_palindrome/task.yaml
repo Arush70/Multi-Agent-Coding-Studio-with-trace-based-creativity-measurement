@@ -1,0 +1,24 @@
+# Tier 1 task. known_families are BLIND LABELS: the distinct algorithmic strategies,
+# written before any model output was seen. Do not edit them to match results.
+# Held-out tests are never shown to agents (the loader strips them); only the scorer reads them.
+id: t1_is_palindrome
+tier: 1
+source: curated
+title: String palindrome
+entry_point: is_palindrome
+prompt: |
+  Return True if the string `s` reads the same forwards and backwards, otherwise False.
+  Compare characters exactly (case-sensitive, no stripping).
+known_families:
+  - slice_reverse   # return s == s[::-1]
+  - two_pointer     # compare i-th and (n-1-i)-th, move inward
+  - recursion       # first==last and recurse on middle
+public_tests:
+  - "assert is_palindrome('racecar')==True"
+  - "assert is_palindrome('hello')==False"
+heldout_tests:
+  - "assert is_palindrome('')==True"
+  - "assert is_palindrome('a')==True"
+  - "assert is_palindrome('ab')==False"
+  - "assert is_palindrome('x'*100000)==True"
+scoring: tests

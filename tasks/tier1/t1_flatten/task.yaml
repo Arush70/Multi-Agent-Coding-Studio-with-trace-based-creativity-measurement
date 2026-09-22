@@ -1,0 +1,24 @@
+# Tier 1 task. known_families are BLIND LABELS: the distinct algorithmic strategies,
+# written before any model output was seen. Do not edit them to match results.
+# Held-out tests are never shown to agents (the loader strips them); only the scorer reads them.
+id: t1_flatten
+tier: 1
+source: curated
+title: Flatten nested list
+entry_point: flatten
+prompt: |
+  Given a list that may contain integers or further nested lists (to any depth), return a
+  single flat list of the integers in left-to-right order.
+known_families:
+  - recursion         # recurse into sublists
+  - stack_iterative   # explicit stack, no recursion
+  - generator         # recursive generator yielding leaves
+public_tests:
+  - "assert flatten([1,[2,[3,4]],5])==[1,2,3,4,5]"
+  - "assert flatten([])==[]"
+heldout_tests:
+  - "assert flatten([1,2,3])==[1,2,3]"
+  - "assert flatten([[[[1]]]])==[1]"
+  - "assert flatten([1,[],[2,[]],[[3]]])==[1,2,3]"
+  - "assert flatten([[i,[i+1]] for i in range(0,1000,2)])==list(range(1000))"
+scoring: tests

@@ -1,0 +1,24 @@
+# Tier 1 task. known_families are BLIND LABELS: the distinct algorithmic strategies,
+# written before any model output was seen. Do not edit them to match results.
+# Held-out tests are never shown to agents (the loader strips them); only the scorer reads them.
+id: t1_reverse_string
+tier: 1
+source: curated
+title: Reverse a string
+entry_point: reverse_string
+prompt: |
+  Return the string `s` reversed.
+known_families:
+  - slice           # s[::-1]
+  - loop_prepend    # build by prepending each char
+  - recursion       # reverse(rest)+first
+  - reversed_join   # ''.join(reversed(s))
+public_tests:
+  - "assert reverse_string('abc')=='cba'"
+  - "assert reverse_string('')==''"
+heldout_tests:
+  - "assert reverse_string('a')=='a'"
+  - "assert reverse_string('racecar')=='racecar'"
+  - "assert reverse_string('Hello')=='olleH'"
+  - "assert reverse_string('ab'*10000)==('ba'*10000)"
+scoring: tests

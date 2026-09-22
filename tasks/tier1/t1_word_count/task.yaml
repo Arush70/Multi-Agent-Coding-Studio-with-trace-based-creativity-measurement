@@ -1,0 +1,24 @@
+# Tier 1 task. known_families are BLIND LABELS: the distinct algorithmic strategies,
+# written before any model output was seen. Do not edit them to match results.
+# Held-out tests are never shown to agents (the loader strips them); only the scorer reads them.
+id: t1_word_count
+tier: 1
+source: curated
+title: Word frequency
+entry_point: word_count
+prompt: |
+  Given a string `text` of words separated by single spaces (no punctuation), return a dict
+  mapping each distinct word to the number of times it appears. An empty string returns {}.
+known_families:
+  - dict_manual   # manual get/increment on a dict
+  - counter       # collections.Counter(words)
+  - defaultdict   # defaultdict(int) increment
+public_tests:
+  - "assert word_count('a b a')=={'a':2,'b':1}"
+  - "assert word_count('')=={}"
+heldout_tests:
+  - "assert word_count('x')=={'x':1}"
+  - "assert word_count('the cat the dog the')=={'the':3,'cat':1,'dog':1}"
+  - "assert word_count('a a a a')=={'a':4}"
+  - "assert word_count(' '.join(['w']*10000))=={'w':10000}"
+scoring: tests

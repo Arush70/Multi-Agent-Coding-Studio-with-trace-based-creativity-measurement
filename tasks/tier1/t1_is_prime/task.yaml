@@ -1,0 +1,25 @@
+# Tier 1 task. known_families are BLIND LABELS: the distinct algorithmic strategies,
+# written before any model output was seen. Do not edit them to match results.
+# Held-out tests are never shown to agents (the loader strips them); only the scorer reads them.
+id: t1_is_prime
+tier: 1
+source: curated
+title: Primality test
+entry_point: is_prime
+prompt: |
+  Return True if the integer n is prime, otherwise False. Numbers < 2 are not prime.
+known_families:
+  - trial_to_n      # test divisors 2..n-1
+  - trial_to_sqrt   # test divisors up to sqrt(n)
+  - six_k_pm_one    # skip multiples of 2 and 3, step 6k+-1
+  - sieve_based     # build a sieve then look up
+public_tests:
+  - "assert is_prime(2)==True"
+  - "assert is_prime(9)==False"
+heldout_tests:
+  - "assert is_prime(1)==False"
+  - "assert is_prime(0)==False"
+  - "assert is_prime(97)==True"
+  - "assert is_prime(7919)==True"
+  - "assert is_prime(1000000)==False"
+scoring: tests

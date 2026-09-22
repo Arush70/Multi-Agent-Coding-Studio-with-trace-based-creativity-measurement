@@ -1,0 +1,26 @@
+# Tier 1 task. known_families are BLIND LABELS: the distinct algorithmic strategies,
+# written before any model output was seen. Do not edit them to match results.
+# Held-out tests are never shown to agents (the loader strips them); only the scorer reads them.
+id: t1_fib
+tier: 1
+source: curated
+title: Nth Fibonacci
+entry_point: fib
+prompt: |
+  Return the n-th Fibonacci number (0-indexed), where fib(0)=0, fib(1)=1, and
+  fib(n)=fib(n-1)+fib(n-2) for n>=2. Assume n>=0.
+known_families:
+  - iterative            # loop keeping last two values, O(n)
+  - memoized_recursion   # recursion with a cache
+  - dp_array             # fill an array 0..n
+  - fast_doubling        # O(log n) matrix / doubling identities
+public_tests:
+  - "assert fib(0)==0"
+  - "assert fib(1)==1"
+  - "assert fib(10)==55"
+heldout_tests:
+  - "assert fib(2)==1"
+  - "assert fib(20)==6765"
+  - "assert fib(30)==832040"
+  - "assert fib(70)==190392490709135"
+scoring: tests
