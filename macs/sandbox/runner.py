@@ -55,6 +55,46 @@ print("__MACS_RESULT__" + json.dumps(results))
 '''
 
 
+# Harness for HEURISTIC (Tier 3) scoring. Same idea as the test harness, but instead of
+# pass/fail it runs a driver that exercises the candidate's function over frozen instances and
+# returns a NUMBER (bins used, tour length, colours, makespan, cap-set size). The driver runs in
+# the candidate's namespace with the instance data in `__data__` and must set `__metric__`.
+# Arush - reusing the exact same sandbox (docker --network none etc.) means the hard/open Tier 3
+# problems get scored under the same security boundary as everything else; only the harness differs.
+METRIC_HARNESS = r'''
+import json, sys, traceback
+src = open(sys.argv[1]).read()
+driver = open(sys.argv[2]).read()
+data = json.load(open(sys.argv[3]))
+ns = {}
+out = {"ok": False}
+try:
+    exec(compile(src, "candidate.py", "exec"), ns)      # defines the candidate's entry point
+    ns["__data__"] = data                               # frozen instances the driver runs on
+    exec(compile(driver, "driver.py", "exec"), ns)      # driver must set ns["__metric__"]
+    out = {"ok": True, "metric": ns.get("__metric__"), "valid": ns.get("__valid__", True),
+           "detail": ns.get("__detail__")}
+except Exception:
+    out = {"ok": False, "error": traceback.format_exc()[-600:]}
+print("__MACS_METRIC__" + json.dumps(out))
+'''
+
+
+@dataclass
+class MetricResult:
+    code_hash: str
+    ok: bool                 # did candidate+driver run to completion (not a crash/timeout)?
+    valid: bool              # did the candidate produce a FEASIBLE answer (driver's judgement)?
+    metric: float | None     # the raw metric (direction depends on the task)
+    detail: object           # optional per-instance breakdown from the driver
+    runtime_s: float
+    timed_out: bool
+    error: str | None
+
+    def to_dict(self) -> dict:
+        return asdict(self)
+
+
 @dataclass
 class RunResult:
     code_hash: str
@@ -167,4 +207,83 @@ def run(
         error=(stderr[-400:] or "killed (cpu/memory limit or crash)") if (timed_out or any("no result marker" in r.get("error", "") for r in per_test)) else None,
         timed_out=timed_out,
         per_test=per_test,
+    )
+
+
+def _parse_metric(stdout: str) -> dict:
+    marker = "__MACS_METRIC__"
+    for line in stdout.splitlines()[::-1]:
+        if line.startswith(marker):
+            return json.loads(line[len(marker):])
+    return {"ok": False, "error": "no metric marker (crash or timeout)"}
+
+
+def run_metric(
+    src: str,
+    driver: str,
+    data: object,
+    *,
+    backend: str = "docker",
+    cpu_seconds: int = 15,
+    memory_mb: int = 512,
+    image: str = "python:3.11-slim",
+) -> MetricResult:
+    """Run a candidate heuristic over frozen `data` via `driver` and return the metric it computes.
+
+    Arush - `driver` is a small trusted snippet (from macs/analysis/heuristic_score.py) that knows
+    how to exercise this task's function and set `__metric__`/`__valid__`. `src` (the model's code)
+    is still untrusted and runs under the same sandbox as the test runner.
+    """
+    if backend == "docker" and shutil.which("docker") is None:
+        raise RuntimeError("docker not found; install Docker or use backend='subprocess' (development only)")
+
+    with tempfile.TemporaryDirectory() as td:
+        d = Path(td)
+        (d / "candidate.py").write_text(src)
+        (d / "driver.py").write_text(driver)
+        (d / "data.json").write_text(json.dumps(data))
+        (d / "harness.py").write_text(METRIC_HARNESS)
+
+        preexec = None
+        if backend == "docker":
+            cmd = [
+                "docker", "run", "--rm", "--network", "none",
+                "--memory", f"{memory_mb}m", "--memory-swap", f"{memory_mb}m",
+                "--cpus", "1", "--pids-limit", "64",
+                "--read-only", "--tmpfs", "/tmp:size=16m",
+                "-v", f"{d}:/work:ro", "-w", "/work",
+                "--user", "65534:65534",
+                image, "python", "harness.py", "candidate.py", "driver.py", "data.json",
+            ]
+            timeout = cpu_seconds + 5
+        elif backend == "subprocess":
+            cmd = [sys.executable, "harness.py", "candidate.py", "driver.py", "data.json"]
+            timeout = cpu_seconds + 2
+            if os.name == "posix":
+                preexec = _posix_limits(cpu_seconds, memory_mb)
+        else:
+            raise ValueError(f"unknown backend {backend!r}")
+
+        t0 = time.perf_counter()
+        try:
+            proc = subprocess.run(cmd, cwd=d, capture_output=True, text=True, timeout=timeout, preexec_fn=preexec)
+            stdout, stderr, timed_out = proc.stdout, proc.stderr, False
+        except subprocess.TimeoutExpired as e:
+            stdout = (e.stdout or b"").decode() if isinstance(e.stdout, bytes) else (e.stdout or "")
+            stderr, timed_out = "timeout", True
+        runtime = time.perf_counter() - t0
+
+    parsed = _parse_metric(stdout)
+    ok = bool(parsed.get("ok")) and not timed_out
+    # A candidate that ran but produced an infeasible answer is valid=False with metric=None:
+    # that is DATA (a bad heuristic), not a rig failure. error is set only for crash/timeout.
+    return MetricResult(
+        code_hash=code_hash(src),
+        ok=ok,
+        valid=bool(parsed.get("valid")) if ok else False,
+        metric=(parsed.get("metric") if ok else None),
+        detail=parsed.get("detail"),
+        runtime_s=runtime,
+        timed_out=timed_out,
+        error=None if ok else (parsed.get("error") or stderr[-400:] or "killed (cpu/memory limit or crash)"),
     )
