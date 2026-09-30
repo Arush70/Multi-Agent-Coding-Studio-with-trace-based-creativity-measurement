@@ -21,7 +21,8 @@ from macs.trace.writer import validate_file, read_trace
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--task", required=True, help="path to a task dir, e.g. tasks/tier1/t1_two_sum")
-    ap.add_argument("--condition", default="A", choices=["A", "C"], help="A=1 learner, C=2 learners (studio B/D/D_minus come later)")
+    ap.add_argument("--condition", default="A", choices=["A", "B", "C", "D", "D_minus"],
+                    help="A/C = Tutor (1/2 learners); B/D = Studio (1/2 learners); D_minus = Studio, Facilitator off")
     ap.add_argument("--seed", type=int, default=1)
     ap.add_argument("--profile", default="local", help="model profile in config/models.yaml")
     ap.add_argument("--sandbox", default="subprocess", choices=["subprocess", "docker"],
