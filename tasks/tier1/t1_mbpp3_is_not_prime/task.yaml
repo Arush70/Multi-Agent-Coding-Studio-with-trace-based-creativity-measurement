@@ -1,0 +1,25 @@
+# MBPP problem 3. Source: Austin et al. (2021), Program Synthesis with Large Language Models, arXiv:2108.07732 (MBPP)
+# known_families are BLIND LABELS (strategies written before any model output); do not edit to match results.
+# Held-out tests come from the benchmark's own tests; only the scorer sees them.
+id: t1_mbpp3_is_not_prime
+tier: 1
+source: MBPP
+source_id: "3"
+citation: "Austin et al. (2021), Program Synthesis with Large Language Models, arXiv:2108.07732 (MBPP)"
+entry_point: is_not_prime
+prompt: |
+  Write a python function to identify non-prime numbers.
+  
+  Entry point: `is_not_prime`.
+known_families:
+  - trial_to_sqrt   # test divisors up to sqrt(n)
+  - trial_to_n      # test every divisor 2..n-1
+  - six_k_pm_one    # skip multiples of 2 and 3
+  - sieve_lookup    # build a sieve then look up
+public_tests:
+  - "assert is_not_prime(2) == False"
+heldout_tests:
+  - "assert is_not_prime(10) == True"
+  - "assert is_not_prime(35) == True"
+  - "assert is_not_prime(37) == False"
+scoring: tests

@@ -1,0 +1,24 @@
+# MBPP problem 19. Source: Austin et al. (2021), Program Synthesis with Large Language Models, arXiv:2108.07732 (MBPP)
+# known_families are BLIND LABELS (strategies written before any model output); do not edit to match results.
+# Held-out tests come from the benchmark's own tests; only the scorer sees them.
+id: t1_mbpp19_test_duplicate
+tier: 1
+source: MBPP
+source_id: "19"
+citation: "Austin et al. (2021), Program Synthesis with Large Language Models, arXiv:2108.07732 (MBPP)"
+entry_point: test_duplicate
+prompt: |
+  Write a function to find whether a given array of integers contains any duplicate element.
+  
+  Entry point: `test_duplicate`.
+known_families:
+  - set_length      # compare len(set) to len(list)
+  - sort_adjacent   # sort then check neighbours
+  - counter         # Counter and look for count>1
+  - seen_set        # scan keeping a set of seen
+public_tests:
+  - "assert test_duplicate(([1,2,3,4,5]))==False"
+heldout_tests:
+  - "assert test_duplicate(([1,2,3,4, 4]))==True"
+  - "assert test_duplicate([1,1,2,2,3,3,4,4,5])==True"
+scoring: tests

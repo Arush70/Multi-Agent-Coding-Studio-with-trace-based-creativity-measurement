@@ -1,0 +1,34 @@
+# HumanEval problem HumanEval/55. Source: Chen et al. (2021), Evaluating Large Language Models Trained on Code, arXiv:2107.03374 (HumanEval)
+# known_families are BLIND LABELS (strategies written before any model output); do not edit to match results.
+# Held-out tests come from the benchmark's own tests; only the scorer sees them.
+id: t2_humaneval55_fib
+tier: 2
+source: HumanEval
+source_id: "HumanEval/55"
+citation: "Chen et al. (2021), Evaluating Large Language Models Trained on Code, arXiv:2107.03374 (HumanEval)"
+entry_point: fib
+prompt: |
+  def fib(n: int):
+      """Return n-th Fibonacci number.
+      >>> fib(10)
+      55
+      >>> fib(1)
+      1
+      >>> fib(8)
+      21
+      """
+  
+  Complete the function `fib`.
+known_families:
+  - iterative       # loop keeping last two
+  - memoized        # recursion with a cache
+  - dp_array        # fill an array
+  - fast_doubling   # O(log n) doubling
+public_tests:
+  - "assert fib(10) == 55"
+heldout_tests:
+  - "assert fib(1) == 1"
+  - "assert fib(8) == 21"
+  - "assert fib(11) == 89"
+  - "assert fib(12) == 144"
+scoring: tests

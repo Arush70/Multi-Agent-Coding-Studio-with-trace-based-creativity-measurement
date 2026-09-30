@@ -1,0 +1,32 @@
+# HumanEval problem HumanEval/9. Source: Chen et al. (2021), Evaluating Large Language Models Trained on Code, arXiv:2107.03374 (HumanEval)
+# known_families are BLIND LABELS (strategies written before any model output); do not edit to match results.
+# Held-out tests come from the benchmark's own tests; only the scorer sees them.
+id: t2_humaneval9_rolling_max
+tier: 2
+source: HumanEval
+source_id: "HumanEval/9"
+citation: "Chen et al. (2021), Evaluating Large Language Models Trained on Code, arXiv:2107.03374 (HumanEval)"
+entry_point: rolling_max
+prompt: |
+  from typing import List, Tuple
+  
+  
+  def rolling_max(numbers: List[int]) -> List[int]:
+      """ From a given list of integers, generate a list of rolling maximum element found until given moment
+      in the sequence.
+      >>> rolling_max([1, 2, 3, 2, 3, 4, 2])
+      [1, 2, 3, 3, 3, 4, 4]
+      """
+  
+  Complete the function `rolling_max`.
+known_families:
+  - running_max            # keep a running maximum
+  - prefix_max             # accumulate max of prefix
+  - itertools_accumulate   # accumulate with max
+public_tests:
+  - "assert rolling_max([]) == []"
+heldout_tests:
+  - "assert rolling_max([1, 2, 3, 4]) == [1, 2, 3, 4]"
+  - "assert rolling_max([4, 3, 2, 1]) == [4, 4, 4, 4]"
+  - "assert rolling_max([3, 2, 3, 100, 3]) == [3, 3, 3, 100, 100]"
+scoring: tests

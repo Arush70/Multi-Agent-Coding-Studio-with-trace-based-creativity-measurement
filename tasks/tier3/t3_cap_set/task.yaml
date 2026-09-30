@@ -1,0 +1,29 @@
+# Tier 3 HARD / OPEN problem. An OPEN problem in additive combinatorics; FunSearch found new lower bounds here.
+# Source: Romera-Paredes et al. (2024), Mathematical discoveries from program search with large language models, Nature 625:468-475, doi:10.1038/s41586-023-06924-6 (FunSearch)
+# NP-hard / open: there is no known optimal polynomial algorithm, so solutions are
+# scored by a metric, not pass/fail. This is where creativity has the most room.
+# known_families are BLIND LABELS (named heuristics), written before any model output.
+id: t3_cap_set
+tier: 3
+source: research
+citation: "Romera-Paredes et al. (2024), Mathematical discoveries from program search with large language models, Nature 625:468-475, doi:10.1038/s41586-023-06924-6 (FunSearch)"
+entry_point: build_cap_set
+title: Cap set construction (open problem)
+prompt: |
+  A cap set in Z_3^n is a set of vectors (each coordinate 0,1,2) with no three distinct vectors
+  summing to (0,0,...,0) mod 3 (equivalently, no three in a line). Write `build_cap_set(n)` that
+  returns as LARGE a valid cap set as you can, as a list of length-n tuples over {0,1,2}. Larger
+  valid sets score higher; an invalid set scores zero. The maximum size is unknown for large n.
+known_families:
+  - greedy_lexicographic   # add vectors greedily in order, skipping any that form a line
+  - priority_guided        # score candidate vectors and add the best (FunSearch-style)
+  - product_construction   # combine caps from smaller dimensions
+  - symmetry_based         # exploit group symmetry to extend a seed set
+public_tests:
+  - "assert all(len(v)==2 and all(c in (0,1,2) for c in v) for v in build_cap_set(2))"
+heldout_tests: []
+scoring: heuristic
+heuristic:
+  dimensions: [3, 4, 5]     # score = cap-set size, averaged; validity checked (no 3 in a line)
+  baseline: greedy_lexicographic
+  baseline_size: null

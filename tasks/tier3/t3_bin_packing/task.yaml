@@ -1,0 +1,30 @@
+# Tier 3 HARD / OPEN problem. The exact problem FunSearch used to discover new heuristics.
+# Source: Romera-Paredes et al. (2024), Mathematical discoveries from program search with large language models, Nature 625:468-475, doi:10.1038/s41586-023-06924-6 (FunSearch)
+# NP-hard / open: there is no known optimal polynomial algorithm, so solutions are
+# scored by a metric, not pass/fail. This is where creativity has the most room.
+# known_families are BLIND LABELS (named heuristics), written before any model output.
+id: t3_bin_packing
+tier: 3
+source: research
+citation: "Romera-Paredes et al. (2024), Mathematical discoveries from program search with large language models, Nature 625:468-475, doi:10.1038/s41586-023-06924-6 (FunSearch)"
+entry_point: priority
+title: Online bin-packing heuristic
+prompt: |
+  Items of size in (0,1] arrive one at a time and must be placed immediately into a bin of
+  capacity 1.0 (bins are never revisited). Write `priority(item, bins)` returning a score for
+  each bin in `bins` (remaining capacities); the item goes to the feasible bin with the highest
+  score, or a new bin is opened. Fewer bins is better.
+known_families:
+  - first_fit             # score = -index
+  - best_fit              # score = -(remaining-item)
+  - worst_fit             # score = +(remaining-item)
+  - funsearch_nonlinear   # penalise leaving an awkward remainder (FunSearch-style)
+public_tests:
+  - "assert len(priority(0.5,[0.6,0.4,0.9]))==3"
+heldout_tests: []
+scoring: heuristic
+heuristic:
+  instance_file: instances.json   # frozen once by scripts/make_binpack_instances.py
+  seeds: [1, 2, 3, 4, 5]
+  baseline: best_fit
+  baseline_bins: null

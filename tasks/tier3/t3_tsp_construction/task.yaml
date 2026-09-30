@@ -1,0 +1,29 @@
+# Tier 3 HARD / OPEN problem. Travelling Salesman is NP-hard; a standard LLM-heuristic testbed in CO-Bench and ReEvo.
+# Source: Sun et al. (2025), CO-Bench: Benchmarking Language Model Agents in Algorithm Search for Combinatorial Optimization, arXiv:2504.04310
+# NP-hard / open: there is no known optimal polynomial algorithm, so solutions are
+# scored by a metric, not pass/fail. This is where creativity has the most room.
+# known_families are BLIND LABELS (named heuristics), written before any model output.
+id: t3_tsp_construction
+tier: 3
+source: research
+citation: "Sun et al. (2025), CO-Bench: Benchmarking Language Model Agents in Algorithm Search for Combinatorial Optimization, arXiv:2504.04310"
+entry_point: choose_next
+title: TSP construction heuristic
+prompt: |
+  Given the current city, the set of unvisited cities, and a distance matrix `dist`, write
+  `choose_next(current, unvisited, dist)` returning the next city to visit. Repeatedly applied,
+  it builds a tour; shorter total tour length is better. There is no known efficient optimum.
+known_families:
+  - nearest_neighbour    # pick the closest unvisited city
+  - cheapest_insertion   # minimise added length
+  - regret_based         # pick the city with the largest second-best regret
+  - savings              # Clarke-Wright savings idea
+public_tests:
+  - "assert choose_next(0,{1,2},[[0,2,9],[2,0,6],[9,6,0]]) in (1,2)"
+heldout_tests: []
+scoring: heuristic
+heuristic:
+  instance_file: instances.json   # frozen once by scripts/make_tsp_instances.py
+  seeds: [1, 2, 3, 4, 5]
+  baseline: nearest_neighbour
+  baseline_length: null

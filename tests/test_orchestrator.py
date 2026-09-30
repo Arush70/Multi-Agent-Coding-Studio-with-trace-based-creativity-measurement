@@ -17,7 +17,7 @@ from macs.trace.writer import validate_file, read_trace
 
 posix_only = pytest.mark.skipif(sys.platform == "win32", reason="subprocess sandbox rlimits are POSIX-only; on Windows this path still runs but CI is Linux")
 
-CORRECT = "```python\ndef two_sum(nums, target):\n seen={}\n for i,v in enumerate(nums):\n  if target-v in seen: return [seen[target-v],i]\n  seen[v]=i\n```"
+CORRECT = "```python\ndef test_duplicate(a):\n    return len(a) != len(set(a))\n```"
 
 
 @dataclass
@@ -48,7 +48,7 @@ class FakeClient:
 
 
 def _run(condition, tmp_path):
-    task = load_task(TASKS_ROOT / "tier1" / "t1_two_sum")
+    task = load_task(TASKS_ROOT / "tier1" / "t1_mbpp19_test_duplicate")
     cfg = SessionConfig(condition=condition, seed=1, sandbox_backend="subprocess")
     return run_session(task, cfg, FakeClient(), out_dir=tmp_path)
 
@@ -61,7 +61,7 @@ def test_condition_A_produces_valid_trace(tmp_path):
     roles = [e["role"] for e in events]
     assert "learner_1" in roles and "learner_2" not in roles      # A has exactly one learner
     ver = [e for e in events if e["event"] == "verification"][0]
-    assert ver["tests_passed"] == 2 and ver["tests_failed"] == 0   # the correct code passes both public tests
+    assert ver["tests_passed"] == 1 and ver["tests_failed"] == 0   # the correct code passes both public tests
 
 
 @posix_only
@@ -74,6 +74,6 @@ def test_condition_C_has_two_learners(tmp_path):
 
 def test_studio_conditions_not_yet_implemented(tmp_path):
     # Until weeks 3-4, asking for a studio condition must fail loudly, not silently do nothing.
-    task = load_task(TASKS_ROOT / "tier1" / "t1_two_sum")
+    task = load_task(TASKS_ROOT / "tier1" / "t1_mbpp19_test_duplicate")
     with pytest.raises(NotImplementedError):
         run_session(task, SessionConfig(condition="D", seed=1, sandbox_backend="subprocess"), FakeClient(), out_dir=tmp_path)

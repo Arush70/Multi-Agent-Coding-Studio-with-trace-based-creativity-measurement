@@ -14,15 +14,11 @@ from macs.sandbox.runner import run
 
 BACKEND = "docker" if "--docker" in sys.argv else "subprocess"
 
-CORRECT = ("def two_sum(nums, target):\n"
-           " seen = {}\n"
-           " for i, v in enumerate(nums):\n"
-           "  if target - v in seen: return [seen[target - v], i]\n"
-           "  seen[v] = i\n")
-WRONG = "def two_sum(nums, target):\n return [0, 1]\n"
+CORRECT = "def test_duplicate(a):\n    return len(a) != len(set(a))\n"
+WRONG = "def test_duplicate(a):\n    return True\n"
 
 def main() -> None:
-    task = load_task("tasks/tier1/t1_two_sum")
+    task = load_task("tasks/tier1/t1_mbpp19_test_duplicate")
     tests = task.public_tests
     print(f"backend={BACKEND}  task={task.id}  public_tests={len(tests)}\n")
     for label, src in [("CORRECT", CORRECT), ("WRONG", WRONG)]:
