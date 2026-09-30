@@ -1,0 +1,23 @@
+# MBPP problem 88. Source: Austin et al. (2021), Program Synthesis with Large Language Models, arXiv:2108.07732 (MBPP)
+# known_families are BLIND LABELS (strategies written before any model output); do not edit to match results.
+# Held-out tests come from the benchmark's own tests; only the scorer sees them.
+id: t1_mbpp88_freq_count
+tier: 1
+source: MBPP
+source_id: "88"
+citation: "Austin et al. (2021), Program Synthesis with Large Language Models, arXiv:2108.07732 (MBPP)"
+entry_point: freq_count
+prompt: |
+  Write a function to get the frequency of all the elements in a list, returned as a dictionary.
+  
+  Entry point: `freq_count`.
+known_families:
+  - dict_manual   # get/increment a plain dict
+  - counter       # collections.Counter
+  - defaultdict   # defaultdict(int) increment
+public_tests:
+  - "assert freq_count([10,10,10,10,20,20,20,20,40,40,50,50,30])==({10: 4, 20: 4, 40: 2, 50: 2, 30: 1})"
+heldout_tests:
+  - "assert freq_count([1,2,3,4,3,2,4,1,3,1,4])==({1:3, 2:2,3:3,4:3})"
+  - "assert freq_count([5,6,7,4,9,10,4,5,6,7,9,5])==({10:1,5:3,6:2,7:2,4:2,9:2})"
+scoring: tests

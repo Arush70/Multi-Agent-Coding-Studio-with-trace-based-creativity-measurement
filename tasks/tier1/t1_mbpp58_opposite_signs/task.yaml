@@ -1,0 +1,24 @@
+# MBPP problem 58. Source: Austin et al. (2021), Program Synthesis with Large Language Models, arXiv:2108.07732 (MBPP)
+# known_families are BLIND LABELS (strategies written before any model output); do not edit to match results.
+# Held-out tests come from the benchmark's own tests; only the scorer sees them.
+id: t1_mbpp58_opposite_signs
+tier: 1
+source: MBPP
+source_id: "58"
+citation: "Austin et al. (2021), Program Synthesis with Large Language Models, arXiv:2108.07732 (MBPP)"
+entry_point: opposite_Signs
+prompt: |
+  Write a python function to check whether the given two integers have opposite sign or not.
+  
+  Entry point: `opposite_Signs`.
+known_families:
+  - xor_sign       # (x^y)<0
+  - product_sign   # x*y<0
+  - compare_sign   # compare (x<0) to (y<0)
+public_tests:
+  - "assert opposite_Signs(1,-2) == True"
+heldout_tests:
+  - "assert opposite_Signs(3,2) == False"
+  - "assert opposite_Signs(-10,-10) == False"
+  - "assert opposite_Signs(-2,2) == True"
+scoring: tests

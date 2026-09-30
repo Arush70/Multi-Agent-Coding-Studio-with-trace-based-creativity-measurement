@@ -1,0 +1,23 @@
+# MBPP problem 256. Source: Austin et al. (2021), Program Synthesis with Large Language Models, arXiv:2108.07732 (MBPP)
+# known_families are BLIND LABELS (strategies written before any model output); do not edit to match results.
+# Held-out tests come from the benchmark's own tests; only the scorer sees them.
+id: t1_mbpp256_count_primes_nums
+tier: 1
+source: MBPP
+source_id: "256"
+citation: "Austin et al. (2021), Program Synthesis with Large Language Models, arXiv:2108.07732 (MBPP)"
+entry_point: count_Primes_nums
+prompt: |
+  Write a python function that takes in a non-negative number and returns the number of prime numbers less than the given non-negative number.
+  
+  Entry point: `count_Primes_nums`.
+known_families:
+  - trial_division   # test each number by trial
+  - trial_to_sqrt    # trial division to sqrt
+  - sieve            # sieve of Eratosthenes then count
+public_tests:
+  - "assert count_Primes_nums(5) == 2"
+heldout_tests:
+  - "assert count_Primes_nums(10) == 4"
+  - "assert count_Primes_nums(100) == 25"
+scoring: tests

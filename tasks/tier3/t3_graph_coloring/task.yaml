@@ -1,0 +1,29 @@
+# Tier 3 HARD / OPEN problem. Graph colouring is NP-hard; heuristic vertex orderings are an LLM-heuristic testbed in ReEvo.
+# Source: Ye et al. (2024), ReEvo: Large Language Models as Hyper-Heuristics with Reflective Evolution, NeurIPS 2024, arXiv:2402.01145
+# NP-hard / open: there is no known optimal polynomial algorithm, so solutions are
+# scored by a metric, not pass/fail. This is where creativity has the most room.
+# known_families are BLIND LABELS (named heuristics), written before any model output.
+id: t3_graph_coloring
+tier: 3
+source: research
+citation: "Ye et al. (2024), ReEvo: Large Language Models as Hyper-Heuristics with Reflective Evolution, NeurIPS 2024, arXiv:2402.01145"
+entry_point: vertex_order
+title: Greedy graph-colouring order
+prompt: |
+  Given an adjacency structure `graph` (dict: vertex -> set of neighbours), write
+  `vertex_order(graph)` returning a list of all vertices in the order a greedy colouring should
+  process them. Greedy colouring in that order should use as FEW colours as possible.
+known_families:
+  - largest_first   # order by descending degree (Welsh-Powell)
+  - dsatur          # dynamic saturation degree order
+  - smallest_last   # repeatedly remove the min-degree vertex
+  - random_order    # baseline arbitrary order
+public_tests:
+  - "assert sorted(vertex_order({0:{1},1:{0},2:set()}))==[0,1,2]"
+heldout_tests: []
+scoring: heuristic
+heuristic:
+  instance_file: instances.json   # frozen once by scripts/make_graph_instances.py
+  seeds: [1, 2, 3, 4, 5]
+  baseline: largest_first
+  baseline_colors: null

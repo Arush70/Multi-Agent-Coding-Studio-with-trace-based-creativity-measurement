@@ -1,0 +1,38 @@
+# HumanEval problem HumanEval/48. Source: Chen et al. (2021), Evaluating Large Language Models Trained on Code, arXiv:2107.03374 (HumanEval)
+# known_families are BLIND LABELS (strategies written before any model output); do not edit to match results.
+# Held-out tests come from the benchmark's own tests; only the scorer sees them.
+id: t2_humaneval48_is_palindrome
+tier: 2
+source: HumanEval
+source_id: "HumanEval/48"
+citation: "Chen et al. (2021), Evaluating Large Language Models Trained on Code, arXiv:2107.03374 (HumanEval)"
+entry_point: is_palindrome
+prompt: |
+  def is_palindrome(text: str):
+      """
+      Checks if given string is a palindrome
+      >>> is_palindrome('')
+      True
+      >>> is_palindrome('aba')
+      True
+      >>> is_palindrome('aaaaa')
+      True
+      >>> is_palindrome('zbcd')
+      False
+      """
+  
+  Complete the function `is_palindrome`.
+known_families:
+  - slice_reverse   # s==s[::-1]
+  - two_pointer     # compare ends moving inward
+  - recursion       # first==last and recurse
+public_tests:
+  - "assert is_palindrome('') == True"
+heldout_tests:
+  - "assert is_palindrome('aba') == True"
+  - "assert is_palindrome('aaaaa') == True"
+  - "assert is_palindrome('zbcd') == False"
+  - "assert is_palindrome('xywyx') == True"
+  - "assert is_palindrome('xywyz') == False"
+  - "assert is_palindrome('xywzx') == False"
+scoring: tests

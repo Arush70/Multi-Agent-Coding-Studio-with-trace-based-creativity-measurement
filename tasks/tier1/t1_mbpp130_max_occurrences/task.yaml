@@ -1,0 +1,23 @@
+# MBPP problem 130. Source: Austin et al. (2021), Program Synthesis with Large Language Models, arXiv:2108.07732 (MBPP)
+# known_families are BLIND LABELS (strategies written before any model output); do not edit to match results.
+# Held-out tests come from the benchmark's own tests; only the scorer sees them.
+id: t1_mbpp130_max_occurrences
+tier: 1
+source: MBPP
+source_id: "130"
+citation: "Austin et al. (2021), Program Synthesis with Large Language Models, arXiv:2108.07732 (MBPP)"
+entry_point: max_occurrences
+prompt: |
+  Write a function to find the item with maximum frequency in a given list.
+  
+  Entry point: `max_occurrences`.
+known_families:
+  - dict_max              # count then max by value
+  - counter_most_common   # Counter.most_common
+  - sort_group            # sort then longest run
+public_tests:
+  - "assert max_occurrences([2,3,8,4,7,9,8,2,6,5,1,6,1,2,3,2,4,6,9,1,2])==2"
+heldout_tests:
+  - "assert max_occurrences([2,3,8,4,7,9,8,7,9,15,14,10,12,13,16,18])==8"
+  - "assert max_occurrences([10,20,20,30,40,90,80,50,30,20,50,10])==20"
+scoring: tests

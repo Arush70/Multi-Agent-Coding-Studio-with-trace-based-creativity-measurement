@@ -1,0 +1,23 @@
+# MBPP problem 245. Source: Austin et al. (2021), Program Synthesis with Large Language Models, arXiv:2108.07732 (MBPP)
+# known_families are BLIND LABELS (strategies written before any model output); do not edit to match results.
+# Held-out tests come from the benchmark's own tests; only the scorer sees them.
+id: t1_mbpp245_max_sum
+tier: 1
+source: MBPP
+source_id: "245"
+citation: "Austin et al. (2021), Program Synthesis with Large Language Models, arXiv:2108.07732 (MBPP)"
+entry_point: max_sum
+prompt: |
+  Write a function that takes an array and finds the maximum sum of a bitonic subsequence for the given array, where a sequence is bitonic if it is first increasing and then decreasing.
+  
+  Entry point: `max_sum`.
+known_families:
+  - dp_two_pass      # max increasing-sum + max decreasing-sum
+  - brute_force      # try all bitonic peaks/subseqs
+  - prefix_lis_lds   # LIS from left, LDS from right
+public_tests:
+  - "assert max_sum([1, 15, 51, 45, 33, 100, 12, 18, 9]) == 194"
+heldout_tests:
+  - "assert max_sum([80, 60, 30, 40, 20, 10]) == 210"
+  - "assert max_sum([2, 3 ,14, 16, 21, 23, 29, 30]) == 138"
+scoring: tests

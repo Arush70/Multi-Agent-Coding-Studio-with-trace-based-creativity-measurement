@@ -1,0 +1,31 @@
+# Tier 3 HARD / OPEN problem. Load-balancing / scheduling to minimise makespan is NP-hard; an LLM-heuristic testbed in ReEvo.
+# Source: Ye et al. (2024), ReEvo: Large Language Models as Hyper-Heuristics with Reflective Evolution, NeurIPS 2024, arXiv:2402.01145
+# NP-hard / open: there is no known optimal polynomial algorithm, so solutions are
+# scored by a metric, not pass/fail. This is where creativity has the most room.
+# known_families are BLIND LABELS (named heuristics), written before any model output.
+id: t3_scheduling
+tier: 3
+source: research
+citation: "Ye et al. (2024), ReEvo: Large Language Models as Hyper-Heuristics with Reflective Evolution, NeurIPS 2024, arXiv:2402.01145"
+entry_point: priority
+title: Online scheduling (makespan) heuristic
+prompt: |
+  Jobs with positive processing times arrive one at a time and must each be assigned immediately
+  to one of `m` identical machines. Write `priority(job, loads)` returning a score for each
+  machine (current loads); the job goes to the highest-scoring machine. The makespan is the
+  maximum machine load at the end; lower is better.
+known_families:
+  - least_loaded               # score = -load (send to the emptiest)
+  - longest_processing_first   # bias by job size
+  - most_loaded                # score = +load (a poor but distinct strategy)
+  - threshold                  # avoid crossing a running-average bound
+public_tests:
+  - "assert len(priority(3,[0,5,2]))==3"
+heldout_tests: []
+scoring: heuristic
+heuristic:
+  instance_file: instances.json   # frozen once by scripts/make_schedule_instances.py
+  seeds: [1, 2, 3, 4, 5]
+  machines: 4
+  baseline: least_loaded
+  baseline_makespan: null

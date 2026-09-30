@@ -2,7 +2,7 @@
 
 Arush - run this on any task you write, to eyeball the boundary with your own eyes:
 
-    python scripts/check_task.py tasks/tier1/t1_two_sum
+    python scripts/check_task.py tasks/tier1/t1_mbpp19_test_duplicate
 
 The top block is agent_view - the ONLY thing the model is shown. The bottom block is
 the held-out tests, which the model never sees. If anything from the bottom appears in
@@ -13,7 +13,7 @@ from macs.tasks.bank import load_task
 
 
 def main() -> None:
-    task_dir = sys.argv[1] if len(sys.argv) > 1 else "tasks/tier1/t1_two_sum"
+    task_dir = sys.argv[1] if len(sys.argv) > 1 else "tasks/tier1/t1_mbpp19_test_duplicate"
     t = load_task(task_dir)
     print(f"=== TASK {t.id} (tier {t.tier}, scoring={t.scoring}) ===")
     print(f"known_families (blind labels): {t.known_families}")

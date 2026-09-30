@@ -1,0 +1,37 @@
+# HumanEval problem HumanEval/0. Source: Chen et al. (2021), Evaluating Large Language Models Trained on Code, arXiv:2107.03374 (HumanEval)
+# known_families are BLIND LABELS (strategies written before any model output); do not edit to match results.
+# Held-out tests come from the benchmark's own tests; only the scorer sees them.
+id: t2_humaneval0_has_close_elements
+tier: 2
+source: HumanEval
+source_id: "HumanEval/0"
+citation: "Chen et al. (2021), Evaluating Large Language Models Trained on Code, arXiv:2107.03374 (HumanEval)"
+entry_point: has_close_elements
+prompt: |
+  from typing import List
+  
+  
+  def has_close_elements(numbers: List[float], threshold: float) -> bool:
+      """ Check if in given list of numbers, are any two numbers closer to each other than
+      given threshold.
+      >>> has_close_elements([1.0, 2.0, 3.0], 0.5)
+      False
+      >>> has_close_elements([1.0, 2.8, 3.0, 4.0, 5.0, 2.0], 0.3)
+      True
+      """
+  
+  Complete the function `has_close_elements`.
+known_families:
+  - brute_pairs     # check every pair O(n^2)
+  - sort_adjacent   # sort then compare neighbours
+  - bucket          # bucket by threshold
+public_tests:
+  - "assert has_close_elements([1.0, 2.0, 3.9, 4.0, 5.0, 2.2], 0.3) == True"
+heldout_tests:
+  - "assert has_close_elements([1.0, 2.0, 3.9, 4.0, 5.0, 2.2], 0.05) == False"
+  - "assert has_close_elements([1.0, 2.0, 5.9, 4.0, 5.0], 0.95) == True"
+  - "assert has_close_elements([1.0, 2.0, 5.9, 4.0, 5.0], 0.8) == False"
+  - "assert has_close_elements([1.0, 2.0, 3.0, 4.0, 5.0, 2.0], 0.1) == True"
+  - "assert has_close_elements([1.1, 2.2, 3.1, 4.1, 5.1], 1.0) == True"
+  - "assert has_close_elements([1.1, 2.2, 3.1, 4.1, 5.1], 0.5) == False"
+scoring: tests

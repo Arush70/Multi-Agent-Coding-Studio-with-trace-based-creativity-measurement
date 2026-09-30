@@ -1,0 +1,24 @@
+# MBPP problem 119. Source: Austin et al. (2021), Program Synthesis with Large Language Models, arXiv:2108.07732 (MBPP)
+# known_families are BLIND LABELS (strategies written before any model output); do not edit to match results.
+# Held-out tests come from the benchmark's own tests; only the scorer sees them.
+id: t1_mbpp119_search
+tier: 1
+source: MBPP
+source_id: "119"
+citation: "Austin et al. (2021), Program Synthesis with Large Language Models, arXiv:2108.07732 (MBPP)"
+entry_point: search
+prompt: |
+  Write a python function to find the element that appears only once in a sorted array.
+  
+  Entry point: `search`.
+known_families:
+  - xor_all         # XOR everything; pairs cancel
+  - binary_search   # exploit the sorted order
+  - counter         # count and take the singleton
+  - hash_toggle     # add/remove from a set
+public_tests:
+  - "assert search([1,1,2,2,3]) == 3"
+heldout_tests:
+  - "assert search([1,1,3,3,4,4,5,5,7,7,8]) == 8"
+  - "assert search([1,2,2,3,3,4,4]) == 1"
+scoring: tests
