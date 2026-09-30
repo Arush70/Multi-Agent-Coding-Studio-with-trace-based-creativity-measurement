@@ -27,9 +27,28 @@ from sklearn.metrics.pairwise import cosine_distances
 
 
 def cluster_families(X: np.ndarray, distance_threshold: float, linkage: str = "average") -> np.ndarray:
-    """Return an integer family label per row. One row -> one family."""
-    if len(X) == 1:
-        return np.zeros(1, dtype=int)
+    """Return an integer family label per row. One row -> one family.
+
+    Arush - cosine distance has no meaning for a zero vector (no direction), and after
+    standardisation a proposal that is identical to the reference/sample mean becomes exactly zero
+    (this happens when two proposals have the same AST features, e.g. they differ only by a sign).
+    So we guard: if every row is zero they are all one family; otherwise the zero rows are grouped
+    as their own family and the rest are clustered normally. Without this, sklearn raises on
+    'zero vectors' and a whole session fails to score.
+    """
+    n = len(X)
+    if n <= 1:
+        return np.zeros(n, dtype=int)
+    norms = np.linalg.norm(X, axis=1)
+    if np.any(norms == 0):
+        zero = norms == 0
+        if zero.all():
+            return np.zeros(n, dtype=int)          # every proposal identical -> one family
+        labels = np.empty(n, dtype=int)
+        sub = cluster_families(X[~zero], distance_threshold, linkage)
+        labels[~zero] = sub
+        labels[zero] = int(sub.max()) + 1          # all featureless rows share one extra family
+        return labels
     model = AgglomerativeClustering(
         n_clusters=None, distance_threshold=distance_threshold, metric="cosine", linkage=linkage
     )

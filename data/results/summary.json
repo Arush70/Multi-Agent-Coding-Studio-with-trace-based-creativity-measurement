@@ -9,8 +9,12 @@
       "families": 1,
       "families_first10": 1,
       "entropy": -0.0,
-      "mean_novelty": null,
-      "correct_and_novel_rate": null
+      "diversity_scale": "reference",
+      "mean_novelty": 1.8888888888836424,
+      "correct_and_novel_rate": 1.0,
+      "scoring": "tests",
+      "heuristic_score": null,
+      "heuristic_best": null
     },
     {
       "session_id": "t1_mbpp19_test_duplicate-B-1-092dd3",
@@ -21,8 +25,12 @@
       "families": 1,
       "families_first10": 1,
       "entropy": -0.0,
-      "mean_novelty": null,
-      "correct_and_novel_rate": null
+      "diversity_scale": "reference",
+      "mean_novelty": 1.9492804490333324,
+      "correct_and_novel_rate": 1.0,
+      "scoring": "tests",
+      "heuristic_score": null,
+      "heuristic_best": null
     },
     {
       "session_id": "t1_mbpp19_test_duplicate-D_minus-1-fbf21a",
@@ -33,8 +41,44 @@
       "families": 1,
       "families_first10": 1,
       "entropy": -0.0,
+      "diversity_scale": "reference",
+      "mean_novelty": 1.9492804490333324,
+      "correct_and_novel_rate": 1.0,
+      "scoring": "tests",
+      "heuristic_score": null,
+      "heuristic_best": null
+    },
+    {
+      "session_id": "t3_bin_packing-B-1-9efed1",
+      "task_id": "t3_bin_packing",
+      "condition": "B",
+      "n_proposals": 6,
+      "n_correct": 0,
+      "families": 6,
+      "families_first10": 6,
+      "entropy": 2.584962500721156,
+      "diversity_scale": "within-sample",
       "mean_novelty": null,
-      "correct_and_novel_rate": null
+      "correct_and_novel_rate": null,
+      "scoring": "heuristic",
+      "heuristic_score": null,
+      "heuristic_best": null
+    },
+    {
+      "session_id": "t3_bin_packing-B-1-ba6b11",
+      "task_id": "t3_bin_packing",
+      "condition": "B",
+      "n_proposals": 6,
+      "n_correct": 0,
+      "families": 6,
+      "families_first10": 6,
+      "entropy": 2.584962500721156,
+      "diversity_scale": "within-sample",
+      "mean_novelty": null,
+      "correct_and_novel_rate": null,
+      "scoring": "heuristic",
+      "heuristic_score": null,
+      "heuristic_best": null
     }
   ],
   "summary": {
@@ -44,17 +88,21 @@
       "avg_families_first10": 1,
       "avg_entropy": 0.0,
       "avg_correct": 1,
-      "avg_mean_novelty": null,
-      "avg_correct_and_novel": null
+      "avg_mean_novelty": 1.889,
+      "avg_correct_and_novel": 1.0,
+      "avg_heuristic_score": null,
+      "avg_heuristic_best": null
     },
     "B": {
-      "n_sessions": 1,
-      "avg_families": 1,
-      "avg_families_first10": 1,
-      "avg_entropy": 0.0,
-      "avg_correct": 6,
-      "avg_mean_novelty": null,
-      "avg_correct_and_novel": null
+      "n_sessions": 3,
+      "avg_families": 4.333,
+      "avg_families_first10": 4.333,
+      "avg_entropy": 1.723,
+      "avg_correct": 2,
+      "avg_mean_novelty": 1.949,
+      "avg_correct_and_novel": 1.0,
+      "avg_heuristic_score": null,
+      "avg_heuristic_best": null
     },
     "D_minus": {
       "n_sessions": 1,
@@ -62,8 +110,10 @@
       "avg_families_first10": 1,
       "avg_entropy": 0.0,
       "avg_correct": 6,
-      "avg_mean_novelty": null,
-      "avg_correct_and_novel": null
+      "avg_mean_novelty": 1.949,
+      "avg_correct_and_novel": 1.0,
+      "avg_heuristic_score": null,
+      "avg_heuristic_best": null
     }
   }
 }

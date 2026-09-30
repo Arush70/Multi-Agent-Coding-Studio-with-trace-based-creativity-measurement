@@ -16,6 +16,7 @@ from pathlib import Path
 from statistics import mean
 
 import numpy as np
+from sklearn.preprocessing import StandardScaler
 
 from macs.trace.writer import read_trace
 from macs.metrics.represent import ast_features, normalise
@@ -23,6 +24,10 @@ from macs.metrics.diversity import cluster_families, n_families, family_entropy
 from macs.metrics.usefulness import correct_and_novel_rate
 from macs.analysis.score import implementations, task_by_id, score_code_heldout
 
+# Arush - this threshold now applies in the STANDARDISED AST space (see _standardise_for_clustering),
+# not on raw counts. 0.30 is provisional: it gives a sensible family count on the pilot. The frozen
+# value is set by the SC3 calibration (scripts/calibrate_clustering.py -> maximise ARI vs your blind
+# known_families) and recorded in docs/PREREGISTRATION.md before the main runs.
 CLUSTER_THRESHOLD = 0.30
 NOVELTY_PERCENTILE = 0.90
 
@@ -38,23 +43,57 @@ def _embed(codes: list[str]) -> tuple[np.ndarray, list[int]]:
     return (np.vstack(rows) if rows else np.empty((0, 0))), keep
 
 
+def _standardise_for_clustering(X: np.ndarray, reference) -> tuple[np.ndarray, str]:
+    """Put AST features on a common scale BEFORE clustering, so raw counts (n_lines, n_call...)
+    don't dominate the cosine direction and collapse every strategy into one family.
+
+    Arush - this is the fix for the 'families=1' pilot result. Clustering must live in the SAME
+    space as novelty. If the task has a frozen reference set we reuse ITS scaler (the pre-registered
+    path, byte-for-byte the scaling novelty applies); on a pilot with no reference yet we scale the
+    proposals against themselves and flag it, so the number still means something but you know it's
+    not the frozen path. Returns (X_scaled, scale_source).
+    """
+    if reference is not None and getattr(reference, "scaler", None) is not None:
+        return reference.scaler.transform(X), "reference"
+    if len(X) < 2:
+        return X, "none"  # one proposal -> nothing to scale, single family anyway
+    return StandardScaler().fit_transform(X), "within-sample"
+
+
 def session_metrics(path, *, backend="subprocess", reference=None, cluster_threshold=CLUSTER_THRESHOLD) -> dict:
     events = list(read_trace(path))
     start = next(e for e in events if e["event"] == "session_start")
     task = task_by_id(start["task_id"])
     codes = [c for _, c in implementations(events)]
 
-    # --- correctness (held-out) ---
+    # --- correctness / quality ---
+    # Arush - Tier 1/2 are pass/fail on held-out tests ('correct' = passed all). Tier 3 are
+    # metric-scored ('correct' = feasible), and we ALSO keep the heuristic score vs the baseline
+    # (>1 beats it). Both feed the same `correct_flags`, so novelty's correct-and-novel rate works
+    # for either kind.
     correct_flags = []
+    heur_mean = heur_best = None
     if task.scoring == "tests":
         for c in codes:
             correct_flags.append(bool(score_code_heldout(task, c, backend=backend).get("passed_all")))
+    elif task.scoring == "heuristic":
+        from macs.analysis.heuristic_score import score_heuristic_code
+        scores = []
+        for c in codes:
+            r = score_heuristic_code(task, c, backend=backend)
+            correct_flags.append(bool(r["valid"]))
+            if r["valid"] and r["score"] is not None:
+                scores.append(r["score"])
+        if scores:
+            heur_mean = float(np.mean(scores)); heur_best = float(max(scores))
     n_correct = int(sum(correct_flags))
 
     # --- diversity (families among proposals) ---
     X, keep = _embed(codes)
+    scale_source = "none"
     if len(X) >= 1:
-        labels = cluster_families(X, distance_threshold=cluster_threshold)
+        Xc, scale_source = _standardise_for_clustering(X, reference)
+        labels = cluster_families(Xc, distance_threshold=cluster_threshold)
         fams = n_families(labels); ent = family_entropy(labels)
         fams_first10 = n_families(labels[:10])
     else:
@@ -75,7 +114,11 @@ def session_metrics(path, *, backend="subprocess", reference=None, cluster_thres
         "session_id": start["session_id"], "task_id": task.id, "condition": start["condition"],
         "n_proposals": len(codes), "n_correct": n_correct,
         "families": fams, "families_first10": fams_first10, "entropy": ent,
+        "diversity_scale": scale_source,  # 'reference' = frozen path; 'within-sample' = pilot fallback
         "mean_novelty": mean_novelty, "correct_and_novel_rate": cn_rate,
+        "scoring": task.scoring,          # 'tests' or 'heuristic'
+        "heuristic_score": heur_mean,     # Tier 3 only: mean score vs baseline (>1 beats it)
+        "heuristic_best": heur_best,      # Tier 3 only: best proposal's score vs baseline
     }
 
 
@@ -97,18 +140,29 @@ def aggregate_by_condition(session_dicts: list[dict]) -> dict:
             "avg_correct": avg("n_correct"),
             "avg_mean_novelty": avg("mean_novelty"),
             "avg_correct_and_novel": avg("correct_and_novel_rate"),
+            "avg_heuristic_score": avg("heuristic_score"),   # None for pure test conditions
+            "avg_heuristic_best": avg("heuristic_best"),
         }
     return out
 
 
 def analyse_dir(traces_dir="data/traces", *, backend="subprocess", references=None) -> tuple[list[dict], dict]:
-    """Score + aggregate every trace in a directory. `references` maps task_id -> ReferenceStats."""
+    """Score + aggregate every trace in a directory. `references` maps task_id -> ReferenceStats.
+
+    Arush - traces whose task_id is no longer in the current bank (old pilots after you re-sourced
+    the tasks) are skipped with a printed note, not crashed on, so one stale file can't kill the run.
+    """
     refs = references or {}
-    sessions = []
+    sessions, skipped = [], []
     for p in sorted(Path(traces_dir).glob("*.jsonl")):
         start = next((e for e in read_trace(p) if e["event"] == "session_start"), None)
         if not start:
             continue
-        ref = refs.get(start["task_id"])
-        sessions.append(session_metrics(p, backend=backend, reference=ref))
+        try:
+            sessions.append(session_metrics(p, backend=backend, reference=refs.get(start["task_id"])))
+        except KeyError:
+            skipped.append((p.name, start.get("task_id")))
+    if skipped:
+        print(f"[analyse] skipped {len(skipped)} stale trace(s) for unknown tasks: "
+              + ", ".join(sorted({t for _, t in skipped})))
     return sessions, aggregate_by_condition(sessions)
