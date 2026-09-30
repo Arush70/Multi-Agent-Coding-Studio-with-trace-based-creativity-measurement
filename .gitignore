@@ -222,3 +222,10 @@ config/models.yaml
 data/cache/
 data/traces/*.jsonl
 data/reference/*.jsonl
+
+# OS / editor / notebook clutter
+.DS_Store
+Thumbs.db
+.ipynb_checkpoints/
+.idea/
+.vscode/
