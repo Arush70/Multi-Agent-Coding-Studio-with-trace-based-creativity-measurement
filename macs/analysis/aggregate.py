@@ -24,11 +24,16 @@ from macs.metrics.diversity import cluster_families, n_families, family_entropy
 from macs.metrics.usefulness import correct_and_novel_rate
 from macs.analysis.score import implementations, task_by_id, score_code_heldout
 
-# Arush - this threshold now applies in the STANDARDISED AST space (see _standardise_for_clustering),
-# not on raw counts. 0.30 is provisional: it gives a sensible family count on the pilot. The frozen
-# value is set by the SC3 calibration (scripts/calibrate_clustering.py -> maximise ARI vs your blind
-# known_families) and recorded in docs/PREREGISTRATION.md before the main runs.
-CLUSTER_THRESHOLD = 0.30
+# Arush - this threshold is a EUCLIDEAN distance in the WITHIN-SAMPLE standardised AST space
+# (each feature z-scored across a session's own proposals), i.e. "how many per-feature standard
+# deviations apart two solutions must be to count as different families". 3.0 is provisional: on the
+# pilot it separates the distinct strategies (6 of them -> 6 families) while merging identical ones.
+# The frozen value is set by SC3 calibration (scripts/calibrate_clustering.py -> maximise ARI vs your
+# blind known_families) and recorded in docs/PREREGISTRATION.md before the main runs.
+# NOTE: diversity is measured WITHIN the proposal set (within-sample); novelty is measured against the
+# frozen reference. They deliberately use different spaces - a homogeneous reference must not be able
+# to collapse the diversity measure.
+CLUSTER_THRESHOLD = 3.0
 NOVELTY_PERCENTILE = 0.90
 
 
@@ -43,20 +48,19 @@ def _embed(codes: list[str]) -> tuple[np.ndarray, list[int]]:
     return (np.vstack(rows) if rows else np.empty((0, 0))), keep
 
 
-def _standardise_for_clustering(X: np.ndarray, reference) -> tuple[np.ndarray, str]:
+def _standardise_for_clustering(X: np.ndarray) -> tuple[np.ndarray, str]:
     """Put AST features on a common scale BEFORE clustering, so raw counts (n_lines, n_call...)
-    don't dominate the cosine direction and collapse every strategy into one family.
+    don't dominate and collapse every strategy into one family.
 
-    Arush - this is the fix for the 'families=1' pilot result. Clustering must live in the SAME
-    space as novelty. If the task has a frozen reference set we reuse ITS scaler (the pre-registered
-    path, byte-for-byte the scaling novelty applies); on a pilot with no reference yet we scale the
-    proposals against themselves and flag it, so the number still means something but you know it's
-    not the frozen path. Returns (X_scaled, scale_source).
+    Arush - clustering is standardised WITHIN the session's own proposals (not against the reference).
+    An earlier version scaled against the frozen reference to 'share novelty's space', but the local
+    model's reference set is highly homogeneous (2 unique shapes in 30 samples), which flattened the
+    scale and collapsed distinct strategies into one family. Within-sample scaling is the right tool
+    here: diversity is about spread AMONG the proposals, so it should be measured against the proposals'
+    own variation. Novelty still uses the reference (that's a distance TO the reference).
     """
-    if reference is not None and getattr(reference, "scaler", None) is not None:
-        return reference.scaler.transform(X), "reference"
     if len(X) < 2:
-        return X, "none"  # one proposal -> nothing to scale, single family anyway
+        return X, "single"  # one proposal -> single family anyway
     return StandardScaler().fit_transform(X), "within-sample"
 
 
@@ -92,7 +96,7 @@ def session_metrics(path, *, backend="subprocess", reference=None, cluster_thres
     X, keep = _embed(codes)
     scale_source = "none"
     if len(X) >= 1:
-        Xc, scale_source = _standardise_for_clustering(X, reference)
+        Xc, scale_source = _standardise_for_clustering(X)
         labels = cluster_families(Xc, distance_threshold=cluster_threshold)
         fams = n_families(labels); ent = family_entropy(labels)
         fams_first10 = n_families(labels[:10])

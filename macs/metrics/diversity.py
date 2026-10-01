@@ -26,31 +26,36 @@ from sklearn.metrics import adjusted_rand_score
 from sklearn.metrics.pairwise import cosine_distances
 
 
-def cluster_families(X: np.ndarray, distance_threshold: float, linkage: str = "average") -> np.ndarray:
+def cluster_families(X: np.ndarray, distance_threshold: float, linkage: str = "average",
+                     metric: str = "euclidean") -> np.ndarray:
     """Return an integer family label per row. One row -> one family.
 
-    Arush - cosine distance has no meaning for a zero vector (no direction), and after
-    standardisation a proposal that is identical to the reference/sample mean becomes exactly zero
-    (this happens when two proposals have the same AST features, e.g. they differ only by a sign).
-    So we guard: if every row is zero they are all one family; otherwise the zero rows are grouped
-    as their own family and the rest are clustered normally. Without this, sklearn raises on
-    'zero vectors' and a whole session fails to score.
+    Arush - the input is expected to be WITHIN-SAMPLE standardised AST features (each feature
+    z-scored across this session's own proposals; see aggregate._standardise_for_clustering).
+    Euclidean distance there measures how far apart two solutions are in units of per-feature
+    standard deviations: identical solutions sit at distance 0 and merge, genuinely different
+    strategies sit several SDs apart and split. We moved OFF cosine-against-the-reference because
+    a homogeneous reference set (the local model repeats the same 2 solution shapes) made every
+    proposal point the same way and collapsed everything into one family. Identical rows (distance
+    0) merge naturally under euclidean, so no zero-vector special-casing is needed.
     """
     n = len(X)
     if n <= 1:
         return np.zeros(n, dtype=int)
-    norms = np.linalg.norm(X, axis=1)
-    if np.any(norms == 0):
-        zero = norms == 0
-        if zero.all():
-            return np.zeros(n, dtype=int)          # every proposal identical -> one family
-        labels = np.empty(n, dtype=int)
-        sub = cluster_families(X[~zero], distance_threshold, linkage)
-        labels[~zero] = sub
-        labels[zero] = int(sub.max()) + 1          # all featureless rows share one extra family
-        return labels
+    if metric == "cosine":
+        # kept for completeness; guard zero vectors which have no direction under cosine
+        norms = np.linalg.norm(X, axis=1)
+        if np.any(norms == 0):
+            zero = norms == 0
+            if zero.all():
+                return np.zeros(n, dtype=int)
+            labels = np.empty(n, dtype=int)
+            sub = cluster_families(X[~zero], distance_threshold, linkage, metric)
+            labels[~zero] = sub
+            labels[zero] = int(sub.max()) + 1
+            return labels
     model = AgglomerativeClustering(
-        n_clusters=None, distance_threshold=distance_threshold, metric="cosine", linkage=linkage
+        n_clusters=None, distance_threshold=distance_threshold, metric=metric, linkage=linkage
     )
     return model.fit_predict(X)
 
