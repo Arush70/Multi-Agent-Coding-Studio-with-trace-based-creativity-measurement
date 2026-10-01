@@ -40,9 +40,9 @@ from macs.metrics.represent import ast_features, normalise
 from macs.metrics.diversity import cluster_families, validate_against_labels
 
 CALIB_PATH = Path("data/calibration/labels.jsonl")
-REFERENCE_ROOT = Path("data/reference")
-# the grid of thresholds to try, in the standardised AST space (cosine distance)
-THRESHOLD_GRID = [round(t, 3) for t in np.arange(0.05, 0.81, 0.05)]
+# the grid of thresholds to try: euclidean distance in the within-sample standardised AST space
+# (same space macs/analysis/aggregate.py clusters in). Units are per-feature standard deviations.
+THRESHOLD_GRID = [round(t, 2) for t in np.arange(0.5, 6.01, 0.5)]
 
 
 def _make_stub(traces_dir: str) -> None:
@@ -89,15 +89,6 @@ def _load_labels() -> dict[str, list[tuple[str, str]]]:
     return by_task
 
 
-def _scaler_for(task_id: str):
-    """Frozen reference scaler if a reference set exists for this task, else None (within-sample)."""
-    ref = REFERENCE_ROOT / f"{task_id}.jsonl"
-    if not ref.exists():
-        return None
-    from macs.metrics.reference import build_reference_stats
-    return build_reference_stats(task_id).scaler  # AST reference is standardised by default
-
-
 def _feature_matrix(codes: list[str]) -> tuple[np.ndarray, list[int]]:
     rows, keep = [], []
     for i, c in enumerate(codes):
@@ -121,9 +112,8 @@ def calibrate(by_task: dict[str, list[tuple[str, str]]]) -> None:
             print(f"  {task_id}: <2 parseable labelled solutions, skipped")
             continue
         hand = [hand[i] for i in keep]
-        scaler = _scaler_for(task_id)
-        Xs = scaler.transform(X) if scaler is not None else StandardScaler().fit_transform(X)
-        src = "reference" if scaler is not None else "within-sample"
+        Xs = StandardScaler().fit_transform(X)      # within-sample, same as the analysis pipeline
+        src = "within-sample"
         best = (-2.0, None)
         for thr in THRESHOLD_GRID:
             labels = cluster_families(Xs, distance_threshold=thr)

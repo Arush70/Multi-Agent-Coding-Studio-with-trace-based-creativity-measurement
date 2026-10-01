@@ -60,9 +60,12 @@ Two representations are analysed **separately**, never combined: interpretable *
   (already unit-norm). "Novel" = reference percentile ≥ **0.90**.
 - **Diversity** = agglomerative clustering of proposals into *families*, reported four ways
   (families in first 10, rarefaction curve, Shannon entropy, mean pairwise distance).
-  **Clustering runs in the same standardised AST space as novelty** — the frozen reference scaler
-  when the task has a reference set, otherwise within-sample scaling (pilot only, flagged in output).
-  Distance metric: cosine, linkage: average.
+  **Clustering runs in the WITHIN-SAMPLE standardised AST space** (each feature z-scored across the
+  session's own proposals), with **Euclidean** distance and average linkage. Diversity is measured
+  *among* the proposals, so it is standardised against the proposals' own variation — deliberately a
+  *different* space from novelty, which is measured *against the frozen reference*. (An earlier design
+  shared the reference scaler; it was dropped because a homogeneous reference set collapsed distinct
+  strategies into one family.)
 - **Correctness** = pass@k on **held-out** tests (unbiased estimator, Chen et al. 2021). Held-out
   tests never enter any prompt; only the scorer reads them.
 - **Correct-and-novel rate** = fraction of proposals that are both correct and above the novelty
@@ -82,7 +85,7 @@ Two representations are analysed **separately**, never combined: interpretable *
 
 | Quantity                     | Provisional | How it gets frozen |
 |------------------------------|-------------|--------------------|
-| `CLUSTER_THRESHOLD`          | **0.30** (standardised AST space, cosine) | `scripts/calibrate_clustering.py`: sweep the threshold, pick the one maximising mean **ARI** vs blind hand labels (SC3). Freeze the value that meets ARI ≥ 0.60. |
+| `CLUSTER_THRESHOLD`          | **3.0** (Euclidean, within-sample standardised AST space) | `scripts/calibrate_clustering.py`: sweep the threshold, pick the one maximising mean **ARI** vs blind hand labels (SC3). Freeze the value that meets ARI ≥ 0.60. |
 
 **SC3 calibration protocol (run once, blind):**
 1. `python scripts/calibrate_clustering.py --make-stub` → `data/calibration/labels.jsonl`
@@ -101,7 +104,12 @@ and never edited to match results.
 - _2025-…_ — schema frozen (`schema-v0.1.0`); task bank re-sourced to benchmarks (MBPP, HumanEval,
   FunSearch/ReEvo/CO-Bench), every task carries a citation and ≥3 blind `known_families`
   (see `docs/TASK_SOURCES.md`).
-- _2025-…_ — clustering moved into the standardised AST space (was collapsing distinct strategies
-  into one family on raw counts). `CLUSTER_THRESHOLD` remains provisional at 0.30 pending SC3.
+- _2026-09-30_ — clustering moved into the standardised AST space (was collapsing distinct strategies
+  into one family on raw counts).
+- _2026-10-01_ — on the first real pilot the reference-scaled cosine clustering still collapsed to one
+  family (the local model's reference set has only 2 unique shapes in 30 samples). Switched diversity
+  clustering to **within-sample standardisation + Euclidean distance**, decoupled from the reference;
+  this gives the five pilot strategies → 6 families for both B and D_minus. `CLUSTER_THRESHOLD`
+  provisional at 3.0 pending SC3.
 - _…_ — **[fill after SC3]** `CLUSTER_THRESHOLD` frozen at __ (mean ARI __; N labelled proposals
   over __ tasks). Table:
