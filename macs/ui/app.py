@@ -154,11 +154,18 @@ def score_all(backend: str = "subprocess") -> tuple[list[dict], dict]:
 
 
 def studio_vs_tutor(summary: dict) -> dict:
-    """Average families for studio vs tutor conditions - the one-line headline."""
+    """Average families for studio vs tutor conditions - the one-line headline.
+
+    Arush - 2026-10-09: uses families at a MATCHED number of solutions per task
+    ('avg_families_matched', docs/DEV_LOG.md) when available. The per-session count is capped at
+    1 for a tutor by construction, so it is only a fallback for old summary files.
+    """
     def avg(group, key):
         vals = [summary[c][key] for c in group if c in summary and summary[c].get(key) is not None]
         return round(sum(vals) / len(vals), 2) if vals else None
-    return {"studio_families": avg(STUDIO, "avg_families"), "tutor_families": avg(TUTOR, "avg_families")}
+    key = "avg_families_matched" if any(summary.get(c, {}).get("avg_families_matched") is not None
+                                        for c in CONDITIONS) else "avg_families"
+    return {"studio_families": avg(STUDIO, key), "tutor_families": avg(TUTOR, key), "matched": key != "avg_families"}
 
 
 def run_session(task_dir: str, condition: str, seed: int, backend: str = "subprocess") -> subprocess.CompletedProcess:
@@ -204,8 +211,10 @@ def main() -> None:  # pragma: no cover - layout isn't unit-tested
                 c2.metric("Tutor - avg families", sv["tutor_families"])
                 ratio = round(sv["studio_families"] / sv["tutor_families"], 1) if sv["tutor_families"] else "-"
                 c3.metric("Studio explores", f"{ratio}× more approaches")
-                st.success(f"The studio produced **{sv['studio_families']}** solution families on average "
-                           f"vs **{sv['tutor_families']}** for the tutor - the core prediction of the project.")
+                basis = ("at the same number of solutions per task" if sv.get("matched")
+                         else "per session (not size-matched: a tutor session has only one solution)")
+                st.info(f"Studio: **{sv['studio_families']}** solution families on average vs "
+                        f"**{sv['tutor_families']}** for the tutor, {basis}.")
 
             # per-condition cards
             st.markdown("##### Per condition")
@@ -215,12 +224,12 @@ def main() -> None:  # pragma: no cover - layout isn't unit-tested
                 tag = "🎓 Tutor" if cond in TUTOR else "🧪 Studio"
                 col.markdown(f"**{cond}** · {tag}")
                 col.caption(COND_DESC[cond])
-                col.metric("Families", m.get("avg_families"))
+                col.metric("Families (matched)", m.get("avg_families_matched", m.get("avg_families")))
                 col.metric("Novelty (z)", m.get("avg_mean_novelty"))
                 col.metric("Correct & novel", m.get("avg_correct_and_novel"))
 
             # charts
-            rows = [{"Condition": c, "Families": summary[c].get("avg_families"),
+            rows = [{"Condition": c, "Families": summary[c].get("avg_families_matched", summary[c].get("avg_families")),
                      "Correct&Novel": summary[c].get("avg_correct_and_novel"),
                      "Novelty": summary[c].get("avg_mean_novelty")}
                     for c in CONDITIONS if c in summary]
@@ -229,7 +238,8 @@ def main() -> None:  # pragma: no cover - layout isn't unit-tested
             with cc1:
                 st.markdown("**Solution families by condition**")
                 st.bar_chart(df["Families"].dropna(), height=260)
-                st.caption("The live creativity signal: tutors ≈1, studios ≈6.")
+                st.caption("Families per condition, counted at the same number of solutions per task "
+                           "(all conditions clustered together), so tutor and studio are compared fairly.")
             with cc2:
                 st.markdown("**Creativity score (correct & novel)**")
                 st.bar_chart(df["Correct&Novel"].dropna(), height=260)
@@ -237,21 +247,24 @@ def main() -> None:  # pragma: no cover - layout isn't unit-tested
 
             with st.expander("How to read this (important on the current pilot)"):
                 st.markdown(
-                    "- **Families is the clearest signal right now**: tutor conditions produce 1, studio "
-                    "conditions produce ~6.\n"
+                    "- **Families** are counted at the same number of solutions for every condition on a "
+                    "task, so a tutor (one solution per session) is compared fairly with a studio (several). "
+                    "Run several seeds per condition so tutors have more than one solution.\n"
                     "- **Novelty and 'correct & novel' are saturated** (≈1.0 everywhere) on this pilot because "
                     "the local model's reference set is very homogeneous - only ~2 distinct shapes - so almost "
                     "everything looks novel next to it. They become discriminating with a richer reference set "
                     "and harder tasks.\n"
-                    "- **D vs D_minus** are tied here because this task is easy enough that the studio already "
-                    "spans the space without the Facilitator; its effect shows on harder tasks.")
+                    "- **D vs D_minus** differ only in the Facilitator; the Interventions column in "
+                    "`scripts/analyze.py` shows how often it fired.")
             st.dataframe(
                 pd.DataFrame([{"Condition": c, "Setup": COND_DESC[c], "Sessions": summary[c]["n_sessions"],
-                               "Families": summary[c].get("avg_families"),
+                               "Families (matched)": summary[c].get("avg_families_matched"),
+                               "Families/session": summary[c].get("avg_families"),
                                "Novelty(z)": summary[c].get("avg_mean_novelty"),
                                "Correct": summary[c].get("avg_correct"),
                                "Correct&Novel": summary[c].get("avg_correct_and_novel"),
-                               "Heuristic": summary[c].get("avg_heuristic_score")}
+                               "Heuristic": summary[c].get("avg_heuristic_score"),
+                               "Tokens": summary[c].get("avg_tokens")}
                               for c in CONDITIONS if c in summary]),
                 hide_index=True, use_container_width=True)
 

@@ -20,7 +20,7 @@ from sklearn.preprocessing import StandardScaler
 
 from macs.trace.writer import read_trace
 from macs.metrics.represent import ast_features, normalise
-from macs.metrics.diversity import cluster_families, n_families, family_entropy
+from macs.metrics.diversity import cluster_families, n_families, family_entropy, rarefaction
 from macs.metrics.usefulness import correct_and_novel_rate
 from macs.analysis.score import implementations, task_by_id, score_code_heldout
 
@@ -114,8 +114,17 @@ def session_metrics(path, *, backend="subprocess", reference=None, cluster_thres
         corr_kept = np.array([correct_flags[i] for i in keep]) if correct_flags else np.zeros(len(keep), bool)
         cn_rate = correct_and_novel_rate(corr_kept, is_novel)
 
+    # --- cost (proposal: token counts reported with every contrast) ---
+    tokens = sum(int(e.get("prompt_tokens", 0) or 0) + int(e.get("completion_tokens", 0) or 0) for e in events)
+    end = next((e for e in events if e["event"] == "session_end"), {})
+    header = start.get("header", {})
+
     return {
         "session_id": start["session_id"], "task_id": task.id, "condition": start["condition"],
+        "seed": header.get("seed"), "orchestrator_version": header.get("orchestrator_version", "0.1.0"),
+        "tokens": tokens, "stopped_by_token_ceiling": str(end.get("content", "")).startswith("stopped"),
+        "n_interventions": sum(1 for e in events if e["event"] == "intervention"),
+        "n_revisions": sum(1 for e in events if e["event"] == "revision"),
         "n_proposals": len(codes), "n_correct": n_correct,
         "families": fams, "families_first10": fams_first10, "entropy": ent,
         "diversity_scale": scale_source,  # 'reference' = frozen path; 'within-sample' = pilot fallback
@@ -146,27 +155,115 @@ def aggregate_by_condition(session_dicts: list[dict]) -> dict:
             "avg_correct_and_novel": avg("correct_and_novel_rate"),
             "avg_heuristic_score": avg("heuristic_score"),   # None for pure test conditions
             "avg_heuristic_best": avg("heuristic_best"),
+            "avg_tokens": avg("tokens"),
+            "avg_interventions": avg("n_interventions"),
+            "n_stopped_by_token_ceiling": sum(1 for r in rows if r.get("stopped_by_token_ceiling")),
         }
     return out
 
 
-def analyse_dir(traces_dir="data/traces", *, backend="subprocess", references=None) -> tuple[list[dict], dict]:
+def pooled_diversity(codes_by_task_cond: dict[tuple[str, str], list[str]], *,
+                     cluster_threshold=CLUSTER_THRESHOLD, seed: int = 0) -> dict:
+    """Families per condition at a MATCHED number of solutions, per task.
+
+    Arush - added 2026-10-07 (docs/DEV_LOG.md). The per-session 'families' column cannot compare
+    tutor and studio: a tutor session writes 1 program (so it can only ever be 1 family) and a
+    studio session writes 6. That makes "1 vs 6" true by construction, not a finding. Here, for
+    each task, ALL solutions from ALL conditions and repetitions are put in one common
+    standardised AST space, clustered once, and each condition's family count is read off its
+    rarefaction curve at the SAME number of solutions m (the smallest condition's count for that
+    task). Equal m, common space, so the comparison is fair. Repetitions (seeds) are what give the
+    tutor conditions more than one solution.
+    """
+    by_task: dict[str, dict[str, list[str]]] = defaultdict(dict)
+    for (task_id, cond), codes in codes_by_task_cond.items():
+        by_task[task_id][cond] = codes
+    rng = np.random.default_rng(seed)
+    per_task: dict[str, dict] = {}
+    for task_id, conds in sorted(by_task.items()):
+        rows, owner = [], []
+        for cond, codes in sorted(conds.items()):
+            for c in codes:
+                try:
+                    rows.append(ast_features(normalise(c))); owner.append(cond)
+                except Exception:  # noqa: BLE001 - unparseable code has no features
+                    pass
+        if not rows:
+            continue
+        X = np.vstack(rows)
+        Xc = StandardScaler().fit_transform(X) if len(X) >= 2 else X
+        labels = cluster_families(Xc, distance_threshold=cluster_threshold)
+        owner = np.array(owner)
+        counts = {c: int((owner == c).sum()) for c in sorted(set(owner))}
+        m = min(counts.values())
+        out = {"m": m, "n_by_condition": counts, "families_at_m": {}, "families_total": {}}
+        for c in counts:
+            lab = labels[owner == c]
+            curve = rarefaction(lab, rng)
+            out["families_at_m"][c] = round(float(curve[m - 1]), 3)
+            out["families_total"][c] = n_families(lab)
+        per_task[task_id] = out
+    by_cond = defaultdict(list)
+    for t in per_task.values():
+        for c, v in t["families_at_m"].items():
+            by_cond[c].append(v)
+    summary = {c: {"n_tasks": len(v), "avg_families_at_matched_m": round(mean(v), 3)} for c, v in sorted(by_cond.items())}
+    return {"per_task": per_task, "by_condition": summary}
+
+
+def _version_tuple(v: str) -> tuple[int, ...]:
+    try:
+        return tuple(int(x) for x in str(v).split("."))
+    except ValueError:
+        return (0,)
+
+
+def analyse_dir(traces_dir="data/traces", *, backend="subprocess", references=None, return_pooled=False,
+                include_legacy=False):
     """Score + aggregate every trace in a directory. `references` maps task_id -> ReferenceStats.
 
     Arush - traces whose task_id is no longer in the current bank (old pilots after you re-sourced
     the tasks) are skipped with a printed note, not crashed on, so one stale file can't kill the run.
     """
+    from macs.orchestrator import ORCHESTRATOR_VERSION
     refs = references or {}
-    sessions, skipped = [], []
+    sessions, skipped, legacy, incomplete = [], [], [], []
+    pooled_codes: dict[tuple[str, str], list[str]] = defaultdict(list)
     for p in sorted(Path(traces_dir).glob("*.jsonl")):
-        start = next((e for e in read_trace(p) if e["event"] == "session_start"), None)
+        events = list(read_trace(p))
+        start = next((e for e in events if e["event"] == "session_start"), None)
         if not start:
+            continue
+        # Arush - traces written by an older orchestrator (before the 2026-10-07/09 fixes) are not
+        # comparable with new ones, so they are left out unless asked for (docs/DEV_LOG.md).
+        version = start.get("header", {}).get("orchestrator_version", "0.1.0")
+        if not include_legacy and _version_tuple(version) < _version_tuple(ORCHESTRATOR_VERSION):
+            legacy.append(p.name)
+            continue
+        end = events[-1] if events and events[-1].get("event") == "session_end" else {}
+        if not include_legacy and not str(end.get("content", "")).startswith(("completed", "stopped")):
+            incomplete.append(p.name)       # crashed mid-session (e.g. model server down)
             continue
         try:
             sessions.append(session_metrics(p, backend=backend, reference=refs.get(start["task_id"])))
         except KeyError:
             skipped.append((p.name, start.get("task_id")))
+            continue
+        pooled_codes[(start["task_id"], start["condition"])].extend(c for _, c in implementations(events))
     if skipped:
         print(f"[analyse] skipped {len(skipped)} stale trace(s) for unknown tasks: "
               + ", ".join(sorted({t for _, t in skipped})))
-    return sessions, aggregate_by_condition(sessions)
+    if incomplete:
+        print(f"[analyse] skipped {len(incomplete)} incomplete trace(s) (session crashed): "
+              + ", ".join(incomplete[:5]) + (" ..." if len(incomplete) > 5 else ""))
+    if legacy:
+        print(f"[analyse] skipped {len(legacy)} trace(s) from an older orchestrator "
+              f"(< {ORCHESTRATOR_VERSION}); use --include-old to keep them")
+    summary = aggregate_by_condition(sessions)
+    pooled = pooled_diversity(pooled_codes)
+    for cond, v in pooled["by_condition"].items():
+        if cond in summary:
+            summary[cond]["avg_families_matched"] = v["avg_families_at_matched_m"]
+    if return_pooled:
+        return sessions, summary, pooled
+    return sessions, summary

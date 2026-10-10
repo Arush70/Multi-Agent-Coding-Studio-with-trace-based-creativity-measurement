@@ -50,3 +50,48 @@ def test_build_stats_gives_working_yardstick(tmp_path):
 def test_missing_reference_raises(tmp_path):
     with pytest.raises(FileNotFoundError):
         load_reference_solutions("does_not_exist", root=tmp_path)
+
+
+# --- added 2026-10-09 (docs/DEV_LOG.md): 100-sample references, top-up, first-n rule ---------
+
+def test_analysis_uses_first_n_by_seed(tmp_path):
+    import json
+    from macs.metrics.reference import load_reference_solutions
+    root = tmp_path; p = root / "t_n.jsonl"
+    rows = [{"seed": 100_000 + i, "code": f"def f(a):\n    return {i}\n"} for i in (3, 0, 2, 1)]
+    p.write_text("".join(json.dumps(r) + "\n" for r in rows))
+    assert load_reference_solutions("t_n", root=root, n=2) == ["def f(a):\n    return 0\n", "def f(a):\n    return 1\n"]
+    assert len(load_reference_solutions("t_n", root=root, n=None)) == 4
+
+
+def test_build_reference_tops_up_without_rewriting(tmp_path):
+    import importlib.util, json, sys
+    from pathlib import Path
+    from macs.tasks.bank import load_task, TASKS_ROOT
+    spec = importlib.util.spec_from_file_location("build_reference", Path(__file__).parents[1] / "scripts" / "build_reference.py")
+    br = importlib.util.module_from_spec(spec); spec.loader.exec_module(br)
+
+    class C:
+        text: str
+        def __init__(self, t): self.text = t; self.prompt_tokens = 1; self.completion_tokens = 1
+    class Prof:
+        model = "fake"; revision = "0"
+    class Client:
+        profile = Prof()
+        def __init__(self): self.seeds = []
+        def chat(self, messages, *, temperature=0.7, seed=None, **kw):
+            self.seeds.append(seed)
+            return C(f"```python\ndef test_duplicate(a):\n    return len(a) != len(set(a))  # {seed}\n```")
+
+    task = load_task(TASKS_ROOT / "tier1" / "t1_mbpp19_test_duplicate")
+    path = tmp_path / f"{task.id}.jsonl"
+    c = Client()
+    assert br.build_task_reference(task, c, n=3, path=path, log=lambda *a: None) == 3
+    first = path.read_text()
+    path.write_text(first + '{"task_id": "x", "seed": 1000')      # simulate an interrupted run
+    c2 = Client()
+    assert br.build_task_reference(task, c2, n=5, path=path, log=lambda *a: None) == 2
+    assert c2.seeds == [br.REF_SEED_BASE + 3, br.REF_SEED_BASE + 4]  # only the missing seeds
+    assert path.read_text().startswith(first)                       # existing samples untouched
+    assert [json.loads(l)["seed"] for l in path.read_text().splitlines()] == [br.REF_SEED_BASE + i for i in range(5)]
+    assert br.build_task_reference(task, Client(), n=5, path=path, log=lambda *a: None) == 0

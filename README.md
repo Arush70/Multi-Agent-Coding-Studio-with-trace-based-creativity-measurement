@@ -37,6 +37,32 @@ Local development uses [Ollama](https://ollama.com) with an 8B Qwen coder checkp
 experiment uses a 14B-class Apache-2.0 checkpoint on free cloud GPU quota. Both are reached
 through the same OpenAI-compatible interface; only `config/models.yaml` changes.
 
+## Workflow
+
+Ollama must be running (`ollama serve`). Every step can be stopped and re-run; it continues where
+it stopped.
+
+```
+# 1. reference sets: 100 ordinary solutions per task (novelty + Facilitator threshold)
+python scripts/build_reference.py --tasks all --n 100
+
+# 2. sessions: tasks x conditions x seeds (proposal: 6 seeds per cell)
+python scripts/run_experiment.py --tasks all --seeds 1-6 --dry-run     # check the plan
+python scripts/run_experiment.py --tasks all --seeds 1-6               # --sandbox docker for reported numbers
+
+# 3. results table (also saved to data/results/summary.json for the dashboard)
+python scripts/analyze.py
+
+# optional: reference-size sensitivity (build --n 200 on some tasks first)
+python scripts/reference_sensitivity.py
+
+# dashboard
+streamlit run macs/ui/app.py
+```
+
+Traces from older versions of the session code are skipped by the analysis
+(`--include-old` keeps them). Changes and open decisions are logged in `docs/DEV_LOG.md`.
+
 ## Licence
 
 Code: MIT. Data and traces: CC-BY 4.0.

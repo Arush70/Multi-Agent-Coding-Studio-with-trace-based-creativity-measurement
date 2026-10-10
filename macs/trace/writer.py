@@ -65,6 +65,9 @@ class TraceWriter:
         # If the caller forgot the schema version, stamp the current one so every
         # header is complete.
         self._header.setdefault("schema_version", SCHEMA_VERSION)
+        # Optional text for the session_end event (e.g. why the session stopped, tokens used).
+        # Set it any time before the 'with' block exits.
+        self.end_note: str | None = None
 
     def __enter__(self) -> "TraceWriter":
         self._fh = self.path.open("a", encoding="utf-8")
@@ -72,7 +75,7 @@ class TraceWriter:
         return self
 
     def __exit__(self, *exc) -> None:
-        self.log("system", "session_end")
+        self.log("system", "session_end", content=self.end_note)
         if self._fh:
             self._fh.close()
 

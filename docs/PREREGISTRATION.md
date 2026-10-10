@@ -111,5 +111,22 @@ and never edited to match results.
   clustering to **within-sample standardisation + Euclidean distance**, decoupled from the reference;
   this gives the five pilot strategies → 6 families for both B and D_minus. `CLUSTER_THRESHOLD`
   provisional at 3.0 pending SC3.
+- _2026-10-07_ — **τ rule clarified (amendment).** τ is computed in the same space the Facilitator
+  measures in (cosine distance on raw AST features); it was previously read off the reference's
+  standardised features, a different space. If the reference is degenerate (τ = 0, e.g. mostly
+  duplicate solutions), the documented default τ = 0.05 is used. This applies the "non-degenerate
+  firing rate" check already required by the proposal. Each studio trace header records `tau` and
+  `tau_source`. No results had been analysed under the main design when this was changed. Also
+  added: diversity compared at a matched number of solutions per task (all conditions clustered in
+  one common space), reported alongside the per-session family count. Details: `docs/DEV_LOG.md`.
+- _2026-10-09_ — **Session procedure brought in line with the proposal (amendment, before any
+  main-run results).** (i) Facilitator window = the last three *proposals* (was: three distances,
+  i.e. four proposals); τ rule unchanged. (ii) Selection: the Critic chooses one of the K = 5
+  proposals (fallback: most public tests passed); critique-revision runs 1–3 rounds on it, stopping
+  when a revision passes all public tests. (iii) Token ceiling of 40,000 per session enforced for
+  every condition; tokens per session recorded. (iv) Reference sets: 100 per task, analysis uses
+  the first 100 by seed; sensitivity at 50 and 200 via `scripts/reference_sensitivity.py`.
+  (v) Facilitator instructions name the shared construct / approach. Orchestrator version 0.2.0,
+  role prompts 0.2.0. Details: `docs/DEV_LOG.md`.
 - _…_ — **[fill after SC3]** `CLUSTER_THRESHOLD` frozen at __ (mean ARI __; N labelled proposals
   over __ tasks). Table:
