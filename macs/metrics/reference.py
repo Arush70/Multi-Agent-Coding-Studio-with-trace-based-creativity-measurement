@@ -18,10 +18,15 @@ from macs.metrics.represent import ast_feature_matrix, normalise
 from macs.metrics.novelty import ReferenceStats, K_DEFAULT
 
 REFERENCE_ROOT = Path("data/reference")
+# Proposal: 100 reference solutions per task, with sensitivity checked at 50 and 200. The analysis
+# always uses the FIRST REFERENCE_N samples (by seed order), so building 200 for the sensitivity
+# check never changes the main result. Fewer than this -> still usable, but flagged.
+REFERENCE_N = 100
 
 
-def load_reference_solutions(task_id: str, root: str | Path = REFERENCE_ROOT) -> list[str]:
-    """Return the code strings saved for this task (one per reference sample)."""
+def load_reference_solutions(task_id: str, root: str | Path = REFERENCE_ROOT, n: int | None = REFERENCE_N) -> list[str]:
+    """Return the code strings saved for this task (one per reference sample), the first `n`
+    by seed order (n=None -> all of them)."""
     path = Path(root) / f"{task_id}.jsonl"
     if not path.exists():
         raise FileNotFoundError(f"no reference set for {task_id}: run scripts/build_reference.py first ({path})")
@@ -33,8 +38,10 @@ def load_reference_solutions(task_id: str, root: str | Path = REFERENCE_ROOT) ->
         rec = json.loads(line)
         code = rec.get("code")
         if code:
-            sources.append(code)
-    return sources
+            sources.append((rec.get("seed", 0), code))
+    sources.sort(key=lambda t: t[0])          # seed order, so 'first n' is reproducible
+    codes = [c for _, c in sources]
+    return codes if n is None else codes[:n]
 
 
 def _represent(sources: list[str], representation: str) -> np.ndarray:
@@ -63,6 +70,7 @@ def build_reference_stats(
     k: int = K_DEFAULT,
     root: str | Path = REFERENCE_ROOT,
     standardise: bool | None = None,
+    n: int | None = REFERENCE_N,
 ) -> ReferenceStats:
     """Load a task's reference solutions and return a fitted, frozen novelty yardstick.
 
@@ -71,5 +79,5 @@ def build_reference_stats(
     """
     if standardise is None:
         standardise = representation == "ast"
-    X_ref = _represent(load_reference_solutions(task_id, root), representation)
+    X_ref = _represent(load_reference_solutions(task_id, root, n=n), representation)
     return ReferenceStats.fit(X_ref, k=k, standardise=standardise)
