@@ -1,8 +1,8 @@
 """Tests for the task loader and the provenance of the task bank.
 
-Arush - the key guarantees here: (1) held-out tests never leak into what an agent sees,
-for EVERY task; (2) every task carries a real source citation (your professor's requirement);
-(3) every task admits at least three strategy families so novelty has something to detect.
+Guarantees: (1) held-out tests never leak into what an agent sees, for every task; (2) every task
+carries a source citation; (3) every task admits at least three strategy families, so novelty has
+something to detect.
 """
 from __future__ import annotations
 from macs.tasks.bank import load_task, load_bank, TASKS_ROOT
@@ -19,7 +19,7 @@ def test_loads_and_has_expected_fields():
 
 
 def test_every_task_has_a_citation():
-    # Provenance: the professor asked that every problem trace to a paper/benchmark.
+    # Provenance: every problem must trace to a published paper or benchmark.
     for t in load_bank():
         assert t.citation, f"{t.id} has no citation"
 

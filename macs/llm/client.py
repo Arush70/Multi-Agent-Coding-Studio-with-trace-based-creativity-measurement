@@ -1,19 +1,16 @@
 """OpenAI-compatible chat client with content-addressed caching.
 
-Arush - this is the single door every model call in your project goes through.
-Two things make it worth having instead of calling the API directly:
+Every model call goes through this client, for two reasons:
 
-  1. Caching. Every call is saved to disk under a hash of exactly what was asked
-     (model, revision, messages, temperature, seed, max_tokens). Ask the same
-     thing again and you get the saved answer for free - no GPU, no waiting. This
-     is what lets you re-run your whole analysis a hundred times while writing the
-     report without paying for a single extra generation, and it is what makes
-     "reproducible" true rather than aspirational.
+  1. Caching. Every call is saved to disk under a hash of exactly what was asked (model,
+     revision, messages, temperature, seed, max_tokens). Repeating a request returns the
+     saved answer without a model call, so analyses can be re-run at no cost and runs are
+     reproducible.
 
-  2. One interface for every backend. Ollama now, a Kaggle GPU later, DeepSeek's
-     API for the frontier check - all speak this same protocol. Swapping between
-     them is a change to config/models.yaml, never a change to your code. That is
-     why nothing above this file ever imports 'requests' or knows a URL.
+  2. One interface for every backend. A local Ollama server, a hosted GPU, or an API such as
+     DeepSeek's all speak the same protocol; switching between them is a change to
+     config/models.yaml, not to the code. Nothing above this module imports 'requests' or
+     knows a URL.
 """
 from __future__ import annotations
 
@@ -29,9 +26,8 @@ from typing import Any
 import requests
 import yaml
 
-# Matches ${NAME} in the config so an API key can live in an environment variable
-# instead of in the file. This is the mechanism that keeps your DeepSeek key off
-# GitHub: models.yaml says ${DEEPSEEK_API_KEY}, never the key itself.
+# Matches ${NAME} in the config so an API key can live in an environment variable instead
+# of in the file: models.yaml says ${DEEPSEEK_API_KEY}, never the key itself.
 _ENV_RE = re.compile(r"\$\{(\w+)\}")
 
 
@@ -54,11 +50,8 @@ class ModelProfile:
 
     @property
     def identity(self) -> dict[str, Any]:
-        # This dict is stamped into the header of every session trace. When a marker
-        # or your future self asks "which model produced this result?", the answer is
-        # here - including the revision hash you pinned (dae161e27b0e for your local
-        # Qwen). Without this, your traces would be un-reproducible and that costs you
-        # marks under the Rigour criterion.
+        # Stamped into the header of every session trace, so each result records exactly
+        # which model, pinned revision, quantisation and temperature produced it.
         return {
             "profile": self.name,
             "model": self.model,
@@ -99,10 +92,9 @@ class LLMClient:
         return cls(prof, cache_dir=cfg.get("cache_dir", "data/cache"), seed=int(cfg.get("seed", 0)))
 
     def request_hash(self, messages: list[dict[str, str]], temperature: float, max_tokens: int, seed: int) -> str:
-        # The cache key. Note revision is inside it: if you ever change the model
-        # version, every hash changes and nothing stale is silently reused. That is
-        # deliberate - a cache that ignored the model version would quietly mix
-        # results from two different models and ruin an experiment.
+        # The cache key. The revision is part of it, so changing the model version changes
+        # every hash and no stale response is reused; a cache that ignored the version would
+        # silently mix results from two different models.
         payload = {
             "model": self.profile.model,
             "revision": self.profile.revision,
@@ -135,8 +127,7 @@ class LLMClient:
         h = self.request_hash(messages, temperature, max_tokens, seed)
         path = self._cache_path(h)
 
-        # Cache hit: return immediately, cached=True, no network. This branch is what
-        # your reruns spend 99% of their time in once an experiment has been run once.
+        # Cache hit: return immediately, cached=True, no network call.
         if use_cache and path.exists():
             data = json.loads(path.read_text())
             return Completion(
@@ -159,9 +150,9 @@ class LLMClient:
         headers = {"Authorization": f"Bearer {self.profile.api_key}", "Content-Type": "application/json"}
         url = self.profile.base_url.rstrip("/") + "/chat/completions"
 
-        # Retries with backoff (1s, 2s, 4s). A local Ollama rarely needs this, but a
-        # Kaggle server under load or a flaky network will drop the occasional call,
-        # and you do not want a 12-hour reference run to die on one hiccup.
+        # Retries with backoff (1s, 2s, 4s). A local server rarely needs this, but a remote
+        # server under load or a flaky network can drop the occasional call, and a long
+        # reference run should not fail on one transient error.
         last_err: Exception | None = None
         for attempt in range(retries):
             t0 = time.time()
@@ -187,9 +178,9 @@ class LLMClient:
             latency_s=time.time() - t0,
             raw=raw,
         )
-        # Write the cache entry. We store the full raw response and the exact request
-        # too, not just the text - if a reviewer ever questions a number, you can show
-        # precisely what the model was asked and what it returned, byte for byte.
+        # Write the cache entry. The full raw response and the exact request are stored,
+        # not just the text, so any result can be traced to precisely what the model was
+        # asked and what it returned.
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(json.dumps({
             "text": comp.text,
@@ -203,9 +194,7 @@ class LLMClient:
 
 
 def prompt_hash(text: str) -> str:
-    # Every role prompt (Innovator, Critic, ...) gets hashed and the hash goes in the
-    # session header. If you tweak a prompt mid-project, the hash changes and your
-    # traces show exactly which sessions used which wording. This is how you avoid the
-    # classic disaster of "I changed the prompt halfway and can no longer tell which
-    # results are which".
+    # Every role prompt (Innovator, Critic, ...) is hashed and the hash goes in the session
+    # header, so a prompt change is visible in the traces and each session records exactly
+    # which wording it used.
     return hashlib.sha256(text.encode()).hexdigest()[:16]

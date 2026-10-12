@@ -1,8 +1,8 @@
 """Tier 3 heuristic scoring: metric vs baseline, feasibility, and the analysis integration.
 
-Arush - checks the part that gives your hard/open problems real numbers: the baseline scores
-exactly 1.0 against itself (sanity), an infeasible heuristic scores 0 (not a crash), and a Tier 3
-session flows through session_metrics with a heuristic score attached. No model is used.
+The baseline scores exactly 1.0 against itself, an infeasible heuristic scores 0 (not a crash),
+and a Tier 3 session flows through session_metrics with a heuristic score attached. No model
+is used.
 """
 from __future__ import annotations
 import sys

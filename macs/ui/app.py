@@ -1,19 +1,20 @@
-"""MACS dashboard - run sessions, read traces, and SEE the creativity measurement.
+"""MACS dashboard: run sessions, read traces, and see the creativity measurement.
 
-Arush - this is the visual front end for your project, rebuilt to actually explain itself. Tabs:
-  * Overview   - the headline Studio-vs-Tutor comparison, as metric cards + charts, with a plain
-                 'what this means' for every number.
-  * Creativity - how creativity is measured and how to read it: diversity, novelty, correctness, and
-                 the joint 'correct & novel' score, each defined with direction and a worked note.
-  * Traces     - open any session: the strategies it proposed, each proposal's CODE, whether it
+Tabs:
+  * Overview   - the Studio-vs-Tutor comparison as metric cards and charts, with a plain
+                 explanation of every number. Families are compared at a matched number of
+                 solutions per task.
+  * Creativity - how creativity is measured: diversity, novelty, correctness and the joint
+                 correct-and-novel rate, each defined with its direction.
+  * Traces     - open any session: the strategies proposed, each proposal's code, whether it
                  passed, how novel it is, and any Facilitator interventions.
-  * Run        - start sessions without the terminal: one condition, or all five at once; pick the
-                 task and sandbox backend. Needs Ollama running.
+  * Run        - start sessions without the terminal: one condition or all five, for a chosen
+                 task and sandbox backend. Needs the model server running.
 
-Run it with:   streamlit run macs/ui/app.py
+Run with:   streamlit run macs/ui/app.py
 
-Data-loading logic is kept in plain functions (top of file) so it can be tested without Streamlit;
-only the layout imports `st`.
+Data-loading logic is kept in plain functions (top of file) so it can be tested without
+Streamlit; only the layout imports `st`.
 """
 from __future__ import annotations
 
@@ -131,8 +132,7 @@ def proposal_table(path: Path, backend: str = "subprocess") -> list[dict]:
             X = ast_features(normalise(code)).reshape(1, -1)
             row["novelty_z"] = round(float(ref.novelty(X)[0]), 2)
             row["novel"] = bool(ref.percentile(X)[0] >= NOVELTY_PERCENTILE)
-        # Arush - ONE combined creativity flag: a proposal is 'creative' only when it is BOTH novel AND
-        # correct. This is how the two separate columns (novelty, correctness) become a single answer.
+        # a proposal is 'creative' only when it is both novel and correct
         row["creative"] = bool(row.get("correct") and row.get("novel"))
         rows.append(row)
     return rows
@@ -156,9 +156,9 @@ def score_all(backend: str = "subprocess") -> tuple[list[dict], dict]:
 def studio_vs_tutor(summary: dict) -> dict:
     """Average families for studio vs tutor conditions - the one-line headline.
 
-    Arush - 2026-10-09: uses families at a MATCHED number of solutions per task
-    ('avg_families_matched', docs/DEV_LOG.md) when available. The per-session count is capped at
-    1 for a tutor by construction, so it is only a fallback for old summary files.
+    Uses families at a matched number of solutions per task ('avg_families_matched') when
+    available. The per-session count is capped at 1 for a tutor by construction, so it is only a
+    fallback for old summary files.
     """
     def avg(group, key):
         vals = [summary[c][key] for c in group if c in summary and summary[c].get(key) is not None]

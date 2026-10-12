@@ -1,8 +1,7 @@
-"""Score finished traces on the HELD-OUT tests.
+"""Score finished traces on the held-out tests.
 
-Arush - this is the step that decides 'is it correct?', and it runs AFTER the sessions, over
-the saved traces - never during a session. That separation is deliberate: held-out tests live
-only here and in the scorer, so they can never have reached a prompt. Only the scorer calls
+Scoring runs after the sessions, over the saved traces, never during a session. Held-out tests
+live only in the scorer, so they can never have reached a prompt. Only the scorer calls
 task.heldout_tests().
 """
 from __future__ import annotations

@@ -1,13 +1,13 @@
 """Turn traces into the study's numbers: per-session metrics, aggregated by condition.
 
-Arush - this is where a pile of trace files becomes your results table. For each session it
-computes the three things your project measures:
-  * diversity  - how many solution families the proposals span (clustered AST features)
-  * correctness- how many proposals pass the held-out tests, and did the final one
-  * novelty    - how unusual the proposals are vs the task's frozen reference set (only if that
-                 reference exists; skipped otherwise, so this still runs on a pilot)
-and the joint 'correct-and-novel' rate. Then it averages by condition so you can compare
-A / B / C / D / D_minus directly - which is the whole experiment.
+For each session:
+  * diversity   - how many solution families the proposals span (clustered AST features)
+  * correctness - how many proposals pass the held-out tests (Tier 3: are feasible)
+  * novelty     - how unusual the proposals are relative to the task's frozen reference set
+                  (only where a reference exists)
+  * the joint correct-and-novel rate, Tier 3 scores, tokens used and interventions.
+These are averaged by condition (A / B / C / D / D_minus). pooled_diversity adds the fair
+tutor-vs-studio comparison: families at a matched number of solutions per task.
 """
 from __future__ import annotations
 
@@ -24,15 +24,13 @@ from macs.metrics.diversity import cluster_families, n_families, family_entropy,
 from macs.metrics.usefulness import correct_and_novel_rate
 from macs.analysis.score import implementations, task_by_id, score_code_heldout
 
-# Arush - this threshold is a EUCLIDEAN distance in the WITHIN-SAMPLE standardised AST space
-# (each feature z-scored across a session's own proposals), i.e. "how many per-feature standard
-# deviations apart two solutions must be to count as different families". 3.0 is provisional: on the
-# pilot it separates the distinct strategies (6 of them -> 6 families) while merging identical ones.
-# The frozen value is set by SC3 calibration (scripts/calibrate_clustering.py -> maximise ARI vs your
-# blind known_families) and recorded in docs/PREREGISTRATION.md before the main runs.
-# NOTE: diversity is measured WITHIN the proposal set (within-sample); novelty is measured against the
-# frozen reference. They deliberately use different spaces - a homogeneous reference must not be able
-# to collapse the diversity measure.
+# Euclidean distance in the standardised AST space, i.e. how many per-feature standard deviations
+# apart two solutions must be to count as different families. 3.0 is provisional; the frozen value
+# is set by SC3 calibration (scripts/calibrate_clustering.py: maximise ARI against blind hand
+# labels) and recorded in docs/PREREGISTRATION.md before the main runs.
+# Diversity is measured among the solutions themselves; novelty is measured against the frozen
+# reference. They deliberately use different spaces, so a homogeneous reference cannot collapse the
+# diversity measure.
 CLUSTER_THRESHOLD = 3.0
 NOVELTY_PERCENTILE = 0.90
 
@@ -52,12 +50,10 @@ def _standardise_for_clustering(X: np.ndarray) -> tuple[np.ndarray, str]:
     """Put AST features on a common scale BEFORE clustering, so raw counts (n_lines, n_call...)
     don't dominate and collapse every strategy into one family.
 
-    Arush - clustering is standardised WITHIN the session's own proposals (not against the reference).
-    An earlier version scaled against the frozen reference to 'share novelty's space', but the local
-    model's reference set is highly homogeneous (2 unique shapes in 30 samples), which flattened the
-    scale and collapsed distinct strategies into one family. Within-sample scaling is the right tool
-    here: diversity is about spread AMONG the proposals, so it should be measured against the proposals'
-    own variation. Novelty still uses the reference (that's a distance TO the reference).
+    Standardisation is within the session's own proposals, not against the reference: diversity is
+    about spread among the proposals, and a homogeneous reference set would flatten the scale and
+    collapse distinct strategies into one family. Novelty, a distance to the reference, still uses
+    the reference.
     """
     if len(X) < 2:
         return X, "single"  # one proposal -> single family anyway
@@ -71,10 +67,9 @@ def session_metrics(path, *, backend="subprocess", reference=None, cluster_thres
     codes = [c for _, c in implementations(events)]
 
     # --- correctness / quality ---
-    # Arush - Tier 1/2 are pass/fail on held-out tests ('correct' = passed all). Tier 3 are
-    # metric-scored ('correct' = feasible), and we ALSO keep the heuristic score vs the baseline
-    # (>1 beats it). Both feed the same `correct_flags`, so novelty's correct-and-novel rate works
-    # for either kind.
+    # Tier 1/2 are pass/fail on held-out tests ('correct' = passed all). Tier 3 are metric-scored
+    # ('correct' = feasible), and the heuristic score relative to the baseline is kept as well
+    # (>1 beats it). Both feed `correct_flags`, so the correct-and-novel rate works for either.
     correct_flags = []
     heur_mean = heur_best = None
     if task.scoring == "tests":
@@ -127,7 +122,7 @@ def session_metrics(path, *, backend="subprocess", reference=None, cluster_thres
         "n_revisions": sum(1 for e in events if e["event"] == "revision"),
         "n_proposals": len(codes), "n_correct": n_correct,
         "families": fams, "families_first10": fams_first10, "entropy": ent,
-        "diversity_scale": scale_source,  # 'reference' = frozen path; 'within-sample' = pilot fallback
+        "diversity_scale": scale_source,  # 'within-sample', or 'single' for one proposal
         "mean_novelty": mean_novelty, "correct_and_novel_rate": cn_rate,
         "scoring": task.scoring,          # 'tests' or 'heuristic'
         "heuristic_score": heur_mean,     # Tier 3 only: mean score vs baseline (>1 beats it)
@@ -166,14 +161,12 @@ def pooled_diversity(codes_by_task_cond: dict[tuple[str, str], list[str]], *,
                      cluster_threshold=CLUSTER_THRESHOLD, seed: int = 0) -> dict:
     """Families per condition at a MATCHED number of solutions, per task.
 
-    Arush - added 2026-10-07 (docs/DEV_LOG.md). The per-session 'families' column cannot compare
-    tutor and studio: a tutor session writes 1 program (so it can only ever be 1 family) and a
-    studio session writes 6. That makes "1 vs 6" true by construction, not a finding. Here, for
-    each task, ALL solutions from ALL conditions and repetitions are put in one common
-    standardised AST space, clustered once, and each condition's family count is read off its
-    rarefaction curve at the SAME number of solutions m (the smallest condition's count for that
-    task). Equal m, common space, so the comparison is fair. Repetitions (seeds) are what give the
-    tutor conditions more than one solution.
+    The per-session family count cannot compare tutor and studio: a tutor session writes one
+    program (so it is always one family) while a studio session writes several. Here, for each
+    task, all solutions from all conditions and repetitions are put in one common standardised AST
+    space, clustered once, and each condition's family count is read off its rarefaction curve at
+    the same number of solutions m (the smallest condition's count for that task). Repetitions
+    (seeds) give the tutor conditions more than one solution.
     """
     by_task: dict[str, dict[str, list[str]]] = defaultdict(dict)
     for (task_id, cond), codes in codes_by_task_cond.items():
@@ -222,8 +215,9 @@ def analyse_dir(traces_dir="data/traces", *, backend="subprocess", references=No
                 include_legacy=False):
     """Score + aggregate every trace in a directory. `references` maps task_id -> ReferenceStats.
 
-    Arush - traces whose task_id is no longer in the current bank (old pilots after you re-sourced
-    the tasks) are skipped with a printed note, not crashed on, so one stale file can't kill the run.
+    Traces whose task_id is no longer in the task bank are skipped with a printed note. Traces from
+    an older orchestrator version, and sessions that crashed before completing, are excluded unless
+    include_legacy=True.
     """
     from macs.orchestrator import ORCHESTRATOR_VERSION
     refs = references or {}
@@ -234,8 +228,7 @@ def analyse_dir(traces_dir="data/traces", *, backend="subprocess", references=No
         start = next((e for e in events if e["event"] == "session_start"), None)
         if not start:
             continue
-        # Arush - traces written by an older orchestrator (before the 2026-10-07/09 fixes) are not
-        # comparable with new ones, so they are left out unless asked for (docs/DEV_LOG.md).
+        # traces from an older orchestrator version are not comparable with current ones
         version = start.get("header", {}).get("orchestrator_version", "0.1.0")
         if not include_legacy and _version_tuple(version) < _version_tuple(ORCHESTRATOR_VERSION):
             legacy.append(p.name)

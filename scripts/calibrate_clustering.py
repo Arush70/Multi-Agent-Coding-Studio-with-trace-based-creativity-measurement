@@ -1,28 +1,26 @@
-"""SC3 calibration: freeze the clustering threshold by maximising ARI vs blind hand labels.
+"""SC3 calibration: freeze the clustering threshold by maximising ARI against blind hand labels.
 
-Arush - this is how you turn CLUSTER_THRESHOLD from a provisional guess into a defensible,
-pre-registered number. You (or a second rater) hand-label a pool of solutions with which family
-each belongs to - BLIND, i.e. without looking at what the automatic clustering says - then this
-script sweeps the threshold and reports the one whose automatic families best match your labels,
-scored by the Adjusted Rand Index (ARI). SC3's target is ARI >= 0.60.
+Raters hand-label a pool of solutions with the family each belongs to, blind to the automatic
+clustering and to the condition. This script then sweeps the clustering threshold and reports
+the value whose automatic families best match the labels, scored by the Adjusted Rand Index
+(ARI). SC3's target is ARI >= 0.60.
 
 Two steps, run once:
 
-  1) build a labelling stub from your existing traces (blank 'family' field to fill in):
+  1) build a labelling stub from existing traces (blank 'family' field to fill in):
         python scripts/calibrate_clustering.py --make-stub
-     -> writes data/calibration/labels.jsonl, one line per proposal. Open it and set each
-        "family" to a short strategy name (reuse your task.yaml known_families vocabulary;
-        use "other" for anything genuinely new). Do this without reading the analyze output.
+     -> writes data/calibration/labels.jsonl, one line per proposal. Set each "family" to a
+        short strategy name from the task's known_families vocabulary ("other" for anything
+        genuinely new), without consulting the analysis output.
 
   2) run the sweep once the labels are filled in:
         python scripts/calibrate_clustering.py
-     -> prints ARI at each threshold (pooled over tasks) and the recommended value. Copy that
-        into macs/analysis/aggregate.py (CLUSTER_THRESHOLD) and record it, with this table and
-        the date, in docs/PREREGISTRATION.md. After that, never tune it against results again.
+     -> prints ARI at each threshold (averaged over tasks) and the recommended value. The value
+        is copied into macs/analysis/aggregate.py (CLUSTER_THRESHOLD) and recorded, with the
+        table and date, in docs/PREREGISTRATION.md, after which it is not tuned again.
 
-Clustering is per-task (families are task-specific) and runs in the SAME standardised AST space
-the analysis uses: the frozen reference scaler when data/reference/<task_id>.jsonl exists, else
-within-sample scaling (and a note, because the frozen path is the one you report).
+Clustering is per task (families are task-specific) and uses within-sample standardised AST
+features with Euclidean distance and average linkage, the same as the per-session analysis.
 """
 from __future__ import annotations
 
@@ -60,7 +58,7 @@ def _make_stub(traces_dir: str) -> None:
             for pid, code in implementations(events):
                 out.write(json.dumps({
                     "task_id": start["task_id"], "session": p.stem, "proposal_id": pid,
-                    "family": "",          # <-- YOU fill this in, blind
+                    "family": "",          # filled in by a rater, blind to the clustering
                     "code": code,
                 }) + "\n")
                 n += 1

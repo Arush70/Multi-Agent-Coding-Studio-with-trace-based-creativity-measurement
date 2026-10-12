@@ -1,26 +1,21 @@
 """Isolated execution of generated code against a list of tests.
 
-Arush - the model writes code and you must run it to know if it works, but that code is
-UNTRUSTED (it could loop forever, eat all RAM, touch the network). So it never runs in
-your normal process. Two backends:
+Model-written code is untrusted (it could loop forever, exhaust memory, or use the network),
+so it never runs in the main process. Two backends:
 
-  * docker  (THE EXPERIMENT): python:3.11-slim with --network none, memory/CPU caps, a
-    read-only filesystem and a non-root user. A real security boundary. Every number in
-    your results must come from this backend.
-  * subprocess (DEVELOPMENT ONLY): the same harness in a child process, killed by a
-    wall-clock timeout if it hangs. This is NOT a security boundary - it does not cap
-    memory on Windows - so never run the real experiment on it, and say so in your
-    methods. It exists so you can develop on Windows before Docker is working, and so CI
-    (which has no guaranteed Docker) can test the rest of the pipeline.
+  * docker (reported results): python:3.11-slim with --network none, memory/CPU/PID caps, a
+    read-only filesystem and a non-root user. A real security boundary; reported numbers
+    come from this backend.
+  * subprocess (development only): the same harness in a child process, killed by a
+    wall-clock timeout if it hangs. Not a security boundary (it cannot cap memory on
+    Windows). It allows development without Docker and lets CI test the rest of the
+    pipeline.
 
-Cross-platform note (why this changed): the first version set POSIX resource limits and
-so only ran on Linux/mac. This version runs the harness as a child process with a
-timeout on EVERY OS, and additionally applies CPU/memory limits only where the OS
-supports them (POSIX). On Windows you still get process isolation and the timeout guard,
-which is enough for development; Docker remains the backend for real runs.
+The harness runs as a child process with a timeout on every OS and additionally applies
+CPU/memory limits where the OS supports them (POSIX).
 
-The harness never GUESSES: if the code cannot run (crash/timeout), the result is an
-explicit error, never a silent "0 passed" you might mistake for "the code is wrong".
+The harness never guesses: if the code cannot run (crash/timeout), the result carries an
+explicit error rather than a silent "0 passed" that could be mistaken for wrong code.
 """
 from __future__ import annotations
 
@@ -59,8 +54,8 @@ print("__MACS_RESULT__" + json.dumps(results))
 # pass/fail it runs a driver that exercises the candidate's function over frozen instances and
 # returns a NUMBER (bins used, tour length, colours, makespan, cap-set size). The driver runs in
 # the candidate's namespace with the instance data in `__data__` and must set `__metric__`.
-# Arush - reusing the exact same sandbox (docker --network none etc.) means the hard/open Tier 3
-# problems get scored under the same security boundary as everything else; only the harness differs.
+# The same sandbox (docker --network none etc.) is used, so Tier 3 problems are scored under the
+# same security boundary as everything else; only the harness differs.
 METRIC_HARNESS = r'''
 import json, sys, traceback
 src = open(sys.argv[1]).read()
@@ -230,7 +225,7 @@ def run_metric(
 ) -> MetricResult:
     """Run a candidate heuristic over frozen `data` via `driver` and return the metric it computes.
 
-    Arush - `driver` is a small trusted snippet (from macs/analysis/heuristic_score.py) that knows
+    `driver` is a small trusted snippet (from macs/analysis/heuristic_score.py) that knows
     how to exercise this task's function and set `__metric__`/`__valid__`. `src` (the model's code)
     is still untrusted and runs under the same sandbox as the test runner.
     """

@@ -1,7 +1,6 @@
 """Run many sessions in one go: tasks x conditions x seeds. Safe to stop and restart.
 
-Arush - added 2026-10-09 (docs/DEV_LOG.md) so the pilot and the main run are one command each
-instead of a PowerShell loop. Ollama must be running.
+The model server must be running.
 
     # pilot: a few tasks, all five conditions, 3 seeds
     python scripts/run_experiment.py --tasks t1_mbpp19_test_duplicate,t2_humaneval0_has_close_elements,t3_bin_packing --seeds 1-3
@@ -12,9 +11,9 @@ instead of a PowerShell loop. Ollama must be running.
     # see what would run without running it
     python scripts/run_experiment.py --tasks all --seeds 1-6 --dry-run
 
-A (task, condition, seed) that already has a trace from the CURRENT orchestrator version is
-skipped, so re-running the same command continues where it stopped. One failing session is
-reported and the batch carries on. Then: python scripts/analyze.py
+A (task, condition, seed) that already has a complete trace from the current orchestrator
+version is skipped, so re-running the same command continues where it stopped. A failing
+session is reported and the batch carries on. Afterwards: python scripts/analyze.py
 """
 import argparse
 import json

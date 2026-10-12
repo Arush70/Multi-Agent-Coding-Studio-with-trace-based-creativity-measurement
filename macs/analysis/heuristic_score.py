@@ -1,22 +1,22 @@
-"""Score Tier 3 HARD/OPEN problems by a metric instead of pass/fail.
+"""Score Tier 3 hard/open problems by a metric instead of pass/fail.
 
-Arush - Tier 1/2 tasks are 'did it pass the held-out tests?'. Tier 3 problems (online bin packing,
-TSP construction, graph colouring, scheduling, cap sets) are NP-hard or open: there is no known
-optimum to test against, so a solution is judged by HOW GOOD it is - fewer bins, shorter tour,
-fewer colours, lower makespan, bigger cap set - measured on frozen instances and compared to a
-standard baseline heuristic. This is exactly the setting FunSearch used, and it's where a creative
-studio has the most room to beat the obvious approach.
+Tier 1/2 tasks are scored by whether they pass the held-out tests. Tier 3 problems (online bin
+packing, TSP construction, graph colouring, scheduling, cap sets) are NP-hard or open: there is
+no known optimum to test against, so a solution is judged by how good it is (fewer bins, shorter
+tour, fewer colours, lower makespan, bigger cap set), measured on frozen instances and compared
+with a standard baseline heuristic, as in FunSearch.
 
 For each task:
-  * a DRIVER (trusted, below) runs the model's function over the frozen instances and returns the
-    raw metric, plus whether the answer was feasible (an infeasible heuristic scores 0, it is not
-    a crash);
-  * a BASELINE (the named standard heuristic) is run through the SAME driver, so every score is
-    'relative to best_fit / nearest_neighbour / ...';
-  * the candidate's code (untrusted) runs in the sandbox, same boundary as the test runner.
+  * a driver (trusted, below) runs the model's function over the frozen instances and returns
+    the raw metric, plus whether the answer was feasible (an infeasible heuristic scores 0; it
+    is not a crash);
+  * a baseline (the named standard heuristic) is run through the same driver, so every score
+    is relative to best_fit / nearest_neighbour / ...;
+  * the candidate's code (untrusted) runs in the sandbox, behind the same boundary as the test
+    runner.
 
-`score` is normalised so HIGHER IS ALWAYS BETTER (score > 1 => beats the baseline), whatever the
-raw metric's direction, so it drops straight into the per-condition table.
+`score` is normalised so higher is always better (score > 1 beats the baseline), whatever the
+raw metric's direction.
 """
 from __future__ import annotations
 

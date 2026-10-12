@@ -1,20 +1,16 @@
 """Diversity of a set of proposals: solution families and set-level spread.
 
-Arush - novelty scores one solution; this scores a whole SET: how many genuinely different
-approaches showed up. It clusters solutions into 'families' and reports it four ways (families in
-the first 10, a rarefaction curve, entropy, and mean pairwise distance) because a single number
-would mislead. The clustering is checked against your hand-written blind labels with the ARI
-(that's the SC3 validation, target >= 0.60).
-
-Reported four ways because family count grows with sample size:
+Novelty scores one solution; diversity scores a set: how many genuinely different approaches
+appear. Solutions are clustered into families, and diversity is reported four ways because
+family count grows with sample size:
   (i)   families among the first n proposals,
   (ii)  a rarefaction curve (families found vs. proposals sampled, averaged over subsamples),
   (iii) Shannon entropy over family assignment,
   (iv)  mean pairwise distance, which needs no clustering at all.
 
 The clustering threshold is calibrated on pilot tasks, frozen, and recorded in
-docs/PREREGISTRATION.md. Family detection is validated against blind hand
-labels with the adjusted Rand index (SC3).
+docs/PREREGISTRATION.md. Family detection is validated against blind hand labels with the
+adjusted Rand index (SC3, target >= 0.60).
 """
 from __future__ import annotations
 
@@ -30,14 +26,12 @@ def cluster_families(X: np.ndarray, distance_threshold: float, linkage: str = "a
                      metric: str = "euclidean") -> np.ndarray:
     """Return an integer family label per row. One row -> one family.
 
-    Arush - the input is expected to be WITHIN-SAMPLE standardised AST features (each feature
-    z-scored across this session's own proposals; see aggregate._standardise_for_clustering).
-    Euclidean distance there measures how far apart two solutions are in units of per-feature
-    standard deviations: identical solutions sit at distance 0 and merge, genuinely different
-    strategies sit several SDs apart and split. We moved OFF cosine-against-the-reference because
-    a homogeneous reference set (the local model repeats the same 2 solution shapes) made every
-    proposal point the same way and collapsed everything into one family. Identical rows (distance
-    0) merge naturally under euclidean, so no zero-vector special-casing is needed.
+    The input is expected to be standardised AST features (see
+    aggregate._standardise_for_clustering). Euclidean distance there measures how far apart two
+    solutions are in units of per-feature standard deviations: identical solutions sit at distance
+    0 and merge, genuinely different strategies sit several standard deviations apart and split.
+    Identical rows merge naturally under Euclidean distance, so no zero-vector special case is
+    needed.
     """
     n = len(X)
     if n <= 1:

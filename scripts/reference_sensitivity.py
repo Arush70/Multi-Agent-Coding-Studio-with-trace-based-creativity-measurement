@@ -1,18 +1,17 @@
-"""Reference-size sensitivity check: does novelty change if the reference has 50 or 200 samples
-instead of 100? (Proposal, section 3.6: "sensitivity to 50 and 200 is checked".)
+"""Reference-size sensitivity check: does novelty change if the reference has 50 or 200
+samples instead of 100? (Proposal, section 3.6: "sensitivity to 50 and 200 is checked".)
 
-Arush - added 2026-10-09 (docs/DEV_LOG.md). For every task that has a reference set and traces,
-it scores every solution in the traces against the first 50, 100 and 200 reference samples and
-reports, per task:
-  * Spearman rank correlation of novelty between 100 and 50 / 200 (1.0 = same ranking),
-  * how often the 'novel' flag (top-decile) agrees between 100 and 50 / 200.
-Sizes that the reference file does not have yet are skipped. Build 200 on some tasks first:
+For every task that has a reference set and traces, every solution in the traces is scored
+against the first 50, 100 and 200 reference samples, and per task the script reports:
+  * the Spearman rank correlation of novelty between 100 and 50 / 200 (1.0 = same ranking),
+  * how often the 'novel' flag (top decile) agrees between 100 and 50 / 200.
+Sizes the reference file does not yet have are skipped. Build 200 samples on some tasks first:
 
     python scripts/build_reference.py --tasks t1_mbpp19_test_duplicate,t3_bin_packing --n 200
     python scripts/reference_sensitivity.py
 
 Results are printed and saved to data/results/reference_sensitivity.json. The main analysis
-always uses the first 100 (REFERENCE_N), whatever this shows.
+always uses the first 100 samples (REFERENCE_N).
 """
 import argparse
 import json

@@ -1,11 +1,10 @@
 """Load a task's frozen reference set and fit the novelty yardstick.
 
-Arush - novelty is measured RELATIVE to a set of "normal" solutions for each task. This
-module turns the raw solutions that scripts/build_reference.py saved (in data/reference/)
-into numbers and fits a ReferenceStats (the frozen yardstick). Two rules keep it honest:
-the reference is built ONCE per task and never regenerated, and it contains only ordinary
-tutor-style solutions - never the studio's own outputs - so the studio can't be scored
-against itself.
+Novelty is measured relative to a set of ordinary solutions for each task. This module turns
+the solutions saved by scripts/build_reference.py (in data/reference/) into feature vectors
+and fits a ReferenceStats. The reference is built once per task and never regenerated, and it
+contains only ordinary solutions, never the studio's own outputs, so the studio is never
+scored against itself. The analysis uses the first REFERENCE_N samples by seed.
 """
 from __future__ import annotations
 
@@ -58,7 +57,7 @@ def _represent(sources: list[str], representation: str) -> np.ndarray:
     if representation == "ast":
         return ast_feature_matrix(normed)
     if representation == "embed":
-        from macs.metrics.represent import embed  # lazy - only if you ask for embeddings
+        from macs.metrics.represent import embed  # lazy - loaded only when embeddings are requested
         return embed(normed)
     raise ValueError(f"unknown representation {representation!r}")
 

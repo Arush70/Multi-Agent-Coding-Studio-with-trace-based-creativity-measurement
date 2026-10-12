@@ -1,14 +1,16 @@
-"""Score every trace and print the per-condition results table. YOUR RESULTS IN ONE COMMAND.
+"""Score every trace and print the per-condition results table.
 
-Arush - run this after you've generated some sessions:
+Usage:
 
     python scripts/analyze.py --sandbox subprocess
 
-It scores each session on the held-out tests (Tier 1/2) or the frozen instances (Tier 3 heuristic
-tasks), computes diversity / correctness (and novelty if a reference set exists for the task),
-aggregates by condition, prints a comparison table, and saves it to data/results/summary.json for
-the UI to read. The `heur` column is the mean Tier 3 score vs the baseline heuristic (>1 beats it);
-it is blank for conditions with no Tier 3 sessions.
+Each session is scored on the held-out tests (Tier 1/2) or the frozen instances (Tier 3
+heuristic tasks). Diversity, correctness and (where a reference set exists) novelty are
+computed, aggregated by condition, printed as a table and saved to
+data/results/summary.json for the dashboard. The `heur` column is the mean Tier 3 score
+relative to the baseline heuristic (>1 beats it); it is blank for conditions with no
+Tier 3 sessions. Traces from older orchestrator versions and crashed sessions are skipped
+unless --include-old is given.
 """
 import argparse, json
 from pathlib import Path
@@ -60,7 +62,7 @@ def main() -> None:
 
     # Families at a MATCHED number of solutions per task (all conditions clustered together).
     # This is the fair tutor-vs-studio diversity comparison; the per-session 'families' column
-    # above is capped at 1 for tutors by construction. See docs/DEV_LOG.md (2026-10-07).
+    # above is capped at 1 for tutors by construction.
     print("\nfamilies at matched sample size (per task, common space):")
     for tid, t in pooled["per_task"].items():
         cells = "  ".join(f"{c}={v}" for c, v in t["families_at_m"].items())

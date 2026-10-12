@@ -1,19 +1,13 @@
 """Model-relative novelty: k-nearest-neighbour distance to a frozen reference set.
 
-Arush - this measures how UNUSUAL a solution is, model-relative: how far it sits from a frozen
-set of 'normal' solutions for the same task (its k nearest neighbours), z-scored so 0 = typical,
-2 = two standard deviations out. Novel is NOT the same as good - you always pair this with
-correctness later. The reference set is sampled once and frozen, and the studio's own outputs
-are never in it, so novelty can't be gamed.
+For each solution, the mean cosine distance to its k nearest neighbours in the task's
+reference set, z-scored against the reference set's own leave-one-out kNN distances, so
+0 = typical and 2 = two standard deviations further out. Nearest-neighbour rather than
+centroid distance because the reference is multimodal (Russell et al., 2026, Appendix H
+uses the same construction with k = 25 on 300-dimensional feature vectors).
 
-For each solution, the mean cosine distance to its k nearest neighbours in the
-task's reference set, z-scored against the reference set's own leave-one-out
-kNN distances. Nearest-neighbour rather than centroid distance because the
-reference is multimodal (Russell et al., 2026, Appendix H uses the same
-construction with k = 25 on 300-dimensional feature vectors).
-
-The reference set is sampled once per task and frozen; the system's own
-outputs are never part of it.
+Novel is not the same as good: novelty is always paired with correctness. The reference set
+is sampled once per task and frozen; the system's own outputs are never part of it.
 """
 from __future__ import annotations
 

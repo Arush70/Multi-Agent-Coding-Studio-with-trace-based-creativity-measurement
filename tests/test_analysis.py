@@ -1,8 +1,8 @@
-"""Analysis-pipeline tests: held-out scoring + aggregation, with NO model.
+"""Analysis-pipeline tests: held-out scoring and aggregation, with no model.
 
-Arush - writes trace files by hand with known solutions, then checks the scorer marks the
-correct one correct and the wrong one wrong, and that the per-condition table adds up. This
-tests the part that produces your actual results.
+Trace files are written by hand with known solutions; the tests check that the scorer marks the
+correct one correct and the wrong one wrong, that the per-condition table adds up, that the
+matched diversity comparison is fair, and that old-version traces are skipped.
 """
 from __future__ import annotations
 import sys
@@ -65,8 +65,7 @@ def test_aggregate_by_condition(tmp_path):
 
 
 def test_pooled_diversity_compares_at_matched_sample_size():
-    # added 2026-10-07: a tutor condition with 2 identical solutions vs a studio with 4 distinct
-    # ones; at matched m = 2 the tutor has 1 family and the studio has up to 2, never 4.
+    # a tutor condition with 2 identical solutions vs a studio with 4 distinct ones; at matched m = 2 the tutor has 1 family and the studio has up to 2, never 4.
     from macs.analysis.aggregate import pooled_diversity
     a = "def f(a):\n    return len(a) != len(set(a))\n"
     b = "def f(a):\n    seen = set()\n    for x in a:\n        if x in seen:\n            return True\n        seen.add(x)\n    return False\n"
@@ -81,7 +80,7 @@ def test_pooled_diversity_compares_at_matched_sample_size():
 
 @posix_only
 def test_old_orchestrator_traces_are_skipped_unless_asked(tmp_path):
-    # added 2026-10-09: traces from before the fixes (no orchestrator_version) are left out
+    # traces without an orchestrator_version (older code) are left out
     old = dict(HEADER); old.pop("orchestrator_version")
     with TraceWriter(tmp_path / "old.jsonl", session_id="old", task_id=TASK_ID, condition="A", header=old) as tr:
         tr.log("tutor", "implementation", content=CORRECT, proposal_id="p1")

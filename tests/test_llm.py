@@ -1,11 +1,9 @@
 """Tests for the model client.
 
-Arush - these run with NO Ollama and NO network. That is on purpose: CI on GitHub
-has no GPU and no model, so a test that needed a live model could never go green
-there. Instead we fake the backend's HTTP response and check the parts that are
-actually yours to get right: the cache key, the caching behaviour, and reading the
-key from an environment variable. The real end-to-end check against Ollama is the
-manual smoke test I give you separately - that one is for your eyes, not CI.
+These run with no model server and no network, so they can run in CI. The backend's HTTP
+response is faked, and the tests check the cache key, the caching behaviour, and reading the
+API key from an environment variable. The end-to-end check against a live model is
+scripts/smoke_llm.py.
 """
 from __future__ import annotations
 

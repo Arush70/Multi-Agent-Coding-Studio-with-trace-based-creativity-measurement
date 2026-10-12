@@ -1,21 +1,21 @@
-"""Session orchestrator - the loop that turns model calls into a trace.
+"""Session orchestrator: the loop that turns model calls into a trace.
 
-Arush - this ties everything together: it takes a task, runs a session in one of the five
-conditions, and writes every step to a trace. Two families of condition:
+Takes a task, runs a session in one of the five conditions, and writes every step to a trace.
+Two families of condition:
 
     A  1 learner  + Tutor            C  2 learners + Tutor          (Tutor: one solution)
     B  1 learner  + Studio           D  2 learners + Studio         (Studio: Innovator ->
     D_minus  2 learners + Studio, Facilitator disabled              Engineer -> Verifier loop,
                                                                     Critic + Facilitator)
 
-The Studio is your contribution: the Innovator proposes several strategies, the Engineer
-implements each, the Verifier runs the sandbox, and the Facilitator watches for the ideas
-converging and pushes for a fresh one. D_minus runs the same studio with the Facilitator
-switched OFF - that single difference is how you isolate the Facilitator's effect.
+In the studio the Innovator proposes several strategies, the Engineer implements each, the
+Verifier runs the sandbox, the Facilitator watches for convergence and pushes for a fresh idea,
+and the Critic selects one proposal for bounded critique and revision. D_minus runs the same
+studio with the Facilitator switched off, which isolates the Facilitator's effect.
 
-Orchestration is plain Python on purpose: every control-flow decision your results depend on
-is visible in this one file. The one rule enforced here: the sandbox is run on
-task.public_tests ONLY, so held-out tests can never reach a prompt.
+Orchestration is plain Python on purpose: every control-flow decision the results depend on is
+visible in this file. The sandbox is run on task.public_tests only, so held-out tests can never
+reach a prompt.
 """
 from __future__ import annotations
 
@@ -38,9 +38,9 @@ from macs.metrics.diversity import cluster_families
 PROMPTS = yaml.safe_load((Path(__file__).parent / "prompts" / "roles.yaml").read_text())
 PERSONAS = yaml.safe_load((Path(__file__).parent / "prompts" / "personas.yaml").read_text())["personas"]
 
-# Arush - bump when the session logic changes in a way that makes older traces incomparable.
-# It is stamped into every trace header; the analysis skips traces from older versions by
-# default (scripts/analyze.py --include-old to keep them). 0.2.0 = fixes of 2026-10-07/09.
+# Bumped when the session logic changes in a way that makes older traces incomparable. It is
+# stamped into every trace header; the analysis skips traces from older versions by default
+# (scripts/analyze.py --include-old keeps them). History of changes: docs/DEV_LOG.md.
 ORCHESTRATOR_VERSION = "0.2.0"
 
 K_PROPOSALS = 5
@@ -102,14 +102,11 @@ class SessionConfig:
         frozen reference set; otherwise a provisional default. tau_source is written to the trace
         header so every session records where its threshold came from.
 
-        Arush - two fixes (2026-10-07, docs/DEV_LOG.md):
-          * tau is now computed in the SAME space the Facilitator measures in (raw AST features,
-            cosine). It used to be read off the reference's STANDARDISED features, a different
-            space, so the number was not comparable to the distances it was compared against.
-          * if the reference is degenerate (mostly duplicate solutions, so the 25th-percentile
-            nearest-neighbour distance is 0), tau = 0 and the Facilitator can never fire. The
-            proposal says tau is checked for a non-degenerate firing rate; a zero tau fails that
-            check, so we fall back to the documented default and say so in the trace.
+        tau is computed in the same space the Facilitator measures in (raw AST features, cosine
+        distance). If the reference is degenerate (mostly duplicate solutions, so the
+        25th-percentile nearest-neighbour distance is 0), the Facilitator could never fire; the
+        proposal requires a non-degenerate firing rate, so the documented default is used and
+        the trace records it.
         """
         if self.tau is not None:
             return self.tau, "override"
@@ -149,9 +146,8 @@ class TokenBudgetExceeded(RuntimeError):
 class _BudgetedClient:
     """Wraps the model client and counts tokens; refuses a call once the ceiling is reached.
 
-    Arush - added 2026-10-09 (docs/DEV_LOG.md). The ceiling used to be written into the header
-    but never enforced. Cached responses count too (they are the same tokens), so a re-run from
-    the cache stops at exactly the same point.
+    Cached responses count too (they are the same tokens), so a re-run from the cache stops at
+    exactly the same point.
     """
     def __init__(self, client, ceiling: int):
         self._client = client
@@ -196,11 +192,8 @@ def run_session(task: Task, cfg: SessionConfig, client, out_dir: str | Path = "d
 # --------------------------------------------------------------------- Learners (all conditions)
 def _run_learners(task: Task, cfg: SessionConfig, client, tr: TraceWriter) -> list[tuple[str, str]]:
     """Each simulated learner takes a turn; a later learner sees the earlier learners' turns (they
-    are working together). Returns [(persona_id, text), ...] for the solver to see.
-
-    Arush - fix 2026-10-07 (docs/DEV_LOG.md): the learner turns used to be logged but NEVER shown
-    to the Tutor or the Innovator, so the solver got identical input in A and C (and in B and D)
-    and the learner factor could not have any effect. They are now passed on.
+    are working together). Returns [(persona_id, text), ...]; the turns are passed to the Tutor
+    and to the Innovator, which is what lets the learner factor affect the solver.
     """
     turns: list[tuple[str, str]] = []
     for i, persona in enumerate(_pick_personas(cfg), start=1):
@@ -284,8 +277,7 @@ def _run_studio(task: Task, cfg: SessionConfig, client, tr: TraceWriter, *, tau:
             fac.observe(emb)
             fire, metric = fac.should_intervene()
             if fire:
-                # Arush - 2026-10-09: name what the proposals converged on, so the prompt is
-                # specific ("do NOT use a set") instead of generic (docs/DEV_LOG.md).
+                # name what the proposals converged on, so the instruction is specific
                 recent = codes[-CONVERGENCE_WINDOW:]
                 kind, args = fac.intervene(
                     construct=dominant_construct(recent),
@@ -303,10 +295,9 @@ def _run_studio(task: Task, cfg: SessionConfig, client, tr: TraceWriter, *, tau:
         return
 
     # ---- selection: the Critic chooses which proposal to develop (all K shown with code + result)
-    # Arush - 2026-10-09 (docs/DEV_LOG.md): nothing used to choose between the proposals; the
-    # critique always went to the LAST one. Now the Critic sees every proposal and picks one. If its
-    # reply has no valid "SELECTED: pN" line, the proposal passing the most public tests is taken
-    # (earliest on a tie) and the trace says so. The family clustering is still logged here too.
+    # If the Critic's reply has no valid "SELECTED: pN" line, the proposal passing the most public
+    # tests is taken (earliest on a tie) and the trace says so. The family clustering is logged on
+    # the same event.
     fam_note = ""
     if len(embeddings) >= 2:
         from macs.analysis.aggregate import CLUSTER_THRESHOLD as AGG_THRESHOLD, _standardise_for_clustering
@@ -333,7 +324,7 @@ def _run_studio(task: Task, cfg: SessionConfig, client, tr: TraceWriter, *, tau:
 
     # ---- bounded critique-revision on the selected proposal (1 to max_revisions rounds)
     # Stops early once a revision passes every public test. The Critic sees the code it critiques
-    # and the Engineer sees the code it revises (fix 2026-10-07).
+    # and the Engineer sees the code it revises.
     cur_id, cur_code, cur_res = chosen, codes[sel_idx], results[sel_idx]
     strategy = strategies[sel_idx]
     for r in range(1, cfg.max_revisions + 1):

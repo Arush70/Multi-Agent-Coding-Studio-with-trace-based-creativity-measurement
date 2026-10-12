@@ -1,8 +1,7 @@
 """Tests for the trace schema and writer.
 
-Arush - these guard the thing your entire results section is built on: the trace.
-If the schema or writer silently changes shape, these fail, and you find out before
-a single experiment runs on the bad format.
+All results are computed from traces, so these fail if the schema or writer silently changes
+shape, before any experiment runs on a bad format.
 """
 from __future__ import annotations
 

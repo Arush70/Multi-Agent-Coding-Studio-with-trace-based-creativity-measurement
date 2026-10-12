@@ -1,26 +1,25 @@
-"""Generate the frozen reference set of 'normal' solutions for each task.
+"""Generate the frozen reference set of ordinary solutions for each task.
 
-Arush - this asks the model for many ordinary solutions to each task and saves them to
-data/reference/<task_id>.jsonl. Novelty is later measured as distance FROM this set, so it
-is built once, on the same model you run the experiment with, and never regenerated.
+The model is asked for many ordinary solutions to each task and they are saved to
+data/reference/<task_id>.jsonl. Novelty is measured as distance from this set, so it is built
+once, with the same model as the experiment, and never regenerated.
 
     python scripts/build_reference.py --tasks all --n 100 --profile local --sandbox subprocess
     python scripts/build_reference.py --tasks tier3            # one tier
     python scripts/build_reference.py --tasks t1_mbpp19_test_duplicate,t3_bin_packing
 
 Notes:
-  * Existing files are TOPPED UP, never rewritten: a task with 30 samples gets seeds 30..99
+  * Existing files are topped up, never rewritten: a task with 30 samples gets seeds 30..99
     appended. Because seeds are fixed, topping 30 up to 100 gives exactly the same set as
     building 100 from scratch. A task already at --n is skipped. --overwrite rebuilds.
   * Safe to stop and restart: each sample is written as soon as it is made.
-  * Sensitivity check (proposal: 50 and 200): build --n 200 on the tasks you want; the analysis
+  * Sensitivity check (proposal: 50 and 200): build --n 200 on selected tasks; the analysis
     still uses only the first 100 (macs.metrics.reference.REFERENCE_N), and
     scripts/reference_sensitivity.py compares 50 / 100 / 200.
   * Seeds are fixed (REF_SEED_BASE + i) so the whole set is reproducible.
-  * The prompt is a neutral "write a correct solution" - NOT a studio agent - because the
-    reference is meant to be typical, baseline solutions.
-  * On your 8 GB laptop start small (e.g. --n 20) to check the loop; the full 100-per-task
-    run belongs on the experiment GPU.
+  * The prompt is a neutral "write a correct solution", not a studio role, because the
+    reference is meant to contain typical baseline solutions.
+  * On a small GPU, a quick check with --n 20 is sensible before the full 100-per-task run.
 """
 import argparse
 import json

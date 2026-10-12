@@ -1,7 +1,7 @@
-"""Reference-set loading/fitting tests - no model needed.
+"""Reference-set loading and fitting tests; no model needed.
 
-Arush - proves the loader turns saved solutions into a working novelty yardstick, so the
-whole novelty path is tested without running the model (which CI can't do).
+Check that saved solutions become a working novelty yardstick, that the analysis uses the first
+n samples by seed, and that the reference builder tops up a set without rewriting it.
 """
 from __future__ import annotations
 import json
@@ -52,7 +52,7 @@ def test_missing_reference_raises(tmp_path):
         load_reference_solutions("does_not_exist", root=tmp_path)
 
 
-# --- added 2026-10-09 (docs/DEV_LOG.md): 100-sample references, top-up, first-n rule ---------
+# --- 100-sample references: top-up and the first-n rule --------------------------------------
 
 def test_analysis_uses_first_n_by_seed(tmp_path):
     import json

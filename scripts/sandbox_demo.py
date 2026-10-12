@@ -1,12 +1,10 @@
-"""Run a correct and a wrong solution through the sandbox against a real task's PUBLIC tests.
+"""Run a correct and a wrong solution through the sandbox against a task's public tests.
 
-Arush - this ties the sandbox to the task loader:
+    python scripts/sandbox_demo.py                 # subprocess backend
+    python scripts/sandbox_demo.py --docker        # docker backend
 
-    python scripts/sandbox_demo.py                 # subprocess backend (works now)
-    python scripts/sandbox_demo.py --docker        # docker backend (after you install Docker)
-
-You should see the correct solution pass all public tests and the wrong one fail - and
-in both cases error=None, because a wrong answer is a result, not a crash.
+The correct solution passes all public tests and the wrong one fails; in both cases
+error is None, because a wrong answer is a result, not a crash.
 """
 import sys
 from macs.tasks.bank import load_task

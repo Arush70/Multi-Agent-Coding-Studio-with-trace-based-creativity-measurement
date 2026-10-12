@@ -47,7 +47,7 @@ class Task:
     public_tests: list[str]
     title: str = ""
     source_id: str = ""          # benchmark item id (e.g. MBPP task_id, HumanEval/0)
-    citation: str = ""           # full source citation for provenance (prof's requirement)
+    citation: str = ""           # full source citation for provenance
     known_families: list[str] = field(default_factory=list)
     scoring: str = "tests"       # "tests" (pass/fail) or "heuristic" (metric-scored, Tier 3)
     heuristic: dict = field(default_factory=dict)

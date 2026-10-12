@@ -1,14 +1,10 @@
-"""First real model call through your own code - and proof the cache works.
-
-Arush - run this once your Ollama is up (it is) and config/models.yaml points at it
-(it does). It sends one prompt to your local Qwen twice. The first call is a real
-generation; the second is served from data/cache with no model call. If you see
-'cached=True' on the second line, your whole reproducibility foundation works.
+"""Smoke test for the model client and the response cache.
 
     python scripts/smoke_llm.py
 
-This is a smoke test for YOU, not for CI - it needs the live model, so it is a
-script you run by hand, not a pytest test.
+Sends one prompt to the configured model twice. The first call is a real generation;
+the second is served from data/cache without a model call ('cached=True'). Requires a
+running model server, so it is a manual script rather than a pytest test.
 """
 from macs.llm.client import LLMClient
 
@@ -34,7 +30,7 @@ def main() -> None:
           f"(same request, so this should say cached=True)")
 
     # Change the seed -> new request -> real call again, proving the seed is part of
-    # the identity of a generation (which matters: your repetitions differ only by seed).
+    # the identity of a generation (repetitions differ only by seed).
     third = client.chat(messages, seed=2)
     print(f"[3] cached={third.cached}  (different seed, so a fresh generation)")
 

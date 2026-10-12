@@ -1,8 +1,8 @@
-"""Sandbox tests - now run on every OS (subprocess backend is cross-platform).
+"""Sandbox tests; they run on every OS (the subprocess backend is cross-platform).
 
-Arush - the loop/timeout guard is the important one: untrusted code that never returns
-must be killed and reported as an error, not hang your experiment. On POSIX a CPU rlimit
-also applies; on Windows the wall-clock timeout does the job.
+The loop/timeout guard matters most: untrusted code that never returns must be killed and
+reported as an error rather than hang a run. On POSIX a CPU rlimit also applies; on Windows the
+wall-clock timeout does the job.
 """
 from __future__ import annotations
 from macs.sandbox.runner import run

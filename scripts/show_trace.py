@@ -1,12 +1,11 @@
 """Write one example session and print it back, validated.
 
-Arush - run this to SEE a trace with your own eyes before the orchestrator exists:
-
     python scripts/show_trace.py
 
-It writes a small condition-C session to data/traces/example.jsonl, validates it,
-and prints each line. This is the shape every real session will take - learner
-turns, a tutor question tagged QUESTION (ASTRA-style), a proposal, a verification.
+Writes a small condition-C session to data/traces/example.jsonl, validates it, and
+prints each line: learner turns, a tutor question tagged QUESTION (ASTRA-style), a
+proposal and a verification. The example has no orchestrator_version, so the analysis
+ignores it.
 """
 from pathlib import Path
 from macs.trace.writer import TraceWriter, validate_file, read_trace

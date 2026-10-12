@@ -1,15 +1,15 @@
 """Usefulness: pass@k on held-out tests with the unbiased estimator of Chen et al. (2021).
 
-Arush - this is the correctness side. pass@k is the standard unbiased estimate of 'if you drew k
-solutions, would at least one be fully correct' on the HELD-OUT tests. correct_and_novel_rate is
-the headline number that keeps you honest: a solution only counts if it is BOTH correct AND
-novel - an original wrong answer scores nothing.
+pass@k estimates the probability that at least one of k drawn solutions passes every held-out
+test:
 
 pass@k = 1 - C(n - c, k) / C(n, k)
 
-where n samples were drawn and c of them pass every held-out test. Computed per
-task and averaged. Runtime and memory are logged alongside but are not part of
-the measure.
+where n samples were drawn and c of them pass every held-out test. Computed per task and
+averaged. Runtime and memory are logged alongside but are not part of the measure.
+
+correct_and_novel_rate is the joint creativity outcome: a solution counts only if it is both
+correct and novel, so an original but wrong answer scores nothing.
 """
 from __future__ import annotations
 
