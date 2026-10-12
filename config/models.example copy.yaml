@@ -12,6 +12,7 @@ profiles:
     quantisation: q4_K_M
     temperature: 0.7
     max_tokens: 2048
+    # extra_body: {reasoning_effort: none}   # extra request fields, e.g. thinking off for Qwen3.5
 
   kaggle:                     # main experiment; served by vLLM inside the Kaggle notebook
     base_url: http://localhost:8000/v1
