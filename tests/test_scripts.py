@@ -57,3 +57,21 @@ def test_dashboard_headline_uses_matched_families():
     sv = studio_vs_tutor(summary)
     assert sv == {"studio_families": 3.0, "tutor_families": 2.0, "matched": True}
     assert studio_vs_tutor({"A": {"avg_families": 1}, "B": {"avg_families": 6}})["matched"] is False
+
+
+def test_archive_traces_moves_files_and_never_overwrites(tmp_path):
+    from macs.ui.app import archive_traces
+    traces, archive = tmp_path / "traces", tmp_path / "archive"
+    traces.mkdir()
+    assert archive_traces(traces, archive, stamp="s") == (None, 0)
+    for name in ("a.jsonl", "b.jsonl"):
+        (traces / name).write_text("{}\n")
+    (traces / "keep.txt").write_text("x")
+    dest, n = archive_traces(traces, archive, stamp="s")
+    assert n == 2 and dest == archive / "s"
+    assert sorted(p.name for p in dest.iterdir()) == ["a.jsonl", "b.jsonl"]
+    assert [p.name for p in traces.iterdir()] == ["keep.txt"]
+    (traces / "c.jsonl").write_text("{}\n")
+    dest2, n2 = archive_traces(traces, archive, stamp="s")
+    assert n2 == 1 and dest2 == archive / "s-1"
+    assert (archive / "s" / "a.jsonl").exists()
