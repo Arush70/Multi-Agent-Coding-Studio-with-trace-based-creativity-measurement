@@ -83,3 +83,25 @@ def test_env_var_expands_into_api_key(tmp_path, monkeypatch):
 def test_prompt_hash_is_short_and_stable():
     assert prompt_hash("abc") == prompt_hash("abc")
     assert len(prompt_hash("abc")) == 16
+
+
+def test_extra_body_is_sent_and_keyed_without_changing_old_hashes(tmp_path, monkeypatch):
+    plain = LLMClient(_profile(), cache_dir=tmp_path)
+    prof = _profile()
+    prof.extra_body = {"reasoning_effort": "none"}
+    opt = LLMClient(prof, cache_dir=tmp_path)
+    msgs = [{"role": "user", "content": "hi"}]
+    assert plain.request_hash(msgs, 0.7, 128, 1) != opt.request_hash(msgs, 0.7, 128, 1)
+    assert "extra_body" not in plain.profile.identity
+    assert opt.profile.identity["extra_body"] == {"reasoning_effort": "none"}
+
+    sent = {}
+
+    def fake_post(url, json=None, headers=None, timeout=None):
+        sent.update(json)
+        return _FakeResponse("<think>\nplan\n</think>\n\nanswer")
+
+    monkeypatch.setattr(opt._session, "post", fake_post)
+    out = opt.chat(msgs, seed=1)
+    assert sent["reasoning_effort"] == "none"
+    assert out.text == "answer"

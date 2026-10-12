@@ -47,18 +47,22 @@ class ModelProfile:
     quantisation: str = ""
     temperature: float = 0.7
     max_tokens: int = 2048
+    extra_body: dict[str, Any] = field(default_factory=dict)
 
     @property
     def identity(self) -> dict[str, Any]:
         # Stamped into the header of every session trace, so each result records exactly
         # which model, pinned revision, quantisation and temperature produced it.
-        return {
+        ident = {
             "profile": self.name,
             "model": self.model,
             "revision": self.revision,
             "quantisation": self.quantisation,
             "temperature": self.temperature,
         }
+        if self.extra_body:
+            ident["extra_body"] = self.extra_body
+        return ident
 
 
 @dataclass
@@ -103,6 +107,11 @@ class LLMClient:
             "max_tokens": max_tokens,
             "seed": seed,
         }
+        # Backend options (for example switching off a model's thinking mode) change the
+        # output, so they are part of the key. They are added only when set, so caches built
+        # without them keep their hashes.
+        if self.profile.extra_body:
+            payload["extra_body"] = self.profile.extra_body
         blob = json.dumps(payload, sort_keys=True, ensure_ascii=False).encode()
         return hashlib.sha256(blob).hexdigest()
 
@@ -146,6 +155,7 @@ class LLMClient:
             "temperature": temperature,
             "max_tokens": max_tokens,
             "seed": seed,
+            **self.profile.extra_body,
         }
         headers = {"Authorization": f"Bearer {self.profile.api_key}", "Content-Type": "application/json"}
         url = self.profile.base_url.rstrip("/") + "/chat/completions"
@@ -167,7 +177,7 @@ class LLMClient:
         else:
             raise RuntimeError(f"LLM call failed after {retries} attempts: {last_err}")
 
-        text = raw["choices"][0]["message"]["content"]
+        text = _strip_thinking(raw["choices"][0]["message"].get("content") or "")
         usage = raw.get("usage", {})
         comp = Completion(
             text=text,
@@ -191,6 +201,17 @@ class LLMClient:
             "profile": self.profile.identity,
         }, ensure_ascii=False, indent=1))
         return comp
+
+
+_THINK_RE = re.compile(r"^\s*<think>.*?</think>\s*", re.DOTALL)
+
+
+def _strip_thinking(text: str) -> str:
+    """Remove a leading <think>...</think> block that some reasoning models put in the answer.
+
+    The full response, including any reasoning, is still stored in the cache entry.
+    """
+    return _THINK_RE.sub("", text, count=1)
 
 
 def prompt_hash(text: str) -> str:
