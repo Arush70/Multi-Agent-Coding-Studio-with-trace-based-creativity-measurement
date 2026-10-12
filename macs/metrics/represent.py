@@ -1,18 +1,12 @@
 """Code normalisation and the two representations.
 
-Arush - this turns a piece of code into numbers so the computer can compare solutions. Two
-ways, kept separate: AST features (an interpretable vector: how many loops, does it use a dict,
-is it recursive...) which needs nothing extra, and a UniXcoder embedding (needs the optional
-'embed' extra; heavy, loads only if you call it). `normalise` first strips comments and renames
-local variables so that JUST renaming or reformatting never counts as a new idea - only a real
-change of approach does.
+* ``normalise``: strip comments/docstrings, canonicalise local identifiers and format with
+  black, so that renaming and reformatting do not count as a new idea.
+* ``ast_features``: an interpretable 26-dimensional structural vector from Python's ``ast``
+  (loop counts, nesting, data structures used, recursion, cyclomatic complexity, ...).
+* ``embed``: UniXcoder embedding (requires the optional ``embed`` extra; loads lazily).
 
-* ``normalise``: strip comments/docstrings, format with black, canonicalise
-  local identifiers, so that renaming and reformatting do not count as novelty.
-* ``ast_features``: interpretable structural vector from Python's ``ast``.
-* ``embed``: UniXcoder embedding (requires the ``embed`` extra; loads lazily).
-
-Both representations are analysed separately; no composite is formed.
+The two representations are analysed separately; no composite is formed.
 """
 from __future__ import annotations
 

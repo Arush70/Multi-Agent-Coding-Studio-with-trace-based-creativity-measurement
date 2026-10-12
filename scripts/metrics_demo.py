@@ -1,13 +1,11 @@
-"""See the creativity metrics behave, each on a clean example.
-
-Arush - run this to watch the four pieces work before any big experiment:
+"""Demonstrate the creativity metrics on small, known examples.
 
     python scripts/metrics_demo.py
 
-Part 1 shows the representation ignores renaming (only a real change of approach counts).
-Part 2 shows novelty: a typical point scores ~0, an outlier scores high.
-Part 3 shows diversity: three different strategies form three families, matching hand labels.
-Part 4 shows correctness x novelty combined into the headline 'correct-and-novel' rate.
+Part 1: the representation ignores renaming (only a change of approach counts).
+Part 2: novelty: a typical point scores about 0, an outlier scores high.
+Part 3: diversity: three different strategies form three families, matching hand labels.
+Part 4: correctness and novelty combined into the correct-and-novel rate.
 """
 import numpy as np
 from macs.metrics.represent import normalise, ast_features, FEATURE_NAMES

@@ -1,21 +1,17 @@
 """Append-only JSONL trace writer with per-line validation.
 
-Arush - this is how a session becomes data. Every event (a proposal, an
-intervention, a test result) is written as one JSON line, and EACH line is checked
-against schema.json BEFORE it is written. That ordering is the whole point: a
-malformed event blows up now, at logging time, with a clear error - not three weeks
-later when you are running the analysis and discover half your traces are unusable.
-A broken trace you find today costs a minute; one you find in November costs a rerun.
+Every event (a proposal, an intervention, a test result) is written as one JSON line, and
+each line is validated against schema.json before it is written, so a malformed event fails
+immediately with a clear error instead of surfacing later during analysis.
 
-Design choices that matter for your dissertation:
-  * Append-only. We never rewrite a line. The file is an immutable record of what
-    happened, in order. This is what makes a trace defensible evidence.
-  * seq is monotonic and validated on read. If events are ever out of order, the
-    validator says so, because your analysis depends on order (e.g. "first 10
-    proposals").
-  * The header (written once, on session_start) carries the model, revision, seed
-    and prompt hashes - everything needed to reproduce the session. No header, no
-    reproducibility.
+Design choices:
+  * Append-only. Lines are never rewritten; the file is an immutable, ordered record of
+    what happened.
+  * seq is monotonic and validated on read, because the analysis depends on event order
+    (e.g. "first 10 proposals").
+  * The header (written once, on session_start) carries the model, revision, seed and
+    prompt hashes: everything needed to reproduce the session.
+  * session_end can carry a note (end_note), e.g. tokens used or why a session stopped.
 """
 from __future__ import annotations
 
@@ -28,10 +24,9 @@ import jsonschema
 
 SCHEMA_PATH = Path(__file__).with_name("schema.json")
 
-# Bump this when the schema changes shape. It is stamped into every session header,
-# so a trace always says which schema version produced it. You freeze it at
-# schema-v0.1.0 (a git tag) at the end of Week 1; after that, a change to the schema
-# is a deliberate, versioned event, not an accident.
+# Bumped when the schema changes shape. It is stamped into every session header, so a
+# trace always says which schema version produced it. Frozen as the git tag
+# schema-v0.1.0; any later schema change is a deliberate, versioned amendment.
 SCHEMA_VERSION = "0.1.0"
 
 _SCHEMA = json.loads(SCHEMA_PATH.read_text())
@@ -45,7 +40,7 @@ def validate_event(event: dict[str, Any]) -> None:
 
 class TraceWriter:
     """Use as a context manager. It writes session_start on enter and session_end on
-    exit, so you can never forget to bracket a session:
+    exit, so every session is bracketed:
 
         with TraceWriter(path, session_id="S1", task_id="t1_two_sum",
                          condition="C", header=hdr) as tr:
@@ -114,8 +109,8 @@ def read_trace(path: str | Path) -> Iterator[dict[str, Any]]:
 
 def validate_file(path: str | Path) -> list[str]:
     """Check a whole trace file. Returns a list of human-readable error strings, empty
-    if the file is completely valid. Used by scripts/validate_traces.py and CI, so a
-    bad trace can never quietly enter your dataset."""
+    if the file is completely valid. Used by the run scripts and the tests, so a bad
+    trace cannot quietly enter the dataset."""
     errors: list[str] = []
     last_seq = -1
     for i, ev in enumerate(read_trace(path)):

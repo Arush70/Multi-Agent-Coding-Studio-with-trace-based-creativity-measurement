@@ -1,7 +1,7 @@
-"""Tests for the batch runner (scripts/run_experiment.py). Added 2026-10-09 (docs/DEV_LOG.md).
+"""Tests for the batch runner (scripts/run_experiment.py) and the dashboard headline.
 
-Arush - checks the parts that make re-running safe: seed parsing, and that only COMPLETE traces
-from the CURRENT orchestrator count as done (a crashed session gets run again).
+Check the parts that make re-running safe: seed parsing, task selection, and that only complete
+traces from the current orchestrator count as done (a crashed session is run again).
 """
 from __future__ import annotations
 

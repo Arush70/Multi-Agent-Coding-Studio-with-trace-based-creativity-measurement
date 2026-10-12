@@ -1,17 +1,16 @@
 """Freeze the Tier 3 test instances, once, reproducibly.
 
-Arush - the hard/open problems are scored on fixed problem instances (item lists, distance
-matrices, graphs, job lists). Those instances must be FROZEN: generated once from fixed seeds,
-written next to the task, committed, and never regenerated - otherwise a re-run would score
-different heuristics on different problems and nothing would be comparable. This script does that.
-cap_set has no instances (it's scored on dimensions 3/4/5 directly), so it's skipped.
+The hard/open problems are scored on fixed problem instances (item lists, distance
+matrices, graphs, job lists). The instances are generated once from fixed seeds, written
+next to the task, committed, and never regenerated, so every heuristic is scored on the
+same problems. cap_set has no instances (it is scored on dimensions 3/4/5 directly) and
+is skipped.
 
-Run once, after any change to a task's instance size/seeds:
+Run once, after any change to a task's instance size or seeds:
     python scripts/make_instances.py              # writes tasks/tier3/<task>/instances.json
     python scripts/make_instances.py --overwrite  # replace existing frozen instances
 
-The seeds and sizes are read from each task.yaml's `heuristic:` block, so the task file is the
-single source of truth.
+Seeds are read from each task.yaml's `heuristic:` block; sizes are set in SIZES below.
 """
 from __future__ import annotations
 

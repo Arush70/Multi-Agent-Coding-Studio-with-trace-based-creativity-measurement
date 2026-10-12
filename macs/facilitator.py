@@ -1,14 +1,13 @@
 """Facilitator: convergence detection and intervention.
 
-Arush - the Facilitator is the heart of your hypothesis. It watches the studio's proposals
-come in and measures whether they are CONVERGING (each new idea landing close to an earlier
-one). When the recent proposals stop being novel - their average nearest-neighbour distance
-over a short window drops below a threshold tau - it intervenes, telling the Innovator to try
-a genuinely different approach. The four intervention types rotate so you can compare them.
+The Facilitator watches the studio's proposals and measures whether they are converging (each
+new idea landing close to an earlier one). When the mean nearest-neighbour distance over the
+last few proposals drops below a threshold tau, it intervenes and tells the Innovator to try a
+genuinely different approach. The four intervention types rotate so they can be compared.
 
-The one rule that keeps this honest: tau is NOT tuned to make results look good. It is fixed
-by a pre-registered rule - the 25th percentile of the reference set's own nearest-neighbour
-distances - so the Facilitator's firing threshold is decided by the task, not by you.
+tau is not tuned to the results. It is fixed by a pre-registered rule, the 25th percentile of
+the reference set's own nearest-neighbour distances, so the firing threshold is decided by the
+task.
 """
 from __future__ import annotations
 
@@ -52,14 +51,12 @@ class Facilitator:
         return d
 
     def window_metric(self) -> float | None:
-        """Mean nearest-neighbour distance over the last `window` PROPOSALS.
+        """Mean nearest-neighbour distance over the last `window` proposals.
 
-        Arush - fix 2026-10-09 (docs/DEV_LOG.md): this used to wait for `window` DISTANCES,
-        i.e. window + 1 proposals, so with window 3 and K = 5 the Facilitator could first fire
-        after proposal 4 and change only proposal 5. The proposal defines the window as three
-        PROPOSALS: once three exist, the metric is the mean of their distances to earlier
-        proposals (the first proposal has none, so the first window averages two distances).
-        It can now fire after proposal 3 and shape proposals 4 and 5.
+        The window is counted in proposals, not distances: once `window` proposals exist, the
+        metric is the mean of their distances to earlier proposals (the first proposal has no
+        earlier neighbour, so the first window averages window - 1 distances). With window 3
+        and K = 5 the Facilitator can fire after proposal 3 and shape proposals 4 and 5.
         """
         if len(self._history) < self.window:
             return None
@@ -108,11 +105,10 @@ class Facilitator:
 # --------------------------------------------------------------------------------------------
 # Naming what the proposals have converged on, so interventions are specific.
 #
-# Arush - added 2026-10-09 (docs/DEV_LOG.md). The constraint and exclusion prompts used to be
-# filled with the generic "the data structure used so far" / "the current approach", because
-# nothing at run time knew what the proposals had in common. These helpers read it off the code
-# (which construct the converging implementations share) and the Innovator's own strategy text
-# (its approach name), so the prompt says e.g. "Propose a strategy that does NOT use a set".
+# These helpers read what the converging proposals have in common from the code (which
+# construct the recent implementations share) and from the Innovator's strategy text (its
+# approach name), so the constraint and exclusion prompts are specific, e.g. "Propose a strategy
+# that does NOT use a set", rather than generic.
 
 # (label used in the prompt, detector) in priority order; ties go to the earlier entry
 _CONSTRUCTS = ("a set", "a dictionary / hash map", "sorting", "recursion", "a heap",

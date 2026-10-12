@@ -1,8 +1,9 @@
-"""Orchestrator tests with a FAKE model and the subprocess sandbox.
+"""Orchestrator tests with a fake model and the subprocess sandbox.
 
-Arush - proves the whole pipeline wires together (learner -> tutor, and the full studio loop)
-WITHOUT Ollama or Docker, so it runs in CI. The fake model returns known solutions, so the
-produced traces must be schema-valid and contain the right events.
+Check that the whole session wires together (learners -> tutor, and the full studio loop with
+selection, revision rounds, token ceiling and Facilitator) without a model server or Docker, so
+they run in CI. The fake model returns known solutions, so the traces must be schema-valid and
+contain the right events.
 """
 from __future__ import annotations
 import sys
@@ -120,7 +121,7 @@ def test_D_minus_disables_facilitator(tmp_path):
     assert "learner_2" in roles                     # D_minus is a two-learner condition
 
 
-# --- added 2026-10-07 (docs/DEV_LOG.md): checks for the fixes made that day -----------------
+# --- learners, critique and revision inputs, tau fallback, header ----------------------------
 
 class RecordingClient(VariedClient):
     """Remembers every prompt it was sent, so a test can check what each role actually saw."""
@@ -184,7 +185,7 @@ def test_header_records_tau_and_learners(tmp_path):
     assert h["max_revision_rounds"] == 3 and h["orchestrator_version"] == "0.2.0"
 
 
-# --- added 2026-10-09 (docs/DEV_LOG.md): selection, revision rounds, token ceiling, Facilitator ---
+# --- selection, revision rounds, token ceiling, Facilitator -----------------------------------
 
 class SelectingClient(VariedClient):
     """The selector names p2; everything else as VariedClient."""

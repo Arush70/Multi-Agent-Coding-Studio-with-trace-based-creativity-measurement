@@ -1,13 +1,10 @@
-"""Run one session against your local model and write a trace. YOUR FIRST REAL DATA.
+"""Run one session against the configured model and write a trace.
 
-Arush - usage (Ollama must be running; you are on condition A or C for now):
+    python scripts/run_session.py --task tasks/tier1/t1_mbpp19_test_duplicate --condition A --seed 1 --sandbox subprocess
 
-    python scripts/run_session.py --task tasks/tier1/t1_two_sum --condition A --seed 1 --sandbox subprocess
-
-Use --sandbox subprocess for now (Docker isn't up yet). Switch to --sandbox docker for
-the real experiment once Docker works - that is the only backend whose numbers you report.
-The script writes data/traces/<id>.jsonl, validates it, and prints it so you can see the
-learner turn, the tutor's solution, and the sandbox verdict.
+The subprocess sandbox is for development; reported results use --sandbox docker. The
+script writes data/traces/<id>.jsonl, validates it, and prints the events. For many
+sessions at once use scripts/run_experiment.py.
 """
 import argparse
 from pathlib import Path

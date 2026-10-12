@@ -1,12 +1,10 @@
-"""Inspect one task: show what an agent sees, and (separately) what the scorer sees.
-
-Arush - run this on any task you write, to eyeball the boundary with your own eyes:
+"""Inspect one task: show what an agent sees and, separately, what the scorer sees.
 
     python scripts/check_task.py tasks/tier1/t1_mbpp19_test_duplicate
 
-The top block is agent_view - the ONLY thing the model is shown. The bottom block is
-the held-out tests, which the model never sees. If anything from the bottom appears in
-the top, stop: you have a leak.
+The top block is agent_view, the only text the model is shown. The bottom block is the
+held-out tests, which the model never sees. Anything from the bottom block appearing in
+the top block indicates a leak.
 """
 import sys
 from macs.tasks.bank import load_task
@@ -26,7 +24,7 @@ def main() -> None:
     for h in hts:
         print(" ", h)
 
-    # A tiny built-in leak check, so the script itself flags the disaster case.
+    # A small built-in leak check, so the script itself flags a leak.
     leaks = [h for h in hts if h in t.agent_view]
     print("\nLEAK CHECK:", "OK - no held-out test in agent_view" if not leaks else f"LEAK! {leaks}")
 
