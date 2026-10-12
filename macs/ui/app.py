@@ -25,6 +25,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 TRACES_DIR = ROOT / "data" / "traces"
+ARCHIVE_DIR = ROOT / "data" / "traces_archive"
 RESULTS_FILE = ROOT / "data" / "results" / "summary.json"
 NOVELTY_PERCENTILE = 0.90
 
@@ -59,6 +60,29 @@ METRICS = {
 
 def list_traces() -> list[Path]:
     return sorted(TRACES_DIR.glob("*.jsonl"))
+
+
+def archive_traces(traces_dir: Path = TRACES_DIR, archive_root: Path = ARCHIVE_DIR,
+                   stamp: str | None = None) -> tuple[Path | None, int]:
+    """Move every trace in traces_dir into archive_root/<stamp>/ and return (folder, count).
+
+    Traces are moved rather than deleted so a clear can be undone by moving the files back.
+    Returns (None, 0) when there is nothing to move.
+    """
+    from datetime import datetime
+    files = sorted(Path(traces_dir).glob("*.jsonl"))
+    if not files:
+        return None, 0
+    stamp = stamp or datetime.now().strftime("%Y%m%d-%H%M%S")
+    dest = Path(archive_root) / stamp
+    n = 1
+    while dest.exists():
+        dest = Path(archive_root) / f"{stamp}-{n}"
+        n += 1
+    dest.mkdir(parents=True)
+    for f in files:
+        f.replace(dest / f.name)
+    return dest, len(files)
 
 
 def read_events(path: Path) -> list[dict]:
@@ -299,6 +323,19 @@ def main() -> None:  # pragma: no cover - layout isn't unit-tested
     with tab_tr:
         st.subheader("Open a session")
         traces = list_traces()
+        if traces:
+            with st.expander(f"Clear all traces ({len(traces)} in data/traces/)"):
+                st.caption("Moves every trace into data/traces_archive/<date-time>/. Nothing is deleted; "
+                           "move the files back into data/traces/ to restore them.")
+                confirm = st.checkbox("I want to clear all traces", key="confirm_clear")
+                if st.button("Clear all traces", type="primary", disabled=not confirm):
+                    dest, moved = archive_traces()
+                    for k in ("ptable_cache", "scored", "confirm_clear"):
+                        st.session_state.pop(k, None)
+                    st.session_state["cleared_msg"] = f"Moved {moved} trace(s) to {dest.relative_to(ROOT)}"
+                    st.rerun()
+        if "cleared_msg" in st.session_state:
+            st.success(st.session_state.pop("cleared_msg"))
         if not traces:
             st.info("No traces in data/traces/ yet.")
         else:
