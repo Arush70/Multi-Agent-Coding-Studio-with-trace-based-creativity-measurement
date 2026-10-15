@@ -7,6 +7,33 @@ what changed, why, and which files. Pre-registration changes are also logged, da
 
 ---
 
+## 2026-10-15 (Week 4, pilot review) - selection reminder, code extraction, switchable Facilitator space
+
+From the 43 completed pilot sessions (orchestrator 0.2.1):
+
+- **Critic selection fell back in 6 of 26 studio sessions.** In every case the 9B, shown all five
+  proposals with their code, wrote an implementation instead of a `SELECTED: pN` line. Change: if
+  the reply has no valid selection, the Critic is sent one fixed reminder ("Reply with exactly one
+  line, SELECTED: <id>, naming one of p0, ..., p4. Do not write code.", seed s+251); only if that
+  also fails is the deterministic fallback used. The selection event records `critic`,
+  `critic_after_reminder` or `fallback:...`, and its tokens include the reminder call. No prompt in
+  `roles.yaml` changed.
+- **12 of 164 studio code outputs did not parse.** Two were replies that opened a ```python block
+  and never closed it, so the extractor kept the whole reply; code extraction now takes an unclosed
+  block to the end of the reply and accepts the `py` tag. The other ten are model failures (prose
+  instead of code, or code cut off) and count as incorrect proposals; the parse rate is a pilot
+  statistic. All 18 tutor outputs parsed.
+- **Facilitator space is switchable.** `FACILITATOR_REPRESENTATION` ("ast" or "unixcoder") sets the
+  space for both the Facilitator's distances and tau; the trace header records it. It stays "ast"
+  until the pilot decision rule (PREREGISTRATION, 2026-10-15) is applied to the UniXcoder numbers.
+- `tau_diagnostics.py` skips sessions that crashed, and skips unparseable code in UniXcoder mode as
+  in AST mode.
+
+Orchestrator 0.2.2 (selection and extraction changed). Re-running the pilot is cheap: unchanged
+requests are served from the response cache.
+
+---
+
 ## 2026-10-15 (Week 4, pilot) - first 9B pilot, encoding fix, Facilitator firing check
 
 **Pilot run** (orchestrator 0.2.1, `qwen3.5:9b`, 3 tasks x 5 conditions x 3 seeds = 45 sessions):
