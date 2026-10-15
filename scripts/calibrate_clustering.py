@@ -78,7 +78,7 @@ def _load_labels() -> dict[str, list[tuple[str, str]]]:
             continue
         rec = json.loads(line)
         fam = (rec.get("family") or "").strip()
-        if not fam:
+        if not fam or fam == "unsure":           # 'unsure' (dashboard labelling) is not a label
             blank += 1
             continue
         by_task[rec["task_id"]].append((rec["code"], fam))

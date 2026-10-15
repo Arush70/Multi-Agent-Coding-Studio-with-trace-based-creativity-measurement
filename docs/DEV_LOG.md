@@ -7,6 +7,40 @@ what changed, why, and which files. Pre-registration changes are also logged, da
 
 ---
 
+## 2026-10-16 (Week 4) - the whole pipeline in the dashboard
+
+Everything that needed the terminal can now be done from `streamlit run macs/ui/app.py`:
+
+| Tab | What it does | Runs |
+|---|---|---|
+| Sidebar | model profile (from config/models.yaml, keys hidden) and sandbox, used by every tab; job status | - |
+| Overview | "Analyse all traces" (writes summary.json), Studio vs Tutor, per-condition table | `analyze.py` |
+| Statistics | S8 contrasts with 95% CIs, Holm, MDE for a chosen design (tasks, seeds) | `stats_report.py` |
+| References | per-task status (ready / incomplete / missing / other model); clear to `data/reference_archive/` (never deleted); generate (missing only, all, or chosen, samples per task); Facilitator firing check | `build_reference.py`, `tau_diagnostics.py` |
+| Multi-run | tasks (all, tier, chosen), conditions, **number of seeds** (default 6, as in the proposal) and first seed; shows sessions total / done / to run for this model, warns about tasks without a ready reference and a missing torch; progress bar and Stop; single quick session | `run_experiment.py`, `run_session.py` |
+| Labelling (SC3) | blind labelling pool (condition, strategy and automatic family hidden; fixed shuffled order), one solution at a time with the task's known families plus `other` / `unsure`; two raters with Cohen's kappa; calibration sweep | `calibrate_clustering.py` |
+| Setup | model server reachable, model available, torch/transformers, Docker, statsmodels | - |
+
+Long steps run as background jobs (`macs/ui/jobs.py`): the script runs in its own process through a
+small wrapper that records the exit code, output goes to `data/jobs/<kind>.log`, and the page
+reads progress from it. Refreshing or closing the page does not stop a job; Stop ends the job and
+everything it started. Two jobs that use the model cannot run at the same time.
+
+Fixes found while building it:
+- `run_experiment.py` counted a cell as done whatever model produced it; it now counts only
+  sessions from the chosen profile's model, so switching models re-runs them.
+- A long comma-separated task list was tried as a directory name and crashed with "File name too
+  long" (`build_reference.py` / `run_experiment.py`); it is now only treated as a path when it can be.
+- `calibrate_clustering.py` ignores `unsure` labels.
+
+The layout was exercised end to end against a stand-in Streamlit with the pilot data (every tab,
+every button); background jobs, reference status/archiving, run plans and labelling are covered by
+`tests/test_ui_pipeline.py`. Files: `macs/ui/app.py`, `macs/ui/jobs.py`, `macs/ui/pipeline.py`,
+`scripts/run_experiment.py`, `scripts/build_reference.py`, `scripts/calibrate_clustering.py`,
+`pyproject.toml` (`ui` extra), `README.md`, `.gitignore` (`data/jobs/`).
+
+---
+
 ## 2026-10-15 (Week 4, S8) - statistics: mixed models, planned contrasts, Holm, MDE
 
 `macs/analysis/stats.py` fits the proposal's model (3.8) for each outcome:

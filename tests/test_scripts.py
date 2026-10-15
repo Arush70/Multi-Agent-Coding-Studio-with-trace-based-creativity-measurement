@@ -100,3 +100,10 @@ def test_tau_diagnostics_checks_only_where_the_facilitator_can_act():
     from tau_diagnostics import window_checks
     X = np.random.default_rng(0).random((5, 26))
     assert len(window_checks(X, k=5, window=3)) == 2              # after proposals 3 and 4, not 5
+
+
+def test_resolve_tasks_accepts_a_long_list_of_ids():
+    from build_reference import resolve_tasks
+    from macs.tasks.bank import load_bank
+    ids = [t.id for t in load_bank()]
+    assert [t.id for t in resolve_tasks(",".join(ids))] == ids

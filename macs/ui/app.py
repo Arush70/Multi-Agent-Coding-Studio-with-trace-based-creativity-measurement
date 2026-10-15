@@ -1,20 +1,24 @@
-"""MACS dashboard: run sessions, read traces, and see the creativity measurement.
+"""MACS dashboard: the whole pipeline without the terminal.
 
 Tabs:
-  * Overview   - the Studio-vs-Tutor comparison as metric cards and charts, with a plain
-                 explanation of every number. Families are compared at a matched number of
-                 solutions per task.
-  * Creativity - how creativity is measured: diversity, novelty, correctness and the joint
-                 correct-and-novel rate, each defined with its direction.
-  * Traces     - open any session: the strategies proposed, each proposal's code, whether it
-                 passed, how novel it is, and any Facilitator interventions.
-  * Run        - start sessions without the terminal: one condition or all five, for a chosen
-                 task and sandbox backend. Needs the model server running.
+  * Overview    - the Studio-vs-Tutor comparison; "Analyse all traces" scores every current trace.
+  * Statistics  - S8: mixed-effects contrasts with 95% CIs, Holm, minimum detectable effect.
+  * Creativity  - how creativity is measured: diversity, novelty, correctness, correct-and-novel.
+  * Traces      - open any session: proposals, code, correctness, novelty, interventions.
+  * References  - per-task reference status, clear old references, generate new ones, and the
+                  Facilitator firing check.
+  * Multi-run   - tasks x conditions x seeds (number of seeds chosen here), in the background,
+                  with progress and a Stop button; plus a single quick session.
+  * Labelling   - SC3 blind hand-labelling (two raters, agreement) and threshold calibration.
+  * Setup       - model server, model, torch, Docker and statistics checks.
+
+Model profile and sandbox are chosen once in the sidebar. Long steps run as background jobs
+(macs/ui/jobs.py), so refreshing or closing the page does not stop them.
 
 Run with:   streamlit run macs/ui/app.py
 
-Data-loading logic is kept in plain functions (top of file) so it can be tested without
-Streamlit; only the layout imports `st`.
+Data-loading logic is kept in plain functions (here and in macs/ui/pipeline.py) so it can be
+tested without Streamlit; only main() imports `st`.
 """
 from __future__ import annotations
 
@@ -192,40 +196,117 @@ def studio_vs_tutor(summary: dict) -> dict:
     return {"studio_families": avg(STUDIO, key), "tutor_families": avg(TUTOR, key), "matched": key != "avg_families"}
 
 
-def run_session(task_dir: str, condition: str, seed: int, backend: str = "subprocess") -> subprocess.CompletedProcess:
-    cmd = [sys.executable, str(ROOT / "scripts" / "run_session.py"),
-           "--task", task_dir, "--condition", condition, "--seed", str(seed), "--sandbox", backend]
+def run_session(task_dir: str, condition: str, seed: int, backend: str = "subprocess",
+                profile: str = "local") -> subprocess.CompletedProcess:
+    cmd = [sys.executable, str(ROOT / "scripts" / "run_session.py"), "--task", task_dir,
+           "--condition", condition, "--seed", str(seed), "--sandbox", backend, "--profile", profile]
     return subprocess.run(cmd, cwd=str(ROOT), capture_output=True, text=True, timeout=1800)
 
 
 # ----------------------------------------------------------------- Streamlit UI
 
+def _job_panel(st, kind: str, title: str, *, total_hint: int | None = None) -> dict:
+    """Status of a background job: progress, last lines of output, and a Stop button."""
+    from macs.ui import jobs
+    stt = jobs.status(kind)
+    state = stt["state"]
+    if state == "none":
+        return stt
+    meta = stt["meta"]
+    icon = {"running": "⏳", "finished": "✅", "failed": "❌", "stopped": "⏹"}.get(state, "")
+    st.markdown(f"**{icon} {title}: {state}**  ·  started {meta.get('started', '?')}"
+                + (f"  ·  ended {meta['ended']}" if meta.get("ended") else ""))
+    prog = stt["progress"]
+    if prog:
+        k, n = prog
+        st.progress(min(k / max(n, 1), 1.0), text=f"{k} of {n}")
+    elif state == "running" and total_hint:
+        st.caption("starting...")
+    if state == "running":
+        if st.button("Stop", key=f"stop_{kind}"):
+            jobs.stop(kind)
+            st.rerun()
+    with st.expander("Output", expanded=state in ("failed",)):
+        st.code(stt["log"] or "(no output yet)", language="text")
+    return stt
+
+
+def _live(st, key: str, fn, every: int = 3):
+    """Run fn inside an auto-refreshing fragment when Streamlit supports it (1.37+); otherwise
+    once, with a Refresh button. `key` gives each live panel its own identity."""
+    def panel():
+        fn()
+    panel.__name__ = panel.__qualname__ = f"live_{key}"
+    frag = getattr(st, "fragment", None)
+    if frag is None:
+        panel()
+        if st.button("Refresh", key=f"refresh_{key}"):
+            st.rerun()
+        return
+    frag(run_every=every)(panel)()
+
+
 def main() -> None:  # pragma: no cover - layout isn't unit-tested
     import pandas as pd
     import streamlit as st
     from macs.tasks.bank import load_bank
+    from macs.ui import jobs, pipeline
 
     st.set_page_config(page_title="MACS dashboard", layout="wide")
     st.title("Multi-Agent Coding Studio - dashboard")
     st.caption("Measuring whether a studio of agents writes more creative, still-correct code than a single tutor.")
 
-    tab_over, tab_cre, tab_tr, tab_run = st.tabs(
-        ["📊 Overview", "🎨 How creativity is measured", "🔍 Traces", "▶ Run"])
+    # ---------------------------------------------------------- sidebar: shared settings
+    profiles = pipeline.list_profiles()
+    names = [p["name"] for p in profiles] or ["local"]
+    default = next((i for i, p in enumerate(profiles) if p["default"]), 0)
+    with st.sidebar:
+        st.header("Settings")
+        profile = st.selectbox("Model profile", names, index=default,
+                               help="From config/models.yaml. References, runs and analysis use this model.")
+        prof = next((p for p in profiles if p["name"] == profile), {})
+        model = prof.get("model") or None
+        st.caption(f"model: `{model or '?'}`  \nrevision: `{prof.get('revision') or '-'}`")
+        sandbox = st.selectbox("Sandbox", ["subprocess", "docker"],
+                               help="subprocess for development; docker (isolated) for numbers you report")
+        st.divider()
+        st.markdown("**Background jobs**")
+        any_job = False
+        for kind, label in [("references", "References"), ("multirun", "Multi-run"), ("analyze", "Analysis"),
+                            ("stats", "Statistics"), ("tau", "Facilitator check"), ("calibrate", "SC3 calibration")]:
+            s_ = jobs.status(kind)["state"]
+            if s_ != "none":
+                any_job = True
+                st.caption(f"{label}: {s_}")
+        if not any_job:
+            st.caption("none yet")
+
+    bank = load_bank()
+    task_by_id = {t.id: t for t in bank}
+
+    tabs = st.tabs(["📊 Overview", "📈 Statistics", "🎨 How creativity is measured", "🔍 Traces",
+                    "📚 References", "🚀 Multi-run", "🏷 Labelling (SC3)", "⚙ Setup"])
+    tab_over, tab_stats, tab_cre, tab_tr, tab_ref, tab_multi, tab_lab, tab_setup = tabs
 
     # ============================================================ OVERVIEW
     with tab_over:
-        left, right = st.columns([3, 1])
-        left.subheader("Studio vs Tutor - the comparison")
-        backend = right.selectbox("Sandbox", ["subprocess", "docker"], help="subprocess = dev; docker = isolated")
-        if st.button("Re-score all traces", type="primary"):
-            with st.spinner("scoring traces..."):
-                st.session_state["scored"] = score_all(backend)
-        scored = st.session_state.get("scored")
-        if scored is None and RESULTS_FILE.exists():
+        st.subheader("Studio vs Tutor - the comparison")
+        st.caption("Scores every current trace (this orchestrator version, newest model) and saves the results "
+                   "to data/results/summary.json. Runs in the background.")
+        if st.button("Analyse all traces", type="primary", key="analyze_btn"):
+            try:
+                args = ["--sandbox", sandbox] + (["--model", model] if model else [])
+                jobs.start("analyze", "analyze.py", args)
+                st.rerun()
+            except RuntimeError as ex:
+                st.warning(str(ex))
+        _live(st, "analyze", lambda: _job_panel(st, "analyze", "Analysis"))
+        scored = None
+        if RESULTS_FILE.exists():
             data = json.loads(RESULTS_FILE.read_text(encoding="utf-8"))
             scored = (data.get("sessions", []), data.get("summary", {}))
-        if not scored:
-            st.info("No results yet. Click **Re-score all traces**, or run a session in the Run tab first.")
+        if not scored or not scored[1]:
+            st.info("No results yet. Run sessions in **Multi-run**, then **Analyse all traces**.")
         else:
             _sessions, summary = scored
             sv = studio_vs_tutor(summary)
@@ -239,11 +320,10 @@ def main() -> None:  # pragma: no cover - layout isn't unit-tested
                          else "per session (not size-matched: a tutor session has only one solution)")
                 st.info(f"Studio: **{sv['studio_families']}** solution families on average vs "
                         f"**{sv['tutor_families']}** for the tutor, {basis}.")
-
-            # per-condition cards
             st.markdown("##### Per condition")
-            cols = st.columns(len([c for c in CONDITIONS if c in summary]) or 1)
-            for col, cond in zip(cols, [c for c in CONDITIONS if c in summary]):
+            present = [c for c in CONDITIONS if c in summary]
+            cols = st.columns(len(present) or 1)
+            for col, cond in zip(cols, present):
                 m = summary[cond]
                 tag = "🎓 Tutor" if cond in TUTOR else "🧪 Studio"
                 col.markdown(f"**{cond}** · {tag}")
@@ -251,46 +331,79 @@ def main() -> None:  # pragma: no cover - layout isn't unit-tested
                 col.metric("Families (matched)", m.get("avg_families_matched", m.get("avg_families")))
                 col.metric("Novelty (z)", m.get("avg_mean_novelty"))
                 col.metric("Correct & novel", m.get("avg_correct_and_novel"))
-
-            # charts
             rows = [{"Condition": c, "Families": summary[c].get("avg_families_matched", summary[c].get("avg_families")),
-                     "Correct&Novel": summary[c].get("avg_correct_and_novel"),
-                     "Novelty": summary[c].get("avg_mean_novelty")}
-                    for c in CONDITIONS if c in summary]
+                     "Correct&Novel": summary[c].get("avg_correct_and_novel")} for c in present]
             df = pd.DataFrame(rows).set_index("Condition")
             cc1, cc2 = st.columns(2)
             with cc1:
                 st.markdown("**Solution families by condition**")
                 st.bar_chart(df["Families"].dropna(), height=260)
-                st.caption("Families per condition, counted at the same number of solutions per task "
-                           "(all conditions clustered together), so tutor and studio are compared fairly.")
+                st.caption("Counted at the same number of solutions per task, so tutor and studio are compared fairly.")
             with cc2:
                 st.markdown("**Creativity score (correct & novel)**")
                 st.bar_chart(df["Correct&Novel"].dropna(), height=260)
                 st.caption("Share of proposals that are both novel and correct (0-1).")
-
-            with st.expander("How to read this (important on the current pilot)"):
+            with st.expander("How to read this"):
                 st.markdown(
-                    "- **Families** are counted at the same number of solutions for every condition on a "
-                    "task, so a tutor (one solution per session) is compared fairly with a studio (several). "
-                    "Run several seeds per condition so tutors have more than one solution.\n"
-                    "- **Novelty and 'correct & novel' are saturated** (≈1.0 everywhere) on this pilot because "
-                    "the local model's reference set is very homogeneous - only ~2 distinct shapes - so almost "
-                    "everything looks novel next to it. They become discriminating with a richer reference set "
-                    "and harder tasks.\n"
-                    "- **D vs D_minus** differ only in the Facilitator; the Interventions column in "
-                    "`scripts/analyze.py` shows how often it fired.")
+                    "- **Families** are counted at the same number of solutions for every condition on a task. "
+                    "Each seed gives a tutor one more solution, so run several seeds per condition.\n"
+                    "- **Novelty** is in standard deviations from the task's reference set of ordinary solutions "
+                    "(0 = typical). Tasks without a reference set have no novelty.\n"
+                    "- **Pass rate and tokens** are the cost side: report them beside every gain.\n"
+                    "- **D vs D_minus** differ only in the Facilitator; the Interventions column shows how often "
+                    "it fired. Effects with confidence intervals are in the **Statistics** tab.")
             st.dataframe(
                 pd.DataFrame([{"Condition": c, "Setup": COND_DESC[c], "Sessions": summary[c]["n_sessions"],
                                "Families (matched)": summary[c].get("avg_families_matched"),
                                "Families/session": summary[c].get("avg_families"),
                                "Novelty(z)": summary[c].get("avg_mean_novelty"),
-                               "Correct": summary[c].get("avg_correct"),
+                               "Correct/session": summary[c].get("avg_correct"),
                                "Correct&Novel": summary[c].get("avg_correct_and_novel"),
-                               "Heuristic": summary[c].get("avg_heuristic_score"),
-                               "Tokens": summary[c].get("avg_tokens")}
-                              for c in CONDITIONS if c in summary]),
+                               "Interventions": summary[c].get("avg_interventions"),
+                               "Tokens": summary[c].get("avg_tokens")} for c in present]),
                 hide_index=True, use_container_width=True)
+
+    # ============================================================ STATISTICS (S8)
+    with tab_stats:
+        st.subheader("Statistics: planned contrasts (S8)")
+        st.caption("Mixed-effects model per outcome (studio x learners, task as random effect), contrasts "
+                   "B-A, D-C and D-D_minus with 95% CIs, Holm across the five primary contrasts, and the "
+                   "minimum detectable effect for a planned design. Uses data/results/summary.json, so "
+                   "run the analysis first.")
+        c1, c2 = st.columns(2)
+        plan_tasks = c1.number_input("Tasks in the planned main run", 2, 200, 21)
+        plan_seeds = c2.number_input("Seeds per cell in the planned main run", 1, 50, 6)
+        if st.button("Compute statistics", type="primary", disabled=not RESULTS_FILE.exists()):
+            try:
+                jobs.start("stats", "stats_report.py", ["--tasks", str(plan_tasks), "--seeds", str(plan_seeds)])
+                st.rerun()
+            except RuntimeError as ex:
+                st.warning(str(ex))
+        _live(st, "stats", lambda: _job_panel(st, "stats", "Statistics"))
+        stats_file = ROOT / "data" / "results" / "stats.json"
+        if stats_file.exists():
+            res = json.loads(stats_file.read_text(encoding="utf-8"))
+
+            def table(items, holm_col):
+                rows = []
+                for c in items:
+                    r = {"contrast": c["label"], "estimate": round(c["estimate"], 3),
+                         "95% CI": f"[{c['ci_low']:.3f}, {c['ci_high']:.3f}]", "p": round(c["p"], 4)}
+                    if holm_col:
+                        r["p (Holm)"] = None if c.get("p_holm") is None else round(c["p_holm"], 4)
+                    rows.append(r)
+                return pd.DataFrame(rows)
+            st.markdown("**Primary (Holm family of 5)**")
+            st.dataframe(table(res.get("primary", []), True), hide_index=True, use_container_width=True)
+            st.markdown("**Secondary (exploratory, unadjusted)**")
+            st.dataframe(table(res.get("secondary", []), False), hide_index=True, use_container_width=True)
+            d = res.get("design", {})
+            st.markdown(f"**Minimum detectable effect** for {d.get('tasks')} tasks x {d.get('seeds')} seeds "
+                        "(80% power, Holm-strict alpha 0.05/5)")
+            st.dataframe(pd.DataFrame([{"outcome": k, "MDE": round(v["mde"], 3),
+                                        "residual SD": round(v["sigma2_residual"] ** 0.5, 3)}
+                                       for k, v in res.get("mde", {}).items()]),
+                         hide_index=True, use_container_width=True)
 
     # ============================================================ CREATIVITY EXPLAINED
     with tab_cre:
@@ -300,24 +413,22 @@ def main() -> None:  # pragma: no cover - layout isn't unit-tested
             "three things that are then combined into one headline score. Higher is better for all of them.")
         for key in ("families", "novelty", "correct", "creativity"):
             label, desc, _ = METRICS[key]
-            with st.container():
-                st.markdown(f"#### {label}")
-                st.write(desc)
+            st.markdown(f"#### {label}")
+            st.write(desc)
         st.divider()
         st.markdown("##### How the numbers are produced")
         st.markdown(
             "1. **Represent** each solution as a vector of structural features from its code (loops, "
             "recursion, data structures, ...).\n"
-            "2. **Diversity**: cluster a session's proposals into *families* (within-sample standardised "
-            "features, Euclidean distance). Count the families.\n"
+            "2. **Diversity**: cluster the solutions into *families* (standardised features, Euclidean "
+            "distance), counted at the same number of solutions for every condition.\n"
             "3. **Novelty**: distance from a **frozen reference set** of ordinary solutions, z-scored. The "
-            "studio's own outputs are never in that set, so it can't be gamed.\n"
+            "studio's own outputs are never in that set.\n"
             "4. **Correctness**: run each solution on **held-out** tests it never saw (Tier 1/2), or score it "
             "against a baseline heuristic (Tier 3).\n"
             "5. **Creativity score** = fraction of proposals that are both **novel** (top decile) **and correct**.")
-        st.info("Design choice: metrics are kept separate and only joined at the end, so you can always see "
-                "*why* a condition scored the way it did. Every threshold is pre-registered before results are "
-                "seen (see docs/PREREGISTRATION.md).")
+        st.info("Metrics are kept separate and only joined at the end, so you can always see why a condition "
+                "scored the way it did. Every threshold is pre-registered (docs/PREREGISTRATION.md).")
 
     # ============================================================ TRACES
     with tab_tr:
@@ -330,7 +441,7 @@ def main() -> None:  # pragma: no cover - layout isn't unit-tested
                 confirm = st.checkbox("I want to clear all traces", key="confirm_clear")
                 if st.button("Clear all traces", type="primary", disabled=not confirm):
                     dest, moved = archive_traces()
-                    for k in ("ptable_cache", "scored", "confirm_clear"):
+                    for k in ("ptable_cache", "confirm_clear"):
                         st.session_state.pop(k, None)
                     st.session_state["cleared_msg"] = f"Moved {moved} trace(s) to {dest.relative_to(ROOT)}"
                     st.rerun()
@@ -339,7 +450,6 @@ def main() -> None:  # pragma: no cover - layout isn't unit-tested
         if not traces:
             st.info("No traces in data/traces/ yet.")
         else:
-            import pandas as pd
             pick = st.selectbox("Session", traces, format_func=lambda p: p.name)
             events = read_events(pick)
             h = trace_header(events)
@@ -351,16 +461,11 @@ def main() -> None:  # pragma: no cover - layout isn't unit-tested
             strat = strategies(events)
             if strat:
                 st.write("**Strategies proposed:** " + " , ".join(f"`{s}`" for s in strat))
-            iv = interventions(events)
-            if iv:
-                st.write("**Facilitator interventions:**")
-                for e in iv:
-                    st.caption("after proposal: " + e.get("content", "")[:160])
-
-            # per-proposal results, shown automatically (scored once per session, then cached)
+            for e in interventions(events):
+                st.caption("Facilitator: " + e.get("content", "")[:200])
             st.markdown("##### Each proposal, scored")
             st.caption("Does it pass the hidden tests (correct), how unusual is it (novelty), and is it "
-                       "'creative' = novel AND correct? The two columns combine into the single 'creative' flag.")
+                       "'creative' = novel AND correct?")
             cache = st.session_state.setdefault("ptable_cache", {})
             if pick.name not in cache:
                 with st.spinner("scoring each solution in the sandbox (no model needed)..."):
@@ -371,10 +476,9 @@ def main() -> None:  # pragma: no cover - layout isn't unit-tested
             tbl = cache[pick.name]
             if tbl:
                 is_heur = "vs_baseline" in tbl[0]
-                cols = ["proposal", "strategy", "lines", "correct",
-                        ("vs_baseline" if is_heur else "novelty_z"), "creative"]
-                show = [{c: r.get(c) for c in cols} for r in tbl]
-                st.dataframe(pd.DataFrame(show), hide_index=True, use_container_width=True)
+                cols = ["proposal", "strategy", "lines", "correct", ("vs_baseline" if is_heur else "novelty_z"), "creative"]
+                st.dataframe(pd.DataFrame([{c: r.get(c) for c in cols} for r in tbl]),
+                             hide_index=True, use_container_width=True)
                 st.write("**The code behind each proposal:**")
                 for r in tbl:
                     verdict = "correct" if r.get("correct") else "wrong"
@@ -386,40 +490,252 @@ def main() -> None:  # pragma: no cover - layout isn't unit-tested
             with st.expander("Full event timeline"):
                 st.dataframe(pd.DataFrame(event_rows(events)), hide_index=True, use_container_width=True)
 
-    # ============================================================ RUN
-    with tab_run:
-        st.subheader("Run new sessions")
-        st.write("Starts sessions with the local model. **Ollama must be running** (the Run button fails "
-                 "with a connection error otherwise).")
-        tasks = {t.id: t for t in load_bank()}
-        tiers = sorted({t.tier for t in tasks.values()})
-        tier = st.selectbox("Tier", ["all"] + [f"Tier {t}" for t in tiers])
-        ids = sorted(tid for tid, t in tasks.items() if tier == "all" or f"Tier {t.tier}" == tier)
-        task_id = st.selectbox("Task", ids)
-        colc, cols, colb = st.columns(3)
-        seed = cols.number_input("Seed", min_value=1, value=1, step=1)
-        backend = colb.selectbox("Sandbox", ["subprocess", "docker"])
-        run_all = st.checkbox("Run all five conditions (A, B, C, D, D_minus)")
-        condition = colc.selectbox("Condition", CONDITIONS, format_func=lambda c: f"{c} - {COND_DESC[c]}",
-                                   disabled=run_all)
-        if st.button("Run", type="primary"):
-            task_dir = str(tasks[task_id].path)
-            targets = CONDITIONS if run_all else [condition]
-            for cond in targets:
-                with st.spinner(f"running {task_id} / {cond}..."):
+    # ============================================================ REFERENCES
+    with tab_ref:
+        st.subheader("Reference sets (ordinary solutions per task)")
+        st.caption("Each task needs a frozen set of ordinary solutions from the experiment's model: novelty is "
+                   "measured against it and the Facilitator's threshold comes from it. Needs the model server.")
+        target = st.number_input("Samples per task", 10, 500, 100, step=10,
+                                 help="The proposal uses 100; 50 and 200 are for the sensitivity check.")
+
+        def ref_status():
+            rows = pipeline.reference_table(bank, model=model, target=int(target))
+            counts = {s: sum(r["state"] == s for r in rows) for s in ("ready", "incomplete", "missing", "other model")}
+            c = st.columns(4)
+            for col, (k, v) in zip(c, counts.items()):
+                col.metric(k.capitalize(), v)
+            st.dataframe(pd.DataFrame(rows), hide_index=True, use_container_width=True)
+            _job_panel(st, "references", "Reference build")
+        _live(st, "references", ref_status, every=5)
+
+        rows = pipeline.reference_table(bank, model=model, target=int(target))
+        other = [r["task"] for r in rows if r["state"] == "other model"]
+        st.markdown("##### Clear old references")
+        st.caption("Moves reference files to data/reference_archive/<date-time>/ (nothing is deleted). Needed "
+                   "before building with a different model: a reference set must come from one model.")
+        existing = [r["task"] for r in rows if r["samples"] > 0]
+        which = st.radio("Which", ["Only those from another model", "All", "Choose"], horizontal=True, key="ref_clear_which")
+        if which == "Choose":
+            chosen = st.multiselect("Tasks to clear", existing, key="ref_clear_pick")
+        else:
+            chosen = other if which.startswith("Only") else existing
+        st.caption(f"{len(chosen)} file(s) selected")
+        ok = st.checkbox("I want to clear these reference files", key="ref_clear_ok")
+        if st.button("Clear references", disabled=not (ok and chosen)):
+            if jobs.status("references")["state"] == "running":
+                st.warning("A reference build is running; stop it first.")
+            else:
+                dest, n = pipeline.archive_references(chosen)
+                st.success(f"Moved {n} file(s) to {dest.relative_to(ROOT)}")
+                st.rerun()
+
+        st.markdown("##### Generate references")
+        mode = st.radio("Tasks", ["Missing or incomplete only", "All tasks", "Choose"], horizontal=True, key="ref_gen_mode")
+        if mode == "Choose":
+            gen = st.multiselect("Tasks", [t.id for t in bank], key="ref_gen_pick")
+        elif mode == "All tasks":
+            gen = [t.id for t in bank]
+        else:
+            gen = [r["task"] for r in rows if r["state"] in ("missing", "incomplete")]
+        blocked = [t for t in gen if t in other]
+        if blocked:
+            st.warning(f"{len(blocked)} selected task(s) hold references from another model "
+                       f"({', '.join(blocked[:4])}{'...' if len(blocked) > 4 else ''}). Clear them first.")
+        st.caption(f"{len(gen)} task(s), up to {int(target)} samples each, model `{model}`. Existing samples "
+                   "are kept and topped up.")
+        if st.button("Generate references", type="primary", disabled=not gen or bool(blocked)):
+            try:
+                spec = "all" if set(gen) == {t.id for t in bank} else ",".join(gen)
+                jobs.start("references", "build_reference.py",
+                           ["--tasks", spec, "--n", str(int(target)), "--profile", profile, "--sandbox", sandbox])
+                st.rerun()
+            except RuntimeError as ex:
+                st.warning(str(ex))
+
+        st.markdown("##### Facilitator check (firing rate)")
+        st.caption("Pre-registered check that the Facilitator's threshold gives a non-degenerate firing rate, "
+                   "on D_minus traces. No model calls. UniXcoder needs torch and transformers.")
+        rep = st.radio("Space", ["unixcoder", "ast"], horizontal=True, key="tau_rep")
+        from macs.orchestrator import check_facilitator_dependencies
+        missing = check_facilitator_dependencies("unixcoder") if rep == "unixcoder" else None
+        if missing:
+            st.error(missing)
+        if st.button("Run Facilitator check", disabled=bool(missing)):
+            try:
+                jobs.start("tau", "tau_diagnostics.py", ["--representation", rep])
+                st.rerun()
+            except RuntimeError as ex:
+                st.warning(str(ex))
+        _live(st, "tau", lambda: _job_panel(st, "tau", "Facilitator check"))
+        tfile = ROOT / "data" / "results" / f"tau_diagnostics_{rep}.json"
+        if tfile.exists():
+            td = json.loads(tfile.read_text(encoding="utf-8"))
+            st.dataframe(pd.DataFrame([{"task": r["task_id"], "tau": r["tau_matched_rule"], "checks": r["studio_checks"],
+                                        **{f"fire p{k}": v["fire_rate"] for k, v in r.get("by_percentile", {}).items()}}
+                                       for r in td.get("tasks", [])]), hide_index=True, use_container_width=True)
+
+    # ============================================================ MULTI-RUN
+    with tab_multi:
+        st.subheader("Multi-run: tasks x conditions x seeds")
+        st.caption("Runs every chosen task under every chosen condition for each seed, in the background. Safe to "
+                   "stop and start again: sessions already done with this model are skipped. Needs the model server.")
+        scope = st.radio("Tasks", ["All tasks", "Tier 1", "Tier 2", "Tier 3", "Choose"], horizontal=True, key="mr_scope")
+        if scope == "Choose":
+            run_tasks = st.multiselect("Tasks", [t.id for t in bank], key="mr_pick")
+        elif scope == "All tasks":
+            run_tasks = [t.id for t in bank]
+        else:
+            run_tasks = [t.id for t in bank if t.tier == int(scope[-1])]
+        conds = st.multiselect("Conditions", CONDITIONS, default=CONDITIONS,
+                               format_func=lambda c: f"{c} - {COND_DESC[c]}", key="mr_conds")
+        c1, c2 = st.columns(2)
+        n_seeds = c1.number_input("Number of seeds", 1, 50, 6, help="The proposal uses 6 repetitions per cell.")
+        first_seed = c2.number_input("First seed", 1, 10000, 1)
+        seeds = list(range(int(first_seed), int(first_seed) + int(n_seeds)))
+        if run_tasks and conds:
+            plan = pipeline.run_plan(run_tasks, conds, seeds, model)
+            m1, m2, m3 = st.columns(3)
+            m1.metric("Sessions in this run", plan["total"])
+            m2.metric("Already done (this model)", plan["done"])
+            m3.metric("To run", plan["to_run"])
+            refs = {r["task"]: r["state"] for r in pipeline.reference_table(bank, model=model)}
+            not_ready = [t for t in run_tasks if refs.get(t) != "ready"]
+            if not_ready:
+                st.warning(f"{len(not_ready)} task(s) have no ready reference for this model, so they run without "
+                           f"novelty and with the default Facilitator threshold: {', '.join(not_ready[:5])}"
+                           f"{'...' if len(not_ready) > 5 else ''}. Build references first (References tab).")
+            if any(c in STUDIO for c in conds):
+                from macs.orchestrator import check_facilitator_dependencies
+                problem = check_facilitator_dependencies()
+                if problem:
+                    st.error(problem)
+            st.caption(f"Model `{model}`, sandbox `{sandbox}`, seeds {pipeline.seeds_spec(int(first_seed), int(n_seeds))}.")
+            if st.button("Start multi-run", type="primary", disabled=plan["to_run"] == 0):
+                try:
+                    spec = "all" if set(run_tasks) == {t.id for t in bank} else ",".join(run_tasks)
+                    jobs.start("multirun", "run_experiment.py",
+                               ["--tasks", spec, "--conditions", ",".join(conds),
+                                "--seeds", pipeline.seeds_spec(int(first_seed), int(n_seeds)),
+                                "--profile", profile, "--sandbox", sandbox])
+                    st.rerun()
+                except RuntimeError as ex:
+                    st.warning(str(ex))
+        _live(st, "multirun", lambda: _job_panel(st, "multirun", "Multi-run"))
+        st.info("When the run has finished, open **Overview** and click **Analyse all traces**.")
+
+        with st.expander("Single session (quick check, runs in the page)"):
+            task_id = st.selectbox("Task", sorted(task_by_id), key="single_task")
+            cc, cs = st.columns(2)
+            condition = cc.selectbox("Condition", CONDITIONS, format_func=lambda c: f"{c} - {COND_DESC[c]}", key="single_cond")
+            seed = cs.number_input("Seed", min_value=1, value=1, step=1, key="single_seed")
+            if st.button("Run one session", key="single_run"):
+                with st.spinner(f"running {task_id} / {condition}..."):
                     try:
-                        res = run_session(task_dir, cond, int(seed), backend)
-                        if res.returncode == 0:
-                            st.success(f"{cond}: done")
-                            st.code(res.stdout[-1500:] or "(no output)")
-                        else:
-                            st.error(f"{cond}: failed")
-                            st.code(res.stderr[-1200:])
-                            break
+                        res = run_session(str(task_by_id[task_id].path), condition, int(seed), sandbox, profile)
+                        (st.success if res.returncode == 0 else st.error)(f"{condition}: "
+                                                                         + ("done" if res.returncode == 0 else "failed"))
+                        st.code((res.stdout if res.returncode == 0 else res.stderr)[-1500:] or "(no output)")
                     except subprocess.TimeoutExpired:
-                        st.error(f"{cond}: timed out")
-                        break
-            st.info("Now open **Overview** and click *Re-score all traces* to include these runs.")
+                        st.error("timed out")
+
+    # ============================================================ LABELLING (SC3)
+    with tab_lab:
+        st.subheader("SC3: blind hand-labelling of solution families")
+        st.caption("Label each solution with the approach it uses, without looking at the automatic clustering. "
+                   "The labels calibrate the clustering threshold (target ARI >= 0.60). The condition, strategy "
+                   "text and automatic family are hidden; order is shuffled.")
+        c1, c2 = st.columns(2)
+        rater = c1.radio("Rater", ["rater1", "rater2"], horizontal=True,
+                         help="rater1's labels calibrate the threshold; rater2 is the second rater for agreement.")
+        per_task = c2.number_input("Solutions per task", 5, 500, 40)
+        if st.button("Build / refresh the labelling pool") or "lab_pool" not in st.session_state:
+            st.session_state["lab_pool"] = pipeline.label_pool(per_task=int(per_task))
+            st.session_state["lab_i"] = 0
+        pool = st.session_state["lab_pool"]
+        path = pipeline.labels_path(rater)
+        labels = pipeline.load_labels(path)
+        if not pool:
+            st.info("No current traces to label yet. Run sessions first (Multi-run).")
+        else:
+            tasks_in_pool = sorted({r["task_id"] for r in pool})
+            prog = pd.DataFrame([{"task": t, "labelled": sum(1 for r in pool if r["task_id"] == t and r["key"] in labels),
+                                  "in pool": sum(1 for r in pool if r["task_id"] == t)} for t in tasks_in_pool])
+            st.dataframe(prog, hide_index=True, use_container_width=True)
+            task_pick = st.selectbox("Task", tasks_in_pool, key="lab_task")
+            items = [r for r in pool if r["task_id"] == task_pick]
+            only_open = st.checkbox("Show unlabelled only", value=True, key="lab_open")
+            view = [r for r in items if r["key"] not in labels] if only_open else items
+            if not view:
+                st.success("Every solution of this task is labelled.")
+            else:
+                i = min(st.session_state.get("lab_i", 0), len(view) - 1)
+                item = view[i]
+                st.markdown(f"**Solution {i + 1} of {len(view)}**")
+                st.code(item["code"], language="python")
+                fams = list(task_by_id[task_pick].known_families) if task_pick in task_by_id else []
+                options = fams + [pipeline.OTHER, pipeline.UNSURE]
+                current = labels.get(item["key"], {}).get("family")
+                choice = st.radio("Approach", options, index=options.index(current) if current in options else 0,
+                                  key=f"lab_choice_{item['key']}")
+                b1, b2, b3 = st.columns(3)
+                if b1.button("Save and next", type="primary"):
+                    pipeline.save_label(path, item, choice)
+                    st.session_state["lab_i"] = i if only_open else i + 1
+                    st.rerun()
+                if b2.button("Previous", disabled=i == 0):
+                    st.session_state["lab_i"] = i - 1
+                    st.rerun()
+                if b3.button("Skip", disabled=i >= len(view) - 1):
+                    st.session_state["lab_i"] = i + 1
+                    st.rerun()
+                st.caption("`other` = a genuinely different approach not in the list; `unsure` is left out of the "
+                           "calibration.")
+        st.divider()
+        p1, p2 = pipeline.labels_path("rater1"), pipeline.labels_path("rater2")
+        if p1.exists() and p2.exists():
+            ag = pipeline.rater_agreement(p1, p2)
+            st.metric("Agreement between raters (Cohen's kappa)", ag["kappa"] if ag["kappa"] is not None else "-",
+                      help=f"on {ag['n']} solutions both raters labelled; raw agreement {ag['agreement']}")
+        st.markdown("##### Calibrate the clustering threshold")
+        st.caption("Sweeps the threshold and reports the one whose automatic families best match rater1's labels "
+                   "(mean ARI over tasks). Record the result in docs/PREREGISTRATION.md and set CLUSTER_THRESHOLD "
+                   "in macs/analysis/aggregate.py; it is then frozen.")
+        if st.button("Run calibration", disabled=not p1.exists()):
+            try:
+                jobs.start("calibrate", "calibrate_clustering.py", [])
+                st.rerun()
+            except RuntimeError as ex:
+                st.warning(str(ex))
+        _live(st, "calibrate", lambda: _job_panel(st, "calibrate", "SC3 calibration"))
+
+    # ============================================================ SETUP
+    with tab_setup:
+        st.subheader("Setup checks")
+        st.dataframe(pd.DataFrame([{k: (json.dumps(v) if isinstance(v, dict) else v) for k, v in p.items()}
+                                   for p in profiles]), hide_index=True, use_container_width=True)
+        st.caption("Profiles come from config/models.yaml (API keys are not shown). Edit that file to add a model.")
+        if st.button("Run checks"):
+            import shutil
+            results = []
+            try:
+                import requests
+                r = requests.get(prof.get("base_url", "").rstrip("/") + "/models", timeout=5)
+                ids = [m.get("id") for m in r.json().get("data", [])] if r.ok else []
+                results.append(("Model server", r.ok, f"{prof.get('base_url')} ({len(ids)} models)"))
+                results.append(("Model available", model in ids, model or "-"))
+            except Exception as ex:  # noqa: BLE001
+                results.append(("Model server", False, f"not reachable: {str(ex)[:80]} (is Ollama running?)"))
+            from macs.orchestrator import check_facilitator_dependencies
+            problem = check_facilitator_dependencies()
+            results.append(("torch + transformers (Facilitator)", problem is None, "installed" if problem is None else "missing"))
+            results.append(("Docker (isolated sandbox)", shutil.which("docker") is not None,
+                            "found" if shutil.which("docker") else "not found (subprocess sandbox only)"))
+            for name in ("statsmodels",):
+                import importlib.util
+                ok = importlib.util.find_spec(name) is not None
+                results.append((name + " (statistics cross-check)", ok, "installed" if ok else "optional"))
+            st.dataframe(pd.DataFrame([{"check": a, "ok": "✅" if b else "❌", "detail": c} for a, b, c in results]),
+                         hide_index=True, use_container_width=True)
 
 
 if __name__ == "__main__":
