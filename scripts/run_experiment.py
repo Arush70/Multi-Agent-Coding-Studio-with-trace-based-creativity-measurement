@@ -48,8 +48,9 @@ def parse_seeds(spec: str) -> list[int]:
     return seeds
 
 
-def done_cells(traces_dir: Path) -> set[tuple[str, str, int]]:
-    """(task, condition, seed) cells that already have a complete trace from this orchestrator."""
+def done_cells(traces_dir: Path, model: str | None = None) -> set[tuple[str, str, int]]:
+    """(task, condition, seed) cells that already have a complete trace from this orchestrator
+    (and, when `model` is given, from that model: a cell done with another model is not done)."""
     done = set()
     for p in traces_dir.glob("*.jsonl"):
         try:
@@ -65,8 +66,20 @@ def done_cells(traces_dir: Path) -> set[tuple[str, str, int]]:
         h = events[0].get("header", {})
         if h.get("orchestrator_version") != ORCHESTRATOR_VERSION:
             continue
+        if model is not None and h.get("model") != model:
+            continue
         done.add((events[0]["task_id"], events[0]["condition"], int(h.get("seed", -1))))
     return done
+
+
+def profile_model(profile: str, config: str = "config/models.yaml") -> str | None:
+    """The model name a profile in config/models.yaml points at (None if it cannot be read)."""
+    try:
+        import yaml
+        cfg = yaml.safe_load(Path(config).read_text(encoding="utf-8"))
+        return cfg["profiles"][profile]["model"]
+    except Exception:  # noqa: BLE001 - no config yet: fall back to version-only matching
+        return None
 
 
 def reference_status(task_id: str) -> str:
@@ -96,7 +109,7 @@ def main() -> None:
     seeds = parse_seeds(args.seeds)
     out = Path(args.out); out.mkdir(parents=True, exist_ok=True)
 
-    done = done_cells(out)
+    done = done_cells(out, model=profile_model(args.profile))
     plan = [(t, c, s) for t in tasks for s in seeds for c in conditions if (t.id, c, s) not in done]
     total = len(tasks) * len(conditions) * len(seeds)
     print(f"{len(tasks)} task(s) x {len(conditions)} condition(s) x {len(seeds)} seed(s) = {total} sessions; "

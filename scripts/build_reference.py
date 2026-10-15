@@ -39,11 +39,18 @@ REFERENCE_PROMPT = (
 )
 
 
+def _is_dir(spec: str) -> bool:
+    try:
+        return Path(spec).is_dir()
+    except OSError:                   # e.g. a long list of ids is not a valid path
+        return False
+
+
 def resolve_tasks(spec: str) -> list:
     """'all' | 'tier1' | 'tier2' | 'tier3' | a task directory | comma-separated task ids."""
     if spec in ("all", "tier1", "tier2", "tier3"):
         return load_bank(tier=None if spec == "all" else int(spec[-1]))
-    if Path(spec).is_dir():
+    if "," not in spec and _is_dir(spec):
         return [load_task(spec)]
     wanted = [s.strip() for s in spec.split(",") if s.strip()]
     bank = {t.id: t for t in load_bank()}

@@ -224,6 +224,7 @@ data/traces/*.jsonl
 data/traces_archive/
 data/reference_archive/
 data/reference/*.jsonl
+data/jobs/
 
 # OS / editor / notebook clutter
 .DS_Store

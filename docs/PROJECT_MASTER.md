@@ -430,7 +430,9 @@ Priorities: **now** = before the next supervision, **soon** = this month, **late
 - [ ] Draft chapters; figures and tables from the analysis. *(later)*
 
 ### G. Dashboard polish (from the Week 2 review)
-- [ ] Show the value each solution returns for the example inputs; plain-language captions; "Clear traces" button; auto-conclusion after re-score. *(soon)*
+- [x] "Clear traces" button (12 Oct).
+- [x] Whole pipeline in the dashboard (16 Oct): References, Multi-run (seed count), Statistics, SC3 Labelling, Setup; background jobs.
+- [ ] Show the value each solution returns for the example inputs; auto-conclusion after analysis. *(later)*
 
 ---
 

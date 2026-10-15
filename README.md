@@ -28,7 +28,7 @@ and its [synthetic benchmark](https://doi.org/10.5281/zenodo.18114909) (CC-BY).
 ```
 py -m venv .venv
 .venv\Scripts\activate          REM Windows;  source .venv/bin/activate on Mac/Linux
-pip install -e ".[dev,embed]"    REM embed = torch + transformers, needed by the Facilitator
+pip install -e ".[dev,embed,ui]" REM embed = torch + transformers (Facilitator); ui = dashboard
 copy config\models.example.yaml config\models.yaml   REM then edit
 pytest
 ```
@@ -41,6 +41,14 @@ through the same OpenAI-compatible interface; only `config/models.yaml` changes.
 
 Ollama must be running (`ollama serve`). Every step can be stopped and re-run; it continues where
 it stopped.
+
+**From the dashboard** (`streamlit run macs/ui/app.py`): choose the model profile and sandbox in
+the sidebar, then References (status, clear, generate, Facilitator check) -> Multi-run (tasks,
+conditions, number of seeds; progress and Stop) -> Overview (Analyse all traces) -> Statistics.
+SC3 labelling and calibration are in the Labelling tab, environment checks in Setup. Long steps run
+in the background (logs in `data/jobs/`), so closing the page does not stop them.
+
+**From the terminal**, the same steps:
 
 ```
 # 1. reference sets: 100 ordinary solutions per task (novelty + Facilitator threshold)
