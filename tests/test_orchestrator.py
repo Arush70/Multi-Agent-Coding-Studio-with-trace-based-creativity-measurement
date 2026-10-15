@@ -178,11 +178,13 @@ def test_degenerate_reference_tau_falls_back(monkeypatch):
 
 @posix_only
 def test_header_records_tau_and_learners(tmp_path):
+    from macs import orchestrator
     path = run_session(load_task(TASK), SessionConfig("D", seed=1, sandbox_backend="subprocess", tau=0.5),
                        VariedClient(), out_dir=tmp_path)
     h = next(e for e in _events(path) if e["event"] == "session_start")["header"]
     assert h["tau"] == 0.5 and h["tau_source"] == "override" and h["n_learners"] == 2
-    assert h["max_revision_rounds"] == 3 and h["orchestrator_version"] == "0.2.0"
+    assert h["max_revision_rounds"] == 3 and h["orchestrator_version"] == orchestrator.ORCHESTRATOR_VERSION
+    assert h["tau_rule"] == orchestrator.TAU_RULE
 
 
 # --- selection, revision rounds, token ceiling, Facilitator -----------------------------------
@@ -264,6 +266,22 @@ def test_facilitator_can_fire_after_three_proposals_with_specific_instruction(tm
     proposals_before = sum(1 for e in evs[:first] if e["event"] == "proposal")
     assert proposals_before == 3                                   # fires after p2, shapes p3 and p4
     assert "does NOT use a set" in evs[first]["content"]             # names what they share (IMPLS[0] uses set())
+    last = max(i for i, e in enumerate(evs) if e["event"] == "proposal")
+    assert not any(e["event"] == "intervention" for e in evs[last:])   # never after the final proposal
+
+
+def test_tau_from_reference_sequences_is_matched_and_deterministic():
+    import numpy as np
+    from macs.facilitator import tau_from_reference, tau_from_reference_sequences
+    rng = np.random.default_rng(3)
+    shapes = rng.integers(0, 6, size=(8, 26)).astype(float) + 1
+    X = np.vstack([shapes[i % 8] for i in range(100)])             # 8 shapes, each repeated
+    assert tau_from_reference(X) == 0.0                              # the old rule: every solution has a twin
+    t1 = tau_from_reference_sequences(X, k=5, window=3, n_draws=300)
+    t2 = tau_from_reference_sequences(X, k=5, window=3, n_draws=300)
+    assert t1 == t2 and t1 > 0.0
+    assert tau_from_reference_sequences(X[:3], k=5) == 0.0           # too few solutions
+    assert tau_from_reference_sequences(np.ones((10, 26)), k=5) == 0.0
 
 
 def test_facilitator_window_counts_proposals():

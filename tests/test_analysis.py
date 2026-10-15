@@ -19,8 +19,10 @@ CORRECT = "def test_duplicate(a):\n    return len(a) != len(set(a))\n"
 WRONG = "def test_duplicate(a):\n    return False\n"
 CORRECT2 = "def test_duplicate(a):\n    seen=set()\n    for x in a:\n        if x in seen: return True\n        seen.add(x)\n    return False\n"
 
+from macs.orchestrator import ORCHESTRATOR_VERSION
+
 HEADER = {"model": "fake", "revision": "0", "quantisation": "none", "temperature": 0.7,
-          "seed": 1, "prompt_hashes": {"x": "y"}, "orchestrator_version": "0.2.0"}
+          "seed": 1, "prompt_hashes": {"x": "y"}, "orchestrator_version": ORCHESTRATOR_VERSION}
 
 
 def _write(path, condition, impls):

@@ -93,3 +93,10 @@ def test_reference_refuses_to_mix_models(tmp_path):
                                 "revision": "a"}) + "\n", encoding="utf-8")
     with pytest.raises(RuntimeError, match="different model"):
         build_task_reference(object(), _Client(), n=2, path=path)
+
+
+def test_tau_diagnostics_checks_only_where_the_facilitator_can_act():
+    import numpy as np
+    from tau_diagnostics import window_checks
+    X = np.random.default_rng(0).random((5, 26))
+    assert len(window_checks(X, k=5, window=3)) == 2              # after proposals 3 and 4, not 5

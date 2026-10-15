@@ -31,7 +31,7 @@ from macs.llm.client import prompt_hash
 from macs.sandbox import runner
 from macs.tasks.bank import Task
 from macs.trace.writer import TraceWriter
-from macs.facilitator import Facilitator, tau_from_reference, dominant_construct, approach_name
+from macs.facilitator import Facilitator, tau_from_reference_sequences, dominant_construct, approach_name
 from macs.metrics.represent import ast_features, normalise
 from macs.metrics.diversity import cluster_families
 
@@ -41,7 +41,7 @@ PERSONAS = yaml.safe_load((Path(__file__).parent / "prompts" / "personas.yaml").
 # Bumped when the session logic changes in a way that makes older traces incomparable. It is
 # stamped into every trace header; the analysis skips traces from older versions by default
 # (scripts/analyze.py --include-old keeps them). History of changes: docs/DEV_LOG.md.
-ORCHESTRATOR_VERSION = "0.2.0"
+ORCHESTRATOR_VERSION = "0.2.1"
 
 K_PROPOSALS = 5
 # Critique-revision rounds (proposal: "bounded critique-revision, max 3 rounds"). The studio
@@ -56,6 +56,7 @@ CONVERGENCE_WINDOW = 3
 # degenerate (tau = 0). The trace header records tau and tau_source for every studio session.
 # (The family-clustering threshold lives in macs/analysis/aggregate.py - one value, one place.)
 DEFAULT_TAU = 0.05
+TAU_RULE = "p25_window_mean_on_reference_sequences"
 
 CODE_BLOCK = re.compile(r"```(?:python)?\n(.*?)```", re.S)
 
@@ -102,11 +103,11 @@ class SessionConfig:
         frozen reference set; otherwise a provisional default. tau_source is written to the trace
         header so every session records where its threshold came from.
 
-        tau is computed in the same space the Facilitator measures in (raw AST features, cosine
-        distance). If the reference is degenerate (mostly duplicate solutions, so the
-        25th-percentile nearest-neighbour distance is 0), the Facilitator could never fire; the
-        proposal requires a non-degenerate firing rate, so the documented default is used and
-        the trace records it.
+        tau is computed in the same space and with the same statistic the Facilitator uses (raw
+        AST features, cosine distance, mean nearest-earlier-proposal distance over the window),
+        on random sequences of K reference solutions; see tau_from_reference_sequences. If that
+        is still 0 the Facilitator could never fire; the proposal requires a non-degenerate firing
+        rate, so the documented default is used and the trace records it.
         """
         if self.tau is not None:
             return self.tau, "override"
@@ -116,7 +117,7 @@ class SessionConfig:
         except Exception:  # noqa: BLE001 - no reference set yet (pilot); use the default
             return DEFAULT_TAU, "default:no_reference"
         self.reference_n = int(rs.X_ref.shape[0])
-        tau = tau_from_reference(rs.X_ref)
+        tau = tau_from_reference_sequences(rs.X_ref, k=self.k_proposals, window=CONVERGENCE_WINDOW)
         if tau <= 1e-9:
             return DEFAULT_TAU, "default:degenerate_reference"
         return tau, "reference"
@@ -172,7 +173,7 @@ def run_session(task: Task, cfg: SessionConfig, client, out_dir: str | Path = "d
     if cfg.is_studio:
         tau, tau_source = cfg.resolve_tau(task)
         extra.update({"facilitator_enabled": cfg.facilitator_enabled, "tau": float(tau),
-                      "tau_source": tau_source, "k_proposals": cfg.k_proposals,
+                      "tau_source": tau_source, "tau_rule": TAU_RULE, "k_proposals": cfg.k_proposals,
                       "convergence_window": CONVERGENCE_WINDOW})
         if cfg.reference_n is not None:
             extra["reference_n"] = cfg.reference_n
@@ -275,7 +276,8 @@ def _run_studio(task: Task, cfg: SessionConfig, client, tr: TraceWriter, *, tau:
         if emb is not None:
             embeddings.append(emb)
             fac.observe(emb)
-            fire, metric = fac.should_intervene()
+            # no check after the last proposal: an instruction then could not change anything
+            fire, metric = fac.should_intervene() if k < cfg.k_proposals - 1 else (False, None)
             if fire:
                 # name what the proposals converged on, so the instruction is specific
                 recent = codes[-CONVERGENCE_WINDOW:]

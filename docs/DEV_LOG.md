@@ -7,6 +7,42 @@ what changed, why, and which files. Pre-registration changes are also logged, da
 
 ---
 
+## 2026-10-15 (Week 4, later) - tau rule matched to the Facilitator, no check after the last proposal
+
+**Finding.** With the Qwen3.5-9B reference sets (100 per task, built 15 Oct) tau was still 0 on all
+three pilot tasks, so every studio session would run on the uncalibrated default 0.05. The model is
+not the cause: the 9B wrote 78-100 textually different programs per task, but only 11-19 distinct
+AST-feature vectors, and 90-95% of reference solutions have an identical twin in that space. The
+rule took the nearest of 99 other solutions, so the 25th percentile was always 0. The Facilitator,
+by contrast, compares a proposal with only 2-4 earlier ones.
+
+Options measured on the real references and the 9B test session (no model calls):
+
+| Option | tau (mbpp19 / mbpp140 / humaneval0) | Outcome |
+|---|---|---|
+| Original rule, raw AST | 0 / 0 / 0 | degenerate, default used |
+| Original rule on distinct shapes only | 0.003 / 0.007 / 0.002 | far below the studio's window values (0.03-0.05), almost never fires |
+| Original rule, standardised AST | 0 / 0 / 0 | degenerate |
+| **Matched rule, raw AST (adopted)** | **0.050 / 0.022 / 0.003** | non-zero on all tasks; fired at 1 of 2 checks on the 9B test session |
+
+**Adopted.** tau = the 25th percentile of the Facilitator's own window statistic on 2,000 random
+sequences of 5 reference solutions (fixed seed), in the same space (raw AST, cosine). It keeps the
+proposal's percentile, frozen reference and space, and fixes the mismatch in the statistic.
+Standardised AST was rejected for the Facilitator: centring on the reference mean makes all studio
+proposals point the same way (they are all longer than typical), so they look close to each other.
+UniXcoder (the proposal's other representation) is to be checked with the same script before the
+main-run freeze; it needs torch, so it runs on the laptop.
+
+| Change | Files |
+|---|---|
+| `tau_from_reference_sequences` (matched rule); `resolve_tau` uses it; header records `tau_rule` | `macs/facilitator.py`, `macs/orchestrator.py` |
+| No convergence check after the final proposal (the 12 and 15 Oct traces each logged an intervention after p4 that could not affect anything) | `macs/orchestrator.py` |
+| Orchestrator version 0.2.1 (session behaviour changed); 0.2.0 traces are excluded by default | `macs/orchestrator.py` |
+| `scripts/tau_diagnostics.py`: both rules, twin share and firing rate per task; `--representation unixcoder` | `scripts/tau_diagnostics.py` |
+| Tests for the matched rule and for no intervention after the last proposal | `tests/test_orchestrator.py`, `tests/test_scripts.py`, `tests/test_analysis.py` |
+
+---
+
 ## 2026-10-15 (Week 4) - model switch to Qwen3.5-9B, thinking off, model guards
 
 **Model.** Development and the pilot move from `qwen2.5-coder:7b-instruct-q4_K_M` (Ollama id
