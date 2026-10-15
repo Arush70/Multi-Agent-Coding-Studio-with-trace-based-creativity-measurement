@@ -105,3 +105,25 @@ def test_extra_body_is_sent_and_keyed_without_changing_old_hashes(tmp_path, monk
     out = opt.chat(msgs, seed=1)
     assert sent["reasoning_effort"] == "none"
     assert out.text == "answer"
+
+
+def test_cache_is_utf8_and_survives_legacy_or_broken_entries(tmp_path, monkeypatch):
+    import json
+    from macs.llm.client import _read_cache
+    c = LLMClient(_profile(), cache_dir=tmp_path)
+    msgs = [{"role": "user", "content": "complexity?"}]
+    monkeypatch.setattr(c._session, "post", lambda *a, **k: _FakeResponse("O(n * α(k)) ≤ n²"))
+    out = c.chat(msgs, seed=1)
+    path = c._cache_path(out.request_hash)
+    assert json.loads(path.read_bytes().decode("utf-8"))["text"] == "O(n * α(k)) ≤ n²"
+    assert not list(tmp_path.rglob("*.tmp"))
+
+    legacy = tmp_path / "legacy.json"
+    legacy.write_bytes(json.dumps({"text": "café – x"}, ensure_ascii=False).encode("cp1252"))
+    assert _read_cache(legacy)["text"] == "café – x"
+
+    path.write_text("", encoding="utf-8")                  # half-written by a crash
+    assert _read_cache(path) is None
+    again = c.chat(msgs, seed=1)
+    assert again.cached is False and again.text == "O(n * α(k)) ≤ n²"
+    assert c.chat(msgs, seed=1).cached is True

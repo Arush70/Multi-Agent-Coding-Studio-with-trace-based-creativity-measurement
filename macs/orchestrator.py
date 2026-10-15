@@ -35,8 +35,8 @@ from macs.facilitator import Facilitator, tau_from_reference_sequences, dominant
 from macs.metrics.represent import ast_features, normalise
 from macs.metrics.diversity import cluster_families
 
-PROMPTS = yaml.safe_load((Path(__file__).parent / "prompts" / "roles.yaml").read_text())
-PERSONAS = yaml.safe_load((Path(__file__).parent / "prompts" / "personas.yaml").read_text())["personas"]
+PROMPTS = yaml.safe_load((Path(__file__).parent / "prompts" / "roles.yaml").read_text(encoding="utf-8"))
+PERSONAS = yaml.safe_load((Path(__file__).parent / "prompts" / "personas.yaml").read_text(encoding="utf-8"))["personas"]
 
 # Bumped when the session logic changes in a way that makes older traces incomparable. It is
 # stamped into every trace header; the analysis skips traces from older versions by default

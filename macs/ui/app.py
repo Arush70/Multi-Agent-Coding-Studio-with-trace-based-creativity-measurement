@@ -222,7 +222,7 @@ def main() -> None:  # pragma: no cover - layout isn't unit-tested
                 st.session_state["scored"] = score_all(backend)
         scored = st.session_state.get("scored")
         if scored is None and RESULTS_FILE.exists():
-            data = json.loads(RESULTS_FILE.read_text())
+            data = json.loads(RESULTS_FILE.read_text(encoding="utf-8"))
             scored = (data.get("sessions", []), data.get("summary", {}))
         if not scored:
             st.info("No results yet. Click **Re-score all traces**, or run a session in the Run tab first.")

@@ -25,8 +25,8 @@ from pathlib import Path
 
 HARNESS = r'''
 import json, sys, time, traceback
-src = open(sys.argv[1]).read()
-tests = json.load(open(sys.argv[2]))
+src = open(sys.argv[1], encoding='utf-8').read()
+tests = json.load(open(sys.argv[2], encoding='utf-8'))
 results = []
 ns = {}
 try:
@@ -58,9 +58,9 @@ print("__MACS_RESULT__" + json.dumps(results))
 # same security boundary as everything else; only the harness differs.
 METRIC_HARNESS = r'''
 import json, sys, traceback
-src = open(sys.argv[1]).read()
-driver = open(sys.argv[2]).read()
-data = json.load(open(sys.argv[3]))
+src = open(sys.argv[1], encoding='utf-8').read()
+driver = open(sys.argv[2], encoding='utf-8').read()
+data = json.load(open(sys.argv[3], encoding='utf-8'))
 ns = {}
 out = {"ok": False}
 try:
@@ -149,9 +149,9 @@ def run(
 
     with tempfile.TemporaryDirectory() as td:
         d = Path(td)
-        (d / "candidate.py").write_text(src)
-        (d / "tests.json").write_text(json.dumps(tests))
-        (d / "harness.py").write_text(HARNESS)
+        (d / "candidate.py").write_text(src, encoding="utf-8")
+        (d / "tests.json").write_text(json.dumps(tests), encoding="utf-8")
+        (d / "harness.py").write_text(HARNESS, encoding="utf-8")
 
         preexec = None
         if backend == "docker":
@@ -234,10 +234,10 @@ def run_metric(
 
     with tempfile.TemporaryDirectory() as td:
         d = Path(td)
-        (d / "candidate.py").write_text(src)
-        (d / "driver.py").write_text(driver)
-        (d / "data.json").write_text(json.dumps(data))
-        (d / "harness.py").write_text(METRIC_HARNESS)
+        (d / "candidate.py").write_text(src, encoding="utf-8")
+        (d / "driver.py").write_text(driver, encoding="utf-8")
+        (d / "data.json").write_text(json.dumps(data), encoding="utf-8")
+        (d / "harness.py").write_text(METRIC_HARNESS, encoding="utf-8")
 
         preexec = None
         if backend == "docker":

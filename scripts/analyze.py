@@ -75,7 +75,7 @@ def main() -> None:
         print(f"  {cond:<9} mean over {v['n_tasks']} task(s): {v['avg_families_at_matched_m']}")
 
     out = Path(args.out); out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text(json.dumps({"sessions": sessions, "summary": summary, "pooled_diversity": pooled}, indent=2))
+    out.write_text(json.dumps({"sessions": sessions, "summary": summary, "pooled_diversity": pooled}, indent=2), encoding="utf-8")
     print(f"\nsaved {out}")
 
 

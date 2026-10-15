@@ -7,6 +7,45 @@ what changed, why, and which files. Pre-registration changes are also logged, da
 
 ---
 
+## 2026-10-15 (Week 4, pilot) - first 9B pilot, encoding fix, Facilitator firing check
+
+**Pilot run** (orchestrator 0.2.1, `qwen3.5:9b`, 3 tasks x 5 conditions x 3 seeds = 45 sessions):
+43 completed, 2 failed (t1_mbpp140 D and D_minus, seed 2). Every session stayed under the token
+ceiling (largest 26,608). Tutor sessions used about 450-1,550 tokens, studio sessions about
+6,900-26,600.
+
+**Bug: text encoding on Windows (fixed).** The model wrote "α" in a strategy; the response cache was
+written with the Windows code page, which cannot encode it, so the write failed half-way and left a
+broken cache file. The next session (D_minus, which sends the same first requests as D) then failed
+reading it. 22 earlier cache entries had also been written in the Windows code page. Fix: every
+file the system reads or writes now states UTF-8 (cache, sandbox candidate and harness files, task
+and prompt YAML, schema, results); cache entries are written to a temporary file and moved into
+place, so a crash cannot leave a half-written entry; an unreadable entry counts as a cache miss and
+is fetched again; entries in the old code page are still read. Prompts and task files are ASCII, so
+no prompt hash or cache key changes. Files: `macs/llm/client.py`, `macs/sandbox/runner.py`,
+`macs/trace/writer.py`, `macs/tasks/bank.py`, `macs/orchestrator.py`,
+`macs/analysis/heuristic_score.py`, `macs/ui/app.py`, `scripts/*.py`.
+
+**Finding: the Facilitator fires on one pilot task only.** Interventions in B and D sessions:
+t1_mbpp19 7, t1_mbpp140 0, t2_humaneval0 0. Where it never fires, D and D_minus are the same
+session (identical tokens), so the D vs D_minus contrast carries no information on those tasks.
+Cause: the Innovator is told to differ from earlier strategies, so studio proposals are usually
+more spread out than random reference solutions. The studio's window values sit at about the 20th
+percentile of the reference windows on t1_mbpp19, the 33rd on t1_mbpp140 and the 98th on
+t2_humaneval0 (AST features; container numbers, which differ slightly from the laptop because
+`black` and `radon` were not installed there). A threshold at the reference's 25th percentile
+therefore fires on mbpp19 and almost never elsewhere. The proposal requires tau to be checked on
+pilot tasks for a non-degenerate firing rate; that check fails in AST space. The decision rule for
+resolving it is fixed in `docs/PREREGISTRATION.md` (2026-10-15, before the UniXcoder numbers are
+seen). `scripts/tau_diagnostics.py` now checks D_minus traces by default (Facilitator off, so its
+own instructions do not shape the proposals), reports the percentile rank, and writes
+`data/results/tau_diagnostics_<representation>.json`.
+
+**Also noted for the pilot review:** the Critic's selection fell back to "most public tests"
+in 6 of 26 studio sessions (its reply had no `SELECTED: pN` line).
+
+---
+
 ## 2026-10-15 (Week 4, later) - tau rule matched to the Facilitator, no check after the last proposal
 
 **Finding.** With the Qwen3.5-9B reference sets (100 per task, built 15 Oct) tau was still 0 on all

@@ -82,7 +82,7 @@ def main() -> None:
     if not report:
         print("nothing to check: need traces plus a reference set with at least 50 samples")
     out = Path(args.out); out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text(json.dumps(report, indent=2))
+    out.write_text(json.dumps(report, indent=2), encoding="utf-8")
     print(f"saved {out}")
 
 
