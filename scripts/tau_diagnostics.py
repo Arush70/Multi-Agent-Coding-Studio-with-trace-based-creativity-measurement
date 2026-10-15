@@ -37,6 +37,7 @@ from macs.orchestrator import CONVERGENCE_WINDOW, K_PROPOSALS  # noqa: E402
 from macs.trace.writer import read_trace  # noqa: E402
 
 FIRE_LOW, FIRE_HIGH = 0.10, 0.90     # pre-registered band for a non-degenerate firing rate
+PERCENTILES = (25, 50, 75)           # tried in this order by the pre-registered rule
 
 
 def represent(codes: list[str], representation: str) -> np.ndarray:
@@ -118,12 +119,19 @@ def main() -> None:
                   for m in window_checks(represent(s, args.representation), K_PROPOSALS, CONVERGENCE_WINDOW)]
         fire = float(np.mean([m < tau_new for m in checks])) if checks and tau_new > 0 else None
         rank = float(np.median([np.mean(ref_w < m) for m in checks])) if checks else None
+        by_pct = {}
+        for pc in PERCENTILES:
+            t = tau_from_reference_sequences(X, k=K_PROPOSALS, window=CONVERGENCE_WINDOW, percentile=pc)
+            fr = float(np.mean([m < t for m in checks])) if checks and t > 0 else None
+            by_pct[str(pc)] = {"tau": round(t, 5), "fire_rate": None if fr is None else round(fr, 3),
+                               "non_degenerate": None if fr is None else FIRE_LOW <= fr <= FIRE_HIGH}
         rows.append({"task_id": tid, "n_reference": len(X), "share_with_identical_twin": round(twins, 3),
                      "tau_old_rule": round(tau_old, 5), "tau_matched_rule": round(tau_new, 5),
                      "studio_sessions": len(sessions), "studio_checks": len(checks),
                      "studio_fire_rate": None if fire is None else round(fire, 3),
                      "studio_median_percentile_rank": None if rank is None else round(rank, 3),
-                     "non_degenerate": None if fire is None else FIRE_LOW <= fire <= FIRE_HIGH})
+                     "non_degenerate": None if fire is None else FIRE_LOW <= fire <= FIRE_HIGH,
+                     "by_percentile": by_pct})
 
     print(f"representation: {args.representation}   K={K_PROPOSALS}  window={CONVERGENCE_WINDOW}\n")
     print(f"studio traces: {args.conditions}; non-degenerate firing = {FIRE_LOW:.0%}-{FIRE_HIGH:.0%} of checks\n")
@@ -135,6 +143,16 @@ def main() -> None:
         print(f"{r['task_id']:<36}{r['n_reference']:>4}{r['share_with_identical_twin']:>7.2f}"
               f"{r['tau_old_rule']:>10.4f}{r['tau_matched_rule']:>10.4f}{r['studio_sessions']:>9}"
               f"{r['studio_checks']:>8}{fire:>7}{rank:>7}")
+    print(f"\nwould-fire rate by percentile ({FIRE_LOW:.0%}-{FIRE_HIGH:.0%} counts as non-degenerate):")
+    print(f"{'task':<36}" + "".join(f"{'p' + str(pc):>10}" for pc in PERCENTILES))
+    for r in rows:
+        cells = []
+        for pc in PERCENTILES:
+            fr = r["by_percentile"][str(pc)]["fire_rate"]
+            ok = r["by_percentile"][str(pc)]["non_degenerate"]
+            cells.append("-" if fr is None else f"{fr:.2f}{'*' if ok else ' '}")
+        print(f"{r['task_id']:<36}" + "".join(f"{c:>10}" for c in cells))
+    print("(* = inside the band)")
     print("\nrank = median percentile of the studio's window values within the reference's own window "
           "values;\n       the matched rule fires below the 25th percentile.")
     if not rows:

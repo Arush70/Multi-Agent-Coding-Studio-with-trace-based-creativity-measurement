@@ -162,11 +162,18 @@ and never edited to match results.
   space (the proposal's stated representation for convergence, 3.3/3.6); else if AST does, AST;
   (3) otherwise use the smallest percentile in {25, 50, 75} that meets it on every task, UniXcoder
   space first; (4) if none does, the representation and percentile with the most tasks inside the
-  band are used and the shortfall is reported as a limitation of RQ2. The outcome is recorded here
+  band are used (ties: UniXcoder before AST, then the lower percentile) and the shortfall is
+  reported as a limitation of RQ2. The outcome is recorded here
   with the numbers, then frozen.
 - _2026-10-15_ — **Selection and extraction robustness (amendment, pilot only).** If the Critic's
   selection reply has no valid `SELECTED: <id>`, one fixed reminder is sent before the
   most-public-tests fallback; the selection event records which path was taken. Code extraction
   accepts an unclosed code block. Orchestrator 0.2.2. Details: `docs/DEV_LOG.md`.
+- _2026-10-15_ — **Facilitator check, first results (before p50/p75 are seen on the laptop).**
+  At the 25th percentile neither space meets the criterion: AST fires on t1_mbpp19 only (83% of
+  checks), UniXcoder on t1_mbpp19 only (17%). In UniXcoder space the studio's window values sit at
+  the 96th-100th percentile of the reference's, i.e. the studio's proposals are far more spread out
+  than ordinary output. Tie-break added to step (4) above, before the 50th/75th-percentile numbers
+  are seen. `tau_diagnostics.py` now reports all three percentiles.
 - _…_ — **[fill after SC3]** `CLUSTER_THRESHOLD` frozen at __ (mean ARI __; N labelled proposals
   over __ tasks). Table:
