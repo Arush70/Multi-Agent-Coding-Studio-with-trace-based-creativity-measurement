@@ -77,7 +77,8 @@ Two representations are analysed **separately**, never combined: interpretable *
   falls below τ. Window = 3 proposals.
 - **τ rule (amended 2026-10-15):** the 25th percentile of the Facilitator's own window statistic
   computed on 2,000 random sequences of K = 5 solutions drawn from the task's frozen reference set
-  (fixed seed; `tau_from_reference_sequences`), in the space the Facilitator measures in. This is a
+  (fixed seed; `tau_from_reference_sequences`), in the space the Facilitator measures in, which is
+  UniXcoder embedding space (cosine distance), chosen on the pilot (log, 2026-10-15). This is a
   *rule*, fixed in advance; the resulting number is task-specific and read off the frozen reference,
   not hand-picked. When no reference exists, or the rule still gives 0, a documented default is used
   and the session is marked as such. The original rule (leave-one-out nearest-neighbour distances
@@ -175,5 +176,17 @@ and never edited to match results.
   the 96th-100th percentile of the reference's, i.e. the studio's proposals are far more spread out
   than ordinary output. Tie-break added to step (4) above, before the 50th/75th-percentile numbers
   are seen. `tau_diagnostics.py` now reports all three percentiles.
+- _2026-10-15_ — **Facilitator decision (rule applied; frozen).** Laptop numbers, D_minus traces
+  of the pilot, would-fire rate at the 25th / 50th / 75th percentile:
+  AST — t1_mbpp140 0.00 / 0.17 / 0.83, t1_mbpp19 0.83 / 1.00 / 1.00, t2_humaneval0 0 / 0 / 0;
+  UniXcoder — t1_mbpp140 0 / 0 / 0, t1_mbpp19 0.17 / 0.33 / 0.33, t2_humaneval0 0 / 0 / 0.
+  No option meets the criterion on every task (steps 2 and 3); every option has exactly one task
+  inside the band, so step 4 with its tie-break gives **UniXcoder space at the 25th percentile**
+  (τ = 0.069 / 0.035 / 0.018 on t1_mbpp19 / t1_mbpp140 / t2_humaneval0). Frozen for the main run.
+  **Limitation for RQ2, stated now:** in UniXcoder space the studio's proposals are more spread
+  out than 96-100% of random sets of reference solutions, so convergence as defined (as close as
+  ordinary output) is rare and the Facilitator will fire in few sessions; the D vs D_minus contrast
+  is informative only where it fires, and the firing rate per task is reported with every RQ2
+  result. Orchestrator 0.2.3.
 - _…_ — **[fill after SC3]** `CLUSTER_THRESHOLD` frozen at __ (mean ARI __; N labelled proposals
   over __ tasks). Table:

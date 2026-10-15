@@ -28,7 +28,8 @@ sys.path.insert(0, str(ROOT / "scripts"))
 from build_reference import resolve_tasks  # noqa: E402  (same task selection syntax)
 from macs.llm.client import LLMClient  # noqa: E402
 from macs.metrics.reference import REFERENCE_ROOT, REFERENCE_N  # noqa: E402
-from macs.orchestrator import SessionConfig, run_session, ORCHESTRATOR_VERSION  # noqa: E402
+from macs.orchestrator import (  # noqa: E402
+    ORCHESTRATOR_VERSION, SessionConfig, check_facilitator_dependencies, run_session)
 from macs.trace.writer import validate_file, read_trace  # noqa: E402
 
 CONDITIONS = ["A", "B", "C", "D", "D_minus"]
@@ -106,6 +107,10 @@ def main() -> None:
         print("[note] sandbox=subprocess is for development; report numbers from --sandbox docker.")
     if args.dry_run or not plan:
         return
+    if any(c in ("B", "D", "D_minus") for _, c, _ in plan):
+        problem = check_facilitator_dependencies()
+        if problem:
+            raise SystemExit(problem)
 
     client = LLMClient.from_config(profile=args.profile)
     failures = []

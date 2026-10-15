@@ -210,7 +210,8 @@ Because of this, diversity is compared at a **matched number of solutions** (sec
 ### 7.1 The Facilitator (frozen rule)
 
 - **Convergence = novelty decay.** Each new proposal's distance to its nearest earlier proposal is
-  computed (cosine distance on raw AST features). The Facilitator fires when the mean of these
+  computed (cosine distance in UniXcoder embedding space, chosen on the 15 Oct pilot; needs
+  `pip install torch transformers`). The Facilitator fires when the mean of these
   distances over the last **three proposals** falls below tau. It can first fire after proposal 3,
   so it can shape proposals 4 and 5. There is no check after proposal 5, since an instruction then
   could not change anything.
@@ -219,8 +220,9 @@ Because of this, diversity is compared at a **matched number of solutions** (sec
   seed). The earlier rule (leave-one-out nearest-neighbour distances among all 100 reference
   solutions) gave 0 on every pilot task because most solutions have an identical twin among 99
   others. If the rule still gives 0, or there is no reference, the documented default 0.05 is used.
-  Each trace header records `tau`, `tau_source` and `tau_rule`. Check with
-  `python scripts/tau_diagnostics.py`.
+  Each trace header records `tau`, `tau_source`, `tau_rule` and `facilitator_representation`.
+  Check with `python scripts/tau_diagnostics.py --representation unixcoder`. On the pilot it fired
+  on one of three tasks in every space and percentile tried; this is a stated limitation of RQ2.
 - **Interventions rotate:** constraint -> dissent -> exclusion -> hybridisation. They are specific:
   the Facilitator names the construct most of the recent implementations share (a set, a dictionary,
   sorting, recursion, a heap, bit manipulation, nested loops) and the latest approach name, e.g.

@@ -28,7 +28,7 @@ and its [synthetic benchmark](https://doi.org/10.5281/zenodo.18114909) (CC-BY).
 ```
 py -m venv .venv
 .venv\Scripts\activate          REM Windows;  source .venv/bin/activate on Mac/Linux
-pip install -e ".[dev]"
+pip install -e ".[dev,embed]"    REM embed = torch + transformers, needed by the Facilitator
 copy config\models.example.yaml config\models.yaml   REM then edit
 pytest
 ```
@@ -45,6 +45,7 @@ it stopped.
 ```
 # 1. reference sets: 100 ordinary solutions per task (novelty + Facilitator threshold)
 python scripts/build_reference.py --tasks all --n 100
+python scripts/tau_diagnostics.py --representation unixcoder   # Facilitator firing check
 
 # 2. sessions: tasks x conditions x seeds (proposal: 6 seeds per cell)
 python scripts/run_experiment.py --tasks all --seeds 1-6 --dry-run     # check the plan

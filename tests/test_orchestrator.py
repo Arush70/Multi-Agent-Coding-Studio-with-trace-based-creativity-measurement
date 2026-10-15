@@ -164,7 +164,7 @@ def test_critic_and_revision_see_the_code(tmp_path):
     assert "def test_duplicate" in revision_prompt
 
 
-def test_degenerate_reference_tau_falls_back(monkeypatch):
+def test_degenerate_reference_tau_falls_back(monkeypatch, tmp_path):
     import numpy as np
     from macs import orchestrator
     from macs.metrics import reference
@@ -172,6 +172,8 @@ def test_degenerate_reference_tau_falls_back(monkeypatch):
     class R:  # a reference made of 10 identical solutions -> every NN distance is 0 -> tau 0
         X_ref = np.ones((10, 26))
     monkeypatch.setattr(reference, "build_reference_stats", lambda *a, **k: R())
+    monkeypatch.setattr(reference, "REFERENCE_ROOT", tmp_path)
+    (tmp_path / f"{load_task(TASK).id}.jsonl").write_text("{}\n", encoding="utf-8")
     tau, source = SessionConfig("D", seed=1).resolve_tau(load_task(TASK))
     assert tau == orchestrator.DEFAULT_TAU and source == "default:degenerate_reference"
 

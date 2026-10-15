@@ -41,7 +41,7 @@ PERSONAS = yaml.safe_load((Path(__file__).parent / "prompts" / "personas.yaml").
 # Bumped when the session logic changes in a way that makes older traces incomparable. It is
 # stamped into every trace header; the analysis skips traces from older versions by default
 # (scripts/analyze.py --include-old keeps them). History of changes: docs/DEV_LOG.md.
-ORCHESTRATOR_VERSION = "0.2.2"
+ORCHESTRATOR_VERSION = "0.2.3"
 
 K_PROPOSALS = 5
 # Critique-revision rounds (proposal: "bounded critique-revision, max 3 rounds"). The studio
@@ -58,8 +58,8 @@ CONVERGENCE_WINDOW = 3
 DEFAULT_TAU = 0.05
 # Space in which the Facilitator measures convergence: "ast" (26 structural features) or
 # "unixcoder" (embedding; needs torch and transformers). Chosen from the pilot by the rule in
-# docs/PREREGISTRATION.md (2026-10-15) and then frozen.
-FACILITATOR_REPRESENTATION = "ast"
+# docs/PREREGISTRATION.md (2026-10-15): UniXcoder at the 25th percentile. Frozen.
+FACILITATOR_REPRESENTATION = "unixcoder"
 # Sent once when the Critic's selection reply has no valid "SELECTED: <id>" line.
 SELECTION_REMINDER = ("Reply with exactly one line, SELECTED: <id>, naming one of {ids}. "
                       "Do not write code.")
@@ -93,6 +93,34 @@ def _embed(code: str, representation: str = "ast") -> np.ndarray | None:
         return None
 
 
+def check_facilitator_dependencies(representation: str = FACILITATOR_REPRESENTATION) -> str | None:
+    """Return a message if the Facilitator's space cannot be computed here, else None."""
+    if representation != "unixcoder":
+        return None
+    try:
+        import torch  # noqa: F401
+        import transformers  # noqa: F401
+    except ImportError:
+        return ("The Facilitator measures in UniXcoder space, which needs torch and transformers:\n"
+                "    pip install torch transformers\n"
+                "(the model, microsoft/unixcoder-base, downloads on first use).")
+    return None
+
+
+_REFERENCE_CACHE: dict[tuple[str, str], np.ndarray] = {}
+
+
+def _reference_matrix(task_id: str, representation: str) -> np.ndarray:
+    """The task's frozen reference in the Facilitator's space, computed once per process
+    (embedding 100 solutions takes a few seconds, and a batch run starts many sessions)."""
+    key = (task_id, representation)
+    if key not in _REFERENCE_CACHE:
+        from macs.metrics.reference import build_reference_stats
+        rep = "embed" if representation == "unixcoder" else "ast"
+        _REFERENCE_CACHE[key] = build_reference_stats(task_id, representation=rep, standardise=False).X_ref
+    return _REFERENCE_CACHE[key]
+
+
 @dataclass
 class SessionConfig:
     condition: str                    # A | B | C | D | D_minus
@@ -122,22 +150,26 @@ class SessionConfig:
         frozen reference set; otherwise a provisional default. tau_source is written to the trace
         header so every session records where its threshold came from.
 
-        tau is computed in the same space and with the same statistic the Facilitator uses (raw
-        AST features, cosine distance, mean nearest-earlier-proposal distance over the window),
-        on random sequences of K reference solutions; see tau_from_reference_sequences. If that
-        is still 0 the Facilitator could never fire; the proposal requires a non-degenerate firing
-        rate, so the documented default is used and the trace records it.
+        tau is computed in the same space as the Facilitator (FACILITATOR_REPRESENTATION, cosine
+        distance) and with the same statistic (mean nearest-earlier-proposal distance over the
+        window), on random sequences of K reference solutions; see tau_from_reference_sequences.
+        If that is still 0 the Facilitator could never fire; the proposal requires a
+        non-degenerate firing rate, so the documented default is used and the trace records it.
+        A missing torch/transformers install for the UniXcoder space is an error, not a fallback.
         """
         if self.tau is not None:
             return self.tau, "override"
-        try:
-            from macs.metrics.reference import build_reference_stats
-            rep = "embed" if self.facilitator_representation == "unixcoder" else "ast"
-            rs = build_reference_stats(task.id, representation=rep, standardise=False)
-        except Exception:  # noqa: BLE001 - no reference set yet (pilot); use the default
+        from macs.metrics.reference import REFERENCE_ROOT
+        if not (Path(REFERENCE_ROOT) / f"{task.id}.jsonl").exists():
             return DEFAULT_TAU, "default:no_reference"
-        self.reference_n = int(rs.X_ref.shape[0])
-        tau = tau_from_reference_sequences(rs.X_ref, k=self.k_proposals, window=CONVERGENCE_WINDOW)
+        try:
+            X_ref = _reference_matrix(task.id, self.facilitator_representation)
+        except (ImportError, ModuleNotFoundError):
+            raise
+        except Exception:  # noqa: BLE001 - empty or unparseable reference file
+            return DEFAULT_TAU, "default:no_reference"
+        self.reference_n = int(X_ref.shape[0])
+        tau = tau_from_reference_sequences(X_ref, k=self.k_proposals, window=CONVERGENCE_WINDOW)
         if tau <= 1e-9:
             return DEFAULT_TAU, "default:degenerate_reference"
         return tau, "reference"
