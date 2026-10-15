@@ -7,6 +7,32 @@ what changed, why, and which files. Pre-registration changes are also logged, da
 
 ---
 
+## 2026-10-15 (Week 4) - model switch to Qwen3.5-9B, thinking off, model guards
+
+**Model.** Development and the pilot move from `qwen2.5-coder:7b-instruct-q4_K_M` (Ollama id
+`dae161e27b0e`) to **`qwen3.5:9b`** (Ollama id `56671c2ab938`, Apache 2.0, about 6.6 GB, fits the
+laptop GPU). Reason: the 7B gave near-identical reference solutions, so tau fell back to its
+default and novelty saturated (risk already named in the project plan). The proposal (3.9) names
+"the largest Apache-2.0 Qwen coder checkpoint" for the main run; Qwen3.5 is the newer Apache-2.0
+Qwen generation and is a general model, not a coder line, so this is a recorded deviation.
+The main-run model follows the decision rule in `docs/PREREGISTRATION.md` (2026-10-15).
+
+**Thinking off.** Qwen3.5 in Ollama reasons before answering by default. Checked on the
+OpenAI-compatible endpoint: with `reasoning_effort: none` the reply has no reasoning and used
+342 completion tokens, against 689 with reasoning on, for the same request. The `local` profile
+sets this through the new `extra_body` field.
+
+| Change | Files |
+|---|---|
+| A model profile can carry `extra_body`, extra fields merged into every chat request. It is recorded in the trace header and is part of the cache key only when set, so existing caches keep their hashes. A leading `<think>...</think>` block in a reply is removed from the returned text; the full reply stays in the cache. | `macs/llm/client.py`, `config/models.example copy.yaml` |
+| The analysis never pools traces from different models: by default it analyses the model of the most recent trace and reports the rest as skipped; `analyze.py --model NAME` chooses one. | `macs/analysis/aggregate.py`, `scripts/analyze.py` |
+| `build_reference.py` refuses to top up a reference file that holds samples from a different model or revision (move it aside or use `--overwrite`), so a reference set always comes from one model. | `scripts/build_reference.py` |
+
+The 7B traces from 12 October and the 30-sample 7B reference for `t1_mbpp19_test_duplicate` are
+development data only; they were moved to `data/traces_archive/` and `data/reference_archive/`.
+
+---
+
 ## 2026-10-09 (Week 3) - open decisions D1-D6 implemented, batch runner added
 
 All six open decisions from 2026-10-07 are now implemented, following the proposal. Session
