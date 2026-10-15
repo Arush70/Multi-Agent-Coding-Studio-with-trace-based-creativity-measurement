@@ -421,7 +421,7 @@ Priorities: **now** = before the next supervision, **soon** = this month, **late
 - [ ] Mutation testing (mutmut) on the held-out suites of five tasks. *(later)*
 
 ### D. Statistics
-- [ ] Mixed-effects models (learner x solver, task random effect), planned contrasts B-A, D-C, D-D_minus, Holm-adjusted, 95% CIs, minimum detectable effect from pilot variance. *(later)*
+- [x] Mixed-effects models (learner x solver, task random effect), planned contrasts B-A, D-C, D-D_minus, Holm-adjusted, 95% CIs, minimum detectable effect from pilot variance. Done 15 Oct: `macs/analysis/stats.py`, `scripts/stats_report.py`.
 
 ### E. Human validation
 - [ ] On ethics approval: recruit raters, build 60 pairs, run the rating study, LLM judge, analysis. *(later)*

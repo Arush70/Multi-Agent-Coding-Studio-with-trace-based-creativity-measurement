@@ -54,6 +54,9 @@ python scripts/run_experiment.py --tasks all --seeds 1-6               # --sandb
 # 3. results table (also saved to data/results/summary.json for the dashboard)
 python scripts/analyze.py
 
+# 4. S8 statistics: planned contrasts, 95% CIs, Holm, minimum detectable effect
+python scripts/stats_report.py --tasks 21 --seeds 6
+
 # optional: reference-size sensitivity (build --n 200 on some tasks first)
 python scripts/reference_sensitivity.py
 

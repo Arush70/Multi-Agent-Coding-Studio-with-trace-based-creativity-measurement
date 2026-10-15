@@ -14,12 +14,13 @@ dependencies = [
     "jsonschema>=4.20",
     "numpy>=1.26",
     "scikit-learn>=1.4",
+    "scipy>=1.11",
     "radon>=6.0",
     "black>=24.0",
 ]
 
 [project.optional-dependencies]
-dev = ["pytest>=8.0"]
+dev = ["pytest>=8.0", "statsmodels>=0.14", "pandas>=2.0"]   # statsmodels cross-checks the S8 model
 embed = ["torch", "transformers>=4.40"]   # UniXcoder; install separately on the GPU machine
 
 [tool.setuptools.packages.find]
