@@ -42,7 +42,13 @@ FIRE_LOW, FIRE_HIGH = 0.10, 0.90     # pre-registered band for a non-degenerate 
 def represent(codes: list[str], representation: str) -> np.ndarray:
     if representation == "unixcoder":
         from macs.metrics.represent import embed
-        return embed([normalise(c) for c in codes])
+        normed = []
+        for c in codes:
+            try:
+                normed.append(normalise(c))
+            except Exception:  # noqa: BLE001 - unparseable code is skipped, as for AST
+                pass
+        return embed(normed) if normed else np.zeros((0, 768))
     rows = []
     for c in codes:
         try:
@@ -85,6 +91,9 @@ def main() -> None:
     for p in sorted(Path(args.traces).glob("*.jsonl")):
         events = list(read_trace(p))
         start = next((e for e in events if e["event"] == "session_start"), None)
+        end = str(events[-1].get("content", "")) if events and events[-1]["event"] == "session_end" else ""
+        if not end.startswith(("completed", "stopped")):
+            continue                     # a session that crashed is not a studio sample
         if start and start["condition"] in set(args.conditions.split(",")):
             codes = [c for pid, c in implementations(events) if not str(pid).startswith("p_rev")]
             model = start.get("header", {}).get("model", "")

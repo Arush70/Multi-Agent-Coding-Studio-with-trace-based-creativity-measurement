@@ -41,7 +41,7 @@ PERSONAS = yaml.safe_load((Path(__file__).parent / "prompts" / "personas.yaml").
 # Bumped when the session logic changes in a way that makes older traces incomparable. It is
 # stamped into every trace header; the analysis skips traces from older versions by default
 # (scripts/analyze.py --include-old keeps them). History of changes: docs/DEV_LOG.md.
-ORCHESTRATOR_VERSION = "0.2.1"
+ORCHESTRATOR_VERSION = "0.2.2"
 
 K_PROPOSALS = 5
 # Critique-revision rounds (proposal: "bounded critique-revision, max 3 rounds"). The studio
@@ -56,21 +56,39 @@ CONVERGENCE_WINDOW = 3
 # degenerate (tau = 0). The trace header records tau and tau_source for every studio session.
 # (The family-clustering threshold lives in macs/analysis/aggregate.py - one value, one place.)
 DEFAULT_TAU = 0.05
+# Space in which the Facilitator measures convergence: "ast" (26 structural features) or
+# "unixcoder" (embedding; needs torch and transformers). Chosen from the pilot by the rule in
+# docs/PREREGISTRATION.md (2026-10-15) and then frozen.
+FACILITATOR_REPRESENTATION = "ast"
+# Sent once when the Critic's selection reply has no valid "SELECTED: <id>" line.
+SELECTION_REMINDER = ("Reply with exactly one line, SELECTED: <id>, naming one of {ids}. "
+                      "Do not write code.")
 TAU_RULE = "p25_window_mean_on_reference_sequences"
 
-CODE_BLOCK = re.compile(r"```(?:python)?\n(.*?)```", re.S)
+CODE_BLOCK = re.compile(r"```[ \t]*(?:python3?|py)?[ \t]*\n(.*?)```", re.S | re.I)
+OPEN_BLOCK = re.compile(r"```[ \t]*(?:python3?|py)?[ \t]*\n(.*)", re.S | re.I)
 
 
 def extract_code(text: str) -> str:
-    m = CODE_BLOCK.search(text)
+    """The first fenced code block; a block that is opened but never closed (a long reply cut
+    off, or one that never closes the fence) runs to the end of the reply; no fence at all
+    means the whole reply is taken as code."""
+    m = CODE_BLOCK.search(text) or OPEN_BLOCK.search(text)
     return (m.group(1) if m else text).strip()
 
 
-def _embed(code: str) -> np.ndarray | None:
-    # Represent a solution as AST features (no heavy model needed) so the Facilitator can
-    # measure how close proposals are. Code that doesn't parse yet returns None and is skipped.
+def _embed(code: str, representation: str = "ast") -> np.ndarray | None:
+    # Represent a solution in the Facilitator's space so it can measure how close proposals
+    # are. Code that doesn't parse returns None and is skipped.
     try:
-        return ast_features(normalise(code))
+        normed = normalise(code)
+    except Exception:  # noqa: BLE001
+        return None
+    if representation == "unixcoder":
+        from macs.metrics.represent import embed
+        return embed([normed])[0]
+    try:
+        return ast_features(normed)
     except Exception:  # noqa: BLE001
         return None
 
@@ -85,6 +103,7 @@ class SessionConfig:
     tau: float | None = None          # None -> resolved from the reference set, else DEFAULT_TAU
     token_ceiling: int = TOKEN_CEILING
     max_revisions: int = MAX_REVISIONS
+    facilitator_representation: str = FACILITATOR_REPRESENTATION
     reference_n: int | None = field(default=None, init=False)   # size of the reference used for tau
 
     def __post_init__(self) -> None:
@@ -113,7 +132,8 @@ class SessionConfig:
             return self.tau, "override"
         try:
             from macs.metrics.reference import build_reference_stats
-            rs = build_reference_stats(task.id, standardise=False)
+            rep = "embed" if self.facilitator_representation == "unixcoder" else "ast"
+            rs = build_reference_stats(task.id, representation=rep, standardise=False)
         except Exception:  # noqa: BLE001 - no reference set yet (pilot); use the default
             return DEFAULT_TAU, "default:no_reference"
         self.reference_n = int(rs.X_ref.shape[0])
@@ -173,7 +193,8 @@ def run_session(task: Task, cfg: SessionConfig, client, out_dir: str | Path = "d
     if cfg.is_studio:
         tau, tau_source = cfg.resolve_tau(task)
         extra.update({"facilitator_enabled": cfg.facilitator_enabled, "tau": float(tau),
-                      "tau_source": tau_source, "tau_rule": TAU_RULE, "k_proposals": cfg.k_proposals,
+                      "tau_source": tau_source, "tau_rule": TAU_RULE,
+                      "facilitator_representation": cfg.facilitator_representation, "k_proposals": cfg.k_proposals,
                       "convergence_window": CONVERGENCE_WINDOW})
         if cfg.reference_n is not None:
             extra["reference_n"] = cfg.reference_n
@@ -269,7 +290,7 @@ def _run_studio(task: Task, cfg: SessionConfig, client, tr: TraceWriter, *, tau:
         res = runner.run(code, task.public_tests, backend=cfg.sandbox_backend)
         tr.log("verifier", "verification", proposal_id=pid, **res.as_trace_fields("public"))
 
-        emb = _embed(code)
+        emb = _embed(code, cfg.facilitator_representation)
         strategies.append(strategy)
         codes.append(code)
         results.append(res)
@@ -316,12 +337,23 @@ def _run_studio(task: Task, cfg: SessionConfig, client, tr: TraceWriter, *, tau:
                        {"role": "user", "content": task.agent_view + "\n\nProposals:\n\n" + listing}],
                       seed=cfg.seed + 250)
     chosen, how = _parse_selection(sel.text, ids), "critic"
+    sel_text, sel_pt, sel_ct = sel.text.strip(), sel.prompt_tokens, sel.completion_tokens
+    if chosen is None:
+        # one fixed reminder, then the deterministic fallback
+        retry = client.chat([{"role": "system", "content": PROMPTS["critic_selection"]},
+                             {"role": "user", "content": task.agent_view + "\n\nProposals:\n\n" + listing},
+                             {"role": "assistant", "content": sel.text},
+                             {"role": "user", "content": SELECTION_REMINDER.format(ids=", ".join(ids))}],
+                            seed=cfg.seed + 251)
+        chosen, how = _parse_selection(retry.text, ids), "critic_after_reminder"
+        sel_text += "\n\n[reminder] " + retry.text.strip()
+        sel_pt, sel_ct = sel_pt + retry.prompt_tokens, sel_ct + retry.completion_tokens
     if chosen is None:
         chosen, how = ids[_best_by_public_tests(results)], "fallback:most_public_tests_passed"
     sel_idx = ids.index(chosen)
     tr.log("critic", "selection", proposal_id=chosen,
-           content=f"selected {chosen} ({how}); {fam_note}\n{sel.text.strip()}".strip(),
-           prompt_tokens=sel.prompt_tokens, completion_tokens=sel.completion_tokens,
+           content=f"selected {chosen} ({how}); {fam_note}\n{sel_text}".strip(),
+           prompt_tokens=sel_pt, completion_tokens=sel_ct,
            request_hash=sel.request_hash)
 
     # ---- bounded critique-revision on the selected proposal (1 to max_revisions rounds)

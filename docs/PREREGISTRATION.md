@@ -164,5 +164,9 @@ and never edited to match results.
   space first; (4) if none does, the representation and percentile with the most tasks inside the
   band are used and the shortfall is reported as a limitation of RQ2. The outcome is recorded here
   with the numbers, then frozen.
+- _2026-10-15_ — **Selection and extraction robustness (amendment, pilot only).** If the Critic's
+  selection reply has no valid `SELECTED: <id>`, one fixed reminder is sent before the
+  most-public-tests fallback; the selection event records which path was taken. Code extraction
+  accepts an unclosed code block. Orchestrator 0.2.2. Details: `docs/DEV_LOG.md`.
 - _…_ — **[fill after SC3]** `CLUSTER_THRESHOLD` frozen at __ (mean ARI __; N labelled proposals
   over __ tasks). Table:

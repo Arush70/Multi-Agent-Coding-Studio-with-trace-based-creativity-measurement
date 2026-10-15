@@ -220,6 +220,34 @@ def test_selection_falls_back_when_reply_is_unusable(tmp_path):
     path = run_session(load_task(TASK), SessionConfig("B", seed=1, sandbox_backend="subprocess", tau=0.5), c, out_dir=tmp_path)
     sel = next(e for e in _events(path) if e["event"] == "selection")
     assert "fallback" in sel["content"] and sel["proposal_id"] == "p0"   # all pass -> earliest
+    reminders = [m for m in c.seen if "acting as the selector" in m[0]["content"] and len(m) == 4]
+    assert len(reminders) == 1 and "SELECTED: <id>" in reminders[0][-1]["content"]
+
+
+class ReminderClient(SelectingClient):
+    """First selection reply is code; after the reminder it names p3."""
+    def chat(self, messages, *, seed=None, **kw):
+        if "acting as the selector" in messages[0]["content"]:
+            self.seen.append(messages)
+            return FakeCompletion(text="SELECTED: p3" if len(messages) == 4 else "```python\nx = 1\n```")
+        return super().chat(messages, seed=seed, **kw)
+
+
+@posix_only
+def test_selection_reminder_is_sent_once_before_falling_back(tmp_path):
+    c = ReminderClient()
+    path = run_session(load_task(TASK), SessionConfig("B", seed=1, sandbox_backend="subprocess", tau=0.5), c, out_dir=tmp_path)
+    sel = next(e for e in _events(path) if e["event"] == "selection")
+    assert sel["proposal_id"] == "p3" and "(critic_after_reminder)" in sel["content"]
+    assert validate_file(path) == []
+
+
+def test_extract_code_handles_unclosed_and_tagged_fences():
+    from macs.orchestrator import extract_code
+    assert extract_code("Intro\n```python\ndef f():\n    return 1\n```\nmore") == "def f():\n    return 1"
+    assert extract_code("```py\ndef f():\n    return 2\n```") == "def f():\n    return 2"
+    assert extract_code("Here:\n```python\ndef f():\n    return 3\n") == "def f():\n    return 3"
+    assert extract_code("def f():\n    return 4") == "def f():\n    return 4"
 
 
 class FailingRevisionClient(VariedClient):
@@ -306,3 +334,23 @@ def test_facilitator_names_shared_construct_and_approach():
     f.next_intervention()                                          # skip dissent
     kind, args = f.intervene(construct="a set", approach="Hash set scan")
     assert kind == "exclusion" and args["family"] == "Hash set scan, built on a set"
+
+
+@posix_only
+def test_facilitator_representation_is_switchable_and_recorded(tmp_path, monkeypatch):
+    import numpy as np
+    from macs import orchestrator
+    from macs.metrics import represent
+    calls = []
+
+    def fake_embed(sources, **kw):
+        calls.append(len(sources))
+        return np.ones((len(sources), 8)) / np.sqrt(8)
+    monkeypatch.setattr(represent, "embed", fake_embed)
+    assert orchestrator._embed("def f(x):\n    return x\n", "unixcoder").shape == (8,)
+    assert orchestrator._embed("def f(:", "unixcoder") is None
+    assert orchestrator._embed("def f(x):\n    return x\n").shape == (26,)
+    cfg = SessionConfig("B", seed=1, sandbox_backend="subprocess", tau=0.5, facilitator_representation="unixcoder")
+    path = run_session(load_task(TASK), cfg, VariedClient(), out_dir=tmp_path)
+    h = next(e for e in _events(path) if e["event"] == "session_start")["header"]
+    assert h["facilitator_representation"] == "unixcoder" and calls
