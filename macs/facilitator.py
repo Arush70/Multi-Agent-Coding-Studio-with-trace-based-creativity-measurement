@@ -5,9 +5,11 @@ new idea landing close to an earlier one). When the mean nearest-neighbour dista
 last few proposals drops below a threshold tau, it intervenes and tells the Innovator to try a
 genuinely different approach. The four intervention types rotate so they can be compared.
 
-tau is not tuned to the results. It is fixed by a pre-registered rule, the 25th percentile of
-the reference set's own nearest-neighbour distances, so the firing threshold is decided by the
-task.
+tau is not tuned to the results. It is fixed by a pre-registered rule computed from the task's
+frozen reference set: the Facilitator's own window statistic is computed on random sequences of
+K reference solutions, and tau is the 25th percentile of those values (tau_from_reference_sequences).
+The firing threshold is therefore decided by what the model ordinarily produces for the task,
+measured the same way the Facilitator measures the studio.
 """
 from __future__ import annotations
 
@@ -27,6 +29,39 @@ def tau_from_reference(X_ref: np.ndarray, percentile: float = 25.0) -> float:
     np.fill_diagonal(D, np.inf)
     nn = D.min(axis=1)
     return float(np.percentile(nn, percentile))
+
+
+def tau_from_reference_sequences(X_ref: np.ndarray, *, k: int = 5, window: int = 3,
+                                 percentile: float = 25.0, n_draws: int = 2000, seed: int = 0) -> float:
+    """Pre-registered rule for tau (amended 2026-10-15), matched to the Facilitator's statistic.
+
+    Draws n_draws random sequences of k distinct reference solutions, feeds each to a Facilitator
+    exactly as a studio session would, records the window metric at every check that can still
+    change a later proposal (after proposals window .. k-1), and returns the given percentile of
+    all recorded values. Deterministic for a fixed seed. Returns 0.0 when the reference has fewer
+    than k solutions.
+
+    The earlier rule (tau_from_reference) took nearest-neighbour distances among all reference
+    solutions; with about 100 candidates almost every solution has an identical twin in AST space,
+    so that percentile was 0, while the Facilitator compares a proposal with only 2-4 earlier ones.
+    """
+    X_ref = np.asarray(X_ref, dtype=float)
+    n = len(X_ref)
+    if n < k:
+        return 0.0
+    rng = np.random.default_rng(seed)
+    values: list[float] = []
+    for _ in range(n_draws):
+        fac = Facilitator(tau=float("inf"), window=window)
+        for i, idx in enumerate(rng.choice(n, size=k, replace=False)):
+            fac.observe(X_ref[idx])
+            m = fac.window_metric()
+            if m is not None and i < k - 1:
+                values.append(m)
+    if not values:
+        return 0.0
+    tau = float(np.percentile(values, percentile))
+    return 0.0 if tau < 1e-9 else tau             # cosine distance of identical vectors can be ~1e-16
 
 
 @dataclass

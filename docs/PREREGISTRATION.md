@@ -75,10 +75,14 @@ Two representations are analysed **separately**, never combined: interpretable *
 
 - Convergence = novelty decay: the Facilitator fires when the window-mean nearest-neighbour distance
   falls below τ. Window = 3 proposals.
-- **τ rule:** the 25th percentile of the reference set's leave-one-out nearest-neighbour distances
-  (`tau_from_reference`). This is a *rule*, fixed in advance; the resulting number is task-specific
-  and read off the frozen reference, not hand-picked. When no reference exists, a documented default
-  is used and the session is marked as such.
+- **τ rule (amended 2026-10-15):** the 25th percentile of the Facilitator's own window statistic
+  computed on 2,000 random sequences of K = 5 solutions drawn from the task's frozen reference set
+  (fixed seed; `tau_from_reference_sequences`), in the space the Facilitator measures in. This is a
+  *rule*, fixed in advance; the resulting number is task-specific and read off the frozen reference,
+  not hand-picked. When no reference exists, or the rule still gives 0, a documented default is used
+  and the session is marked as such. The original rule (leave-one-out nearest-neighbour distances
+  among all reference solutions) is kept as `tau_from_reference` for comparison.
+- No convergence check after the final proposal: an instruction then could not change any proposal.
 - Interventions rotate deterministically: constraint → dissent → exclusion → hybridisation.
 
 ## 5. Provisional values (to be frozen by calibration before the main runs)
@@ -136,5 +140,17 @@ and never edited to match results.
   that model and `CLUSTER_THRESHOLD` re-checked on a subset; otherwise the main run uses
   `qwen3.5:9b`. Results from different models are never pooled; the analysis enforces this.
   Details: `docs/DEV_LOG.md`.
+- _2026-10-15_ — **τ rule matched to the Facilitator's statistic (amendment, before any main-run
+  results).** With 100 Qwen3.5-9B reference solutions per task, 90–95% of solutions have an
+  identical twin in AST-feature space, so the 25th percentile of leave-one-out nearest-neighbour
+  distances was 0 on all three pilot tasks (t1_mbpp19, t1_mbpp140, t2_humaneval0) and τ fell back
+  to the default. The cause is a mismatch: that rule finds the nearest of 99 other solutions, while
+  the Facilitator compares a proposal with only 2–4 earlier ones. τ is now the 25th percentile of
+  the Facilitator's own window statistic on random 5-solution sequences from the reference (0.050,
+  0.022 and 0.003 on the three tasks). Same percentile, same frozen reference, same space; the
+  statistic now matches. On the one 9B studio test session it fired at 1 of 2 checks (the
+  non-degenerate firing rate the proposal requires). Also: no check after the final proposal.
+  Orchestrator 0.2.1. `scripts/tau_diagnostics.py` reports both rules and firing rates; a UniXcoder
+  run of it is planned before the main-run freeze. Details: `docs/DEV_LOG.md`.
 - _…_ — **[fill after SC3]** `CLUSTER_THRESHOLD` frozen at __ (mean ARI __; N labelled proposals
   over __ tasks). Table:

@@ -212,10 +212,15 @@ Because of this, diversity is compared at a **matched number of solutions** (sec
 - **Convergence = novelty decay.** Each new proposal's distance to its nearest earlier proposal is
   computed (cosine distance on raw AST features). The Facilitator fires when the mean of these
   distances over the last **three proposals** falls below tau. It can first fire after proposal 3,
-  so it can shape proposals 4 and 5.
-- **tau rule:** the 25th percentile of the reference set's leave-one-out nearest-neighbour distances,
-  computed in the same space. If the reference is degenerate (tau = 0, e.g. mostly duplicates), the
-  documented default 0.05 is used. Each trace header records `tau` and `tau_source`.
+  so it can shape proposals 4 and 5. There is no check after proposal 5, since an instruction then
+  could not change anything.
+- **tau rule (amended 15 Oct):** the 25th percentile of the Facilitator's own window statistic on
+  2,000 random sequences of 5 solutions drawn from the frozen reference set (same space, fixed
+  seed). The earlier rule (leave-one-out nearest-neighbour distances among all 100 reference
+  solutions) gave 0 on every pilot task because most solutions have an identical twin among 99
+  others. If the rule still gives 0, or there is no reference, the documented default 0.05 is used.
+  Each trace header records `tau`, `tau_source` and `tau_rule`. Check with
+  `python scripts/tau_diagnostics.py`.
 - **Interventions rotate:** constraint -> dissent -> exclusion -> hybridisation. They are specific:
   the Facilitator names the construct most of the recent implementations share (a set, a dictionary,
   sorting, recursion, a heap, bit manipulation, nested loops) and the latest approach name, e.g.
