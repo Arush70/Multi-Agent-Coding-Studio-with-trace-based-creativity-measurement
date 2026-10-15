@@ -7,6 +7,30 @@ what changed, why, and which files. Pre-registration changes are also logged, da
 
 ---
 
+## 2026-10-15 (Week 4, S8) - statistics: mixed models, planned contrasts, Holm, MDE
+
+`macs/analysis/stats.py` fits the proposal's model (3.8) for each outcome:
+`outcome ~ studio * two_learners + (1 | task)` by REML, and `outcome ~ facilitator + (1 | task)` for
+D vs D_minus. With one random intercept the REML likelihood is profiled over one variance ratio,
+so only numpy and scipy are needed. Checked by simulation (estimates unbiased; standard errors
+match the empirical spread; 95% intervals cover the true value 94% of the time over 800 runs) and,
+where statsmodels is installed, against `statsmodels` MixedLM in `tests/test_stats.py`.
+`scripts/stats_report.py` prints the planned contrasts with 95% CIs, Holm-adjusted p-values for
+the five primary contrasts, the secondary outcomes, and the MDE for a chosen design. The
+specification is recorded in PREREGISTRATION (2026-10-15).
+
+On the 0.2.3 pilot (3 tasks, planning only): residual SD of the correct-and-novel rate 0.30 and of
+matched families 0.40. For 21 tasks x 6 seeds (Holm-strict alpha 0.01, 80% power) the MDE is about
+0.13 for the correct-and-novel rate and 0.42 families for B - A / D - C; the pilot differences
+were 0.28-0.47 and 0.83-1.03 respectively, so the planned design is large enough for effects of
+the pilot's size. For D - D_minus the pilot difference was -0.08 families with the Facilitator
+firing in 2 of 18 sessions, consistent with the RQ2 limitation.
+
+Files: `macs/analysis/stats.py`, `scripts/stats_report.py`, `tests/test_stats.py`,
+`pyproject.toml` (scipy declared; statsmodels and pandas in `dev` for the cross-check), `README.md`.
+
+---
+
 ## 2026-10-15 (Week 4, results) - pilot under orchestrator 0.2.3
 
 45 of 45 sessions completed (3 tasks x 5 conditions x 3 seeds, `qwen3.5:9b`, thinking off,

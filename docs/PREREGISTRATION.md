@@ -188,5 +188,15 @@ and never edited to match results.
   ordinary output) is rare and the Facilitator will fire in few sessions; the D vs D_minus contrast
   is informative only where it fires, and the firing rate per task is reported with every RQ2
   result. Orchestrator 0.2.3.
+- _2026-10-15_ — **Analysis specification (S8), fixed before the main run.** Each outcome is fitted
+  as `outcome ~ studio * two_learners + (1 | task)` on A, B, C, D by REML; D vs D_minus as
+  `outcome ~ facilitator + (1 | task)`. Planned contrasts: B - A (studio coefficient), D - C
+  (studio + interaction), D - D_minus. Wald t-tests with containment degrees of freedom
+  (N - tasks - p + 1); 95% CIs. **Holm family (5 tests):** matched families B - A and D - C (SC1),
+  correct-and-novel rate B - A and D - C (SC2), matched families D - D_minus (SC4). Mean novelty,
+  pass rate and tokens are secondary, unadjusted, reported beside every primary contrast. MDE for
+  a within-task contrast: (z(1 - 0.05/(2*5)) + z(0.80)) * sqrt(2 * residual variance / (tasks *
+  seeds)), residual variance from the pilot. Implementation: `macs/analysis/stats.py` (checked
+  against statsmodels MixedLM in the test suite); report: `scripts/stats_report.py`.
 - _…_ — **[fill after SC3]** `CLUSTER_THRESHOLD` frozen at __ (mean ARI __; N labelled proposals
   over __ tasks). Table:
