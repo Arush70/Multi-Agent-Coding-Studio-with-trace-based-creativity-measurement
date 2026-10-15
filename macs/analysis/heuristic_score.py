@@ -202,7 +202,7 @@ def _build_data(task: Task) -> dict:
         p = task.path / inst_file
         if not p.exists():
             raise FileNotFoundError(f"no frozen instances for {task.id}: run scripts/make_instances.py ({p})")
-        data["instances"] = json.loads(p.read_text())["instances"]
+        data["instances"] = json.loads(p.read_text(encoding="utf-8"))["instances"]
     else:
         data["instances"] = []          # cap_set is instance-free (dimensions come from params)
     return data

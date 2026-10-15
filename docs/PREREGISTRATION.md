@@ -152,5 +152,17 @@ and never edited to match results.
   non-degenerate firing rate the proposal requires). Also: no check after the final proposal.
   Orchestrator 0.2.1. `scripts/tau_diagnostics.py` reports both rules and firing rates; a UniXcoder
   run of it is planned before the main-run freeze. Details: `docs/DEV_LOG.md`.
+- _2026-10-15_ — **Facilitator firing check on the pilot; decision rule fixed before it is
+  applied.** On the first 9B pilot the matched τ rule fired on one of three tasks (AST features).
+  Firing counts as non-degenerate when the would-fire rate on D_minus traces (Facilitator off) is
+  between 10% and 90% of checks on every pilot task, measured by `scripts/tau_diagnostics.py` on the
+  laptop. Rule, applied in order, using firing rates only (never creativity outcomes):
+  (1) compute the matched τ at the 25th percentile in UniXcoder space and in AST space;
+  (2) if UniXcoder meets the criterion on every pilot task, the Facilitator measures in UniXcoder
+  space (the proposal's stated representation for convergence, 3.3/3.6); else if AST does, AST;
+  (3) otherwise use the smallest percentile in {25, 50, 75} that meets it on every task, UniXcoder
+  space first; (4) if none does, the representation and percentile with the most tasks inside the
+  band are used and the shortfall is reported as a limitation of RQ2. The outcome is recorded here
+  with the numbers, then frozen.
 - _…_ — **[fill after SC3]** `CLUSTER_THRESHOLD` frozen at __ (mean ARI __; N labelled proposals
   over __ tasks). Table:

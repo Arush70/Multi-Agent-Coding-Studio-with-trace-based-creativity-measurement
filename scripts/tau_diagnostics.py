@@ -5,8 +5,10 @@ For every task that has a reference set it reports:
     reference solutions) and under the matched rule now used (25th percentile of the
     Facilitator's own window statistic on random sequences of K reference solutions);
   * the share of reference solutions with an identical twin in the representation;
-  * for the studio traces of that task in --traces: how often the Facilitator would fire at the
-    checks that can still change a later proposal, under the matched tau.
+  * for the studio traces of that task in --traces (by default D_minus only, where the
+    Facilitator is off, so its own instructions do not shape the proposals): how often it would
+    fire at the checks that can still change a later proposal under the matched tau, and where
+    those window values fall in the reference distribution (percentile rank).
 
 The proposal asks for tau to be checked on pilot tasks for a non-degenerate firing rate; this is
 that check. --representation unixcoder repeats it in UniXcoder embedding space (needs the
@@ -34,7 +36,7 @@ from macs.metrics.represent import ast_features, normalise  # noqa: E402
 from macs.orchestrator import CONVERGENCE_WINDOW, K_PROPOSALS  # noqa: E402
 from macs.trace.writer import read_trace  # noqa: E402
 
-STUDIO = {"B", "D", "D_minus"}
+FIRE_LOW, FIRE_HIGH = 0.10, 0.90     # pre-registered band for a non-degenerate firing rate
 
 
 def represent(codes: list[str], representation: str) -> np.ndarray:
@@ -62,19 +64,28 @@ def window_checks(X: np.ndarray, k: int, window: int) -> list[float]:
     return out
 
 
+def reference_windows(X: np.ndarray, k: int, window: int, n_draws: int = 2000, seed: int = 0) -> np.ndarray:
+    """The window statistic on random k-sequences of reference solutions (as in the tau rule)."""
+    rng = np.random.default_rng(seed)
+    return np.array([m for _ in range(n_draws)
+                     for m in window_checks(X[rng.choice(len(X), size=k, replace=False)], k, window)])
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--reference-root", default=str(REFERENCE_ROOT))
     ap.add_argument("--traces", default="data/traces")
     ap.add_argument("--representation", default="ast", choices=["ast", "unixcoder"])
-    ap.add_argument("--out", default="data/results/tau_diagnostics.json")
+    ap.add_argument("--conditions", default="D_minus",
+                    help="studio conditions whose traces are checked (comma-separated)")
+    ap.add_argument("--out", default=None, help="default: data/results/tau_diagnostics_<representation>.json")
     args = ap.parse_args()
 
     studio_codes: dict[tuple[str, str], list[list[str]]] = {}
     for p in sorted(Path(args.traces).glob("*.jsonl")):
         events = list(read_trace(p))
         start = next((e for e in events if e["event"] == "session_start"), None)
-        if start and start["condition"] in STUDIO:
+        if start and start["condition"] in set(args.conditions.split(",")):
             codes = [c for pid, c in implementations(events) if not str(pid).startswith("p_rev")]
             model = start.get("header", {}).get("model", "")
             studio_codes.setdefault((start["task_id"], model), []).append(codes)
@@ -93,26 +104,37 @@ def main() -> None:
         twins = float(np.mean(D.min(axis=1) < 1e-9))
         tau_old = tau_from_reference(X)
         tau_new = tau_from_reference_sequences(X, k=K_PROPOSALS, window=CONVERGENCE_WINDOW)
+        ref_w = reference_windows(X, K_PROPOSALS, CONVERGENCE_WINDOW)
         checks = [m for s in sessions
                   for m in window_checks(represent(s, args.representation), K_PROPOSALS, CONVERGENCE_WINDOW)]
         fire = float(np.mean([m < tau_new for m in checks])) if checks and tau_new > 0 else None
+        rank = float(np.median([np.mean(ref_w < m) for m in checks])) if checks else None
         rows.append({"task_id": tid, "n_reference": len(X), "share_with_identical_twin": round(twins, 3),
                      "tau_old_rule": round(tau_old, 5), "tau_matched_rule": round(tau_new, 5),
                      "studio_sessions": len(sessions), "studio_checks": len(checks),
-                     "studio_fire_rate": None if fire is None else round(fire, 3)})
+                     "studio_fire_rate": None if fire is None else round(fire, 3),
+                     "studio_median_percentile_rank": None if rank is None else round(rank, 3),
+                     "non_degenerate": None if fire is None else FIRE_LOW <= fire <= FIRE_HIGH})
 
     print(f"representation: {args.representation}   K={K_PROPOSALS}  window={CONVERGENCE_WINDOW}\n")
-    print(f"{'task':<36}{'n':>4}{'twins':>7}{'tau_old':>10}{'tau_new':>10}{'sessions':>10}{'fire':>7}")
+    print(f"studio traces: {args.conditions}; non-degenerate firing = {FIRE_LOW:.0%}-{FIRE_HIGH:.0%} of checks\n")
+    print(f"{'task':<36}{'n':>4}{'twins':>7}{'tau_old':>10}{'tau_new':>10}{'sessions':>9}{'checks':>8}"
+          f"{'fire':>7}{'rank':>7}")
     for r in rows:
         fire = "-" if r["studio_fire_rate"] is None else f"{r['studio_fire_rate']:.2f}"
+        rank = "-" if r["studio_median_percentile_rank"] is None else f"{r['studio_median_percentile_rank']:.2f}"
         print(f"{r['task_id']:<36}{r['n_reference']:>4}{r['share_with_identical_twin']:>7.2f}"
-              f"{r['tau_old_rule']:>10.4f}{r['tau_matched_rule']:>10.4f}{r['studio_sessions']:>10}{fire:>7}")
+              f"{r['tau_old_rule']:>10.4f}{r['tau_matched_rule']:>10.4f}{r['studio_sessions']:>9}"
+              f"{r['studio_checks']:>8}{fire:>7}{rank:>7}")
+    print("\nrank = median percentile of the studio's window values within the reference's own window "
+          "values;\n       the matched rule fires below the 25th percentile.")
     if not rows:
         print("no reference sets found; build them with scripts/build_reference.py")
-    out = Path(args.out)
+    out = Path(args.out or f"data/results/tau_diagnostics_{args.representation}.json")
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps({"representation": args.representation, "k": K_PROPOSALS,
-                               "window": CONVERGENCE_WINDOW, "tasks": rows}, indent=1))
+                               "window": CONVERGENCE_WINDOW, "conditions": args.conditions,
+                               "fire_band": [FIRE_LOW, FIRE_HIGH], "tasks": rows}, indent=1), encoding="utf-8")
     print(f"\nwritten: {out}")
 
 

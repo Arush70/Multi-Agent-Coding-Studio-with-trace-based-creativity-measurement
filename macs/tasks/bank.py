@@ -57,7 +57,7 @@ class Task:
 
     def heldout_tests(self) -> list[str]:
         assert self.path is not None
-        data = yaml.safe_load((self.path / "task.yaml").read_text())
+        data = yaml.safe_load((self.path / "task.yaml").read_text(encoding="utf-8"))
         return list(data.get("heldout_tests", []))
 
     @property
@@ -69,7 +69,7 @@ class Task:
 
 def load_task(task_dir: str | Path) -> Task:
     p = Path(task_dir)
-    data = yaml.safe_load((p / "task.yaml").read_text())
+    data = yaml.safe_load((p / "task.yaml").read_text(encoding="utf-8"))
     data.pop("heldout_tests", None)
     return Task(path=p, **data)
 

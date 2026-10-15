@@ -89,7 +89,7 @@ class LLMClient:
         # Reads config/models.yaml (the git-ignored one, not the .example). Pass
         # profile="local" / "kaggle" / "deepseek" to pick a backend; omit it and the
         # file's default_profile is used. This is the only place a profile is built.
-        cfg = yaml.safe_load(Path(path).read_text())
+        cfg = yaml.safe_load(Path(path).read_text(encoding="utf-8"))
         name = profile or cfg["default_profile"]
         raw = {k: _expand_env(v) for k, v in cfg["profiles"][name].items()}
         prof = ModelProfile(name=name, **raw)
@@ -136,9 +136,10 @@ class LLMClient:
         h = self.request_hash(messages, temperature, max_tokens, seed)
         path = self._cache_path(h)
 
-        # Cache hit: return immediately, cached=True, no network call.
-        if use_cache and path.exists():
-            data = json.loads(path.read_text())
+        # Cache hit: return immediately, cached=True, no network call. An unreadable entry
+        # (e.g. left half-written by a crash) counts as a miss and is rewritten below.
+        data = _read_cache(path) if use_cache else None
+        if data is not None:
             return Completion(
                 text=data["text"],
                 prompt_tokens=data["prompt_tokens"],
@@ -192,7 +193,7 @@ class LLMClient:
         # not just the text, so any result can be traced to precisely what the model was
         # asked and what it returned.
         path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(json.dumps({
+        _write_atomic(path, json.dumps({
             "text": comp.text,
             "prompt_tokens": comp.prompt_tokens,
             "completion_tokens": comp.completion_tokens,
@@ -201,6 +202,31 @@ class LLMClient:
             "profile": self.profile.identity,
         }, ensure_ascii=False, indent=1))
         return comp
+
+
+def _read_cache(path: Path) -> dict[str, Any] | None:
+    """Read a cache entry as UTF-8. Entries written before 2026-10-15 on Windows used the
+    system code page, so that is tried next. Returns None when the entry is missing or
+    unreadable."""
+    if not path.exists():
+        return None
+    raw = path.read_bytes()
+    for enc in ("utf-8", "cp1252"):
+        try:
+            data = json.loads(raw.decode(enc))
+            if isinstance(data, dict) and "text" in data:
+                return data
+        except (UnicodeDecodeError, json.JSONDecodeError):
+            continue
+    return None
+
+
+def _write_atomic(path: Path, text: str) -> None:
+    """Write UTF-8 text to a temporary file and move it into place, so a crash never leaves a
+    half-written cache entry."""
+    tmp = path.with_name(path.name + ".tmp")
+    tmp.write_text(text, encoding="utf-8")
+    os.replace(tmp, path)
 
 
 _THINK_RE = re.compile(r"^\s*<think>.*?</think>\s*", re.DOTALL)

@@ -29,7 +29,7 @@ SCHEMA_PATH = Path(__file__).with_name("schema.json")
 # schema-v0.1.0; any later schema change is a deliberate, versioned amendment.
 SCHEMA_VERSION = "0.1.0"
 
-_SCHEMA = json.loads(SCHEMA_PATH.read_text())
+_SCHEMA = json.loads(SCHEMA_PATH.read_text(encoding="utf-8"))
 _VALIDATOR = jsonschema.Draft202012Validator(_SCHEMA)
 
 
