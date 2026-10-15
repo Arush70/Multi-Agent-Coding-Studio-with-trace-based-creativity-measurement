@@ -11,7 +11,7 @@ from pathlib import Path
 
 from macs.llm.client import LLMClient
 from macs.tasks.bank import load_task
-from macs.orchestrator import SessionConfig, run_session
+from macs.orchestrator import SessionConfig, check_facilitator_dependencies, run_session
 from macs.trace.writer import validate_file, read_trace
 
 
@@ -30,6 +30,11 @@ def main() -> None:
     if args.sandbox == "subprocess":
         print("[note] sandbox=subprocess is DEVELOPMENT ONLY (no memory isolation). "
               "Use --sandbox docker for results you report.\n")
+
+    if args.condition in ("B", "D", "D_minus"):
+        problem = check_facilitator_dependencies()
+        if problem:
+            raise SystemExit(problem)
 
     client = LLMClient.from_config(profile=args.profile)
     task = load_task(args.task)

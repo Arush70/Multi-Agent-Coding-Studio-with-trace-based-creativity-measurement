@@ -7,6 +7,38 @@ what changed, why, and which files. Pre-registration changes are also logged, da
 
 ---
 
+## 2026-10-15 (Week 4, decision) - Facilitator measures in UniXcoder space (rule applied)
+
+The pre-registered rule (PREREGISTRATION, 2026-10-15) was applied to the laptop diagnostics. No
+space or percentile gave a 10-90% firing rate on all three pilot tasks; each option had exactly one
+task in the band; the tie-break chose **UniXcoder at the 25th percentile**.
+
+| Would-fire rate (D_minus traces) | p25 | p50 | p75 |
+|---|---|---|---|
+| AST, t1_mbpp140 | 0.00 | 0.17 | 0.83 |
+| AST, t1_mbpp19 | 0.83 | 1.00 | 1.00 |
+| AST, t2_humaneval0 | 0 | 0 | 0 |
+| UniXcoder, t1_mbpp140 | 0 | 0 | 0 |
+| UniXcoder, t1_mbpp19 | 0.17 | 0.33 | 0.33 |
+| UniXcoder, t2_humaneval0 | 0 | 0 | 0 |
+
+Reading: the studio's proposals are far more spread out than ordinary output (96th-100th
+percentile in UniXcoder space), so "as converged as ordinary output" is rarely reached. This
+supports RQ1 and limits RQ2; both are stated in PREREGISTRATION. Worth raising at supervision: a
+stronger RQ2 test would need a condition in which the Innovator is not told to differ.
+
+| Change | Files |
+|---|---|
+| `FACILITATOR_REPRESENTATION = "unixcoder"`; reference embedded once per process per task | `macs/orchestrator.py` |
+| A missing torch/transformers install stops a studio run with an install message, instead of silently using the default tau | `macs/orchestrator.py`, `scripts/run_experiment.py`, `scripts/run_session.py` |
+| Tests use a deterministic stand-in embedding (no torch or model download in CI) | `tests/conftest.py`, `tests/test_orchestrator.py` |
+| Setup installs the `embed` extra; workflow lists the firing check | `README.md` |
+
+Orchestrator 0.2.3. The pilot is re-run once more; tutor sessions come from the cache, studio
+sessions change where the Facilitator now fires.
+
+---
+
 ## 2026-10-15 (Week 4, pilot review) - selection reminder, code extraction, switchable Facilitator space
 
 From the 43 completed pilot sessions (orchestrator 0.2.1):
