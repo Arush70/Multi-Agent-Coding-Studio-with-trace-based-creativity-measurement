@@ -7,6 +7,37 @@ what changed, why, and which files. Pre-registration changes are also logged, da
 
 ---
 
+## 2026-10-15 (Week 4, results) - pilot under orchestrator 0.2.3
+
+45 of 45 sessions completed (3 tasks x 5 conditions x 3 seeds, `qwen3.5:9b`, thinking off,
+subprocess sandbox, so development numbers only). Pilot figures describe the procedure; they are
+not results of the study and carry no inference (3 tasks, 3 seeds).
+
+| Condition | Proposals correct | Families at matched m (m = 3) | Mean novelty z | Correct and novel | Tokens / session |
+|---|---|---|---|---|---|
+| A (Tutor, 1 learner) | 9/9 | 1.67 | -0.01 | 0.22 | 652 |
+| B (Studio, 1 learner) | 44/55 (80%) | 2.69 | 1.79 | 0.50 | 11,816 |
+| C (Tutor, 2 learners) | 9/9 | 1.67 | -0.16 | 0.11 | 1,105 |
+| D (Studio, 2 learners) | 46/59 (78%) | 2.50 | 2.02 | 0.58 | 16,955 |
+| D_minus (Facilitator off) | 46/58 (79%) | 2.58 | 1.98 | 0.59 | 16,667 |
+
+Procedure checks:
+- **Facilitator** (UniXcoder, p25): fired in 2 of 18 B/D sessions, both on t1_mbpp19; D and D_minus
+  are identical sessions on the other two tasks. As anticipated in PREREGISTRATION (RQ2 limitation).
+- **Selection**: Critic chose directly in 21 of 27 studio sessions, after the reminder in 4,
+  fallback in 2 (was 6 of 26 before the reminder).
+- **Code parse rate**: 162 of 172 studio artefacts parse (94%); all 18 tutor outputs parse.
+- **Token ceiling**: no session stopped; the largest used 38,702 of 40,000 (t2_humaneval0, D,
+  seed 3), so the ceiling is close to binding on harder tasks.
+- **Tutor repeats itself across seeds**: on two tasks all three tutor seeds produced code with the
+  same novelty score, so the tutor's pooled diversity at matched m comes mostly from one task.
+- **Learners** (A vs C, B vs D): no visible difference at this size.
+
+Next, per the plan: SC3 hand-labelling to freeze the clustering threshold; references for all 21
+tasks; minimum detectable effect from pilot variance (needs the S8 statistics code).
+
+---
+
 ## 2026-10-15 (Week 4, decision) - Facilitator measures in UniXcoder space (rule applied)
 
 The pre-registered rule (PREREGISTRATION, 2026-10-15) was applied to the laptop diagnostics. No
