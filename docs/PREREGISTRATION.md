@@ -128,5 +128,13 @@ and never edited to match results.
   the first 100 by seed; sensitivity at 50 and 200 via `scripts/reference_sensitivity.py`.
   (v) Facilitator instructions name the shared construct / approach. Orchestrator version 0.2.0,
   role prompts 0.2.0. Details: `docs/DEV_LOG.md`.
+- _2026-10-15_ — **Model (amendment, before any main-run results).** Development and the pilot
+  use `qwen3.5:9b` (Ollama id `56671c2ab938`, Apache 2.0) with thinking off
+  (`reasoning_effort: none`), replacing `qwen2.5-coder:7b`. **Decision rule for the main run,
+  fixed now:** if a university GPU is available by 26 October 2026, the main run uses
+  Qwen3.5-27B (Apache 2.0), pinned by revision, with reference sets rebuilt and tau recomputed on
+  that model and `CLUSTER_THRESHOLD` re-checked on a subset; otherwise the main run uses
+  `qwen3.5:9b`. Results from different models are never pooled; the analysis enforces this.
+  Details: `docs/DEV_LOG.md`.
 - _…_ — **[fill after SC3]** `CLUSTER_THRESHOLD` frozen at __ (mean ARI __; N labelled proposals
   over __ tasks). Table:

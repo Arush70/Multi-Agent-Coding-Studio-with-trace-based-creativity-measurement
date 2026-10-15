@@ -91,3 +91,22 @@ def test_old_orchestrator_traces_are_skipped_unless_asked(tmp_path):
     _, summary = analyse_dir(tmp_path, backend="subprocess", include_legacy=True)
     assert summary["A"]["n_sessions"] == 1
     assert summary["B"]["avg_tokens"] == 0          # token totals are reported per condition
+
+
+@posix_only
+def test_traces_from_different_models_are_never_pooled(tmp_path):
+    import time
+    old = dict(HEADER, model="qwen2.5-coder:7b", revision="a")
+    with TraceWriter(tmp_path / "old.jsonl", session_id="old", task_id=TASK_ID, condition="A", header=old) as tr:
+        tr.log("tutor", "implementation", content=CORRECT, proposal_id="p1")
+        tr.end_note = "completed"
+    time.sleep(0.01)
+    new = dict(HEADER, model="qwen3.5:9b", revision="b")
+    with TraceWriter(tmp_path / "new.jsonl", session_id="new", task_id=TASK_ID, condition="B", header=new) as tr:
+        tr.log("engineer", "implementation", content=CORRECT, proposal_id="p0")
+        tr.end_note = "completed"
+    from macs.analysis.aggregate import analyse_dir
+    _, summary = analyse_dir(tmp_path, backend="subprocess")
+    assert list(summary) == ["B"]                    # newest trace's model only
+    _, summary = analyse_dir(tmp_path, backend="subprocess", model="qwen2.5-coder:7b")
+    assert list(summary) == ["A"]

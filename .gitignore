@@ -222,6 +222,7 @@ config/models.yaml
 data/cache/
 data/traces/*.jsonl
 data/traces_archive/
+data/reference_archive/
 data/reference/*.jsonl
 
 # OS / editor / notebook clutter

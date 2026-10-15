@@ -68,6 +68,23 @@ def existing_seeds(path: Path) -> list[int]:
     return seeds
 
 
+def _other_model_rows(path: Path, model: str, revision: str) -> int:
+    """Count samples in `path` that were not made by model@revision (rows without a model count)."""
+    if not path.exists():
+        return 0
+    n = 0
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if not line.strip():
+            continue
+        try:
+            row = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        if row.get("model") != model or row.get("revision", "") != revision:
+            n += 1
+    return n
+
+
 def build_task_reference(task, client, *, n: int, path: Path, sandbox: str = "subprocess",
                          temperature: float = 0.7, overwrite: bool = False, log=print) -> int:
     """Make sure `path` holds reference samples for seeds REF_SEED_BASE + 0..n-1. Returns how
@@ -76,6 +93,12 @@ def build_task_reference(task, client, *, n: int, path: Path, sandbox: str = "su
 
     if overwrite and path.exists():
         path.write_text("", encoding="utf-8")
+    mismatched = _other_model_rows(path, client.profile.model, client.profile.revision)
+    if mismatched:
+        raise RuntimeError(
+            f"{path} holds {mismatched} sample(s) from a different model than "
+            f"{client.profile.model}@{client.profile.revision}. A reference set must come from one "
+            f"model; move the file aside (e.g. to data/reference_archive/) or pass --overwrite.")
     have = set(existing_seeds(path))
     todo = [i for i in range(n) if REF_SEED_BASE + i not in have]
     if not todo:

@@ -75,3 +75,21 @@ def test_archive_traces_moves_files_and_never_overwrites(tmp_path):
     dest2, n2 = archive_traces(traces, archive, stamp="s")
     assert n2 == 1 and dest2 == archive / "s-1"
     assert (archive / "s" / "a.jsonl").exists()
+
+
+def test_reference_refuses_to_mix_models(tmp_path):
+    import json
+    import pytest
+    from build_reference import build_task_reference
+
+    class _Prof:
+        model, revision = "qwen3.5:9b", "b"
+
+    class _Client:
+        profile = _Prof()
+
+    path = tmp_path / "t.jsonl"
+    path.write_text(json.dumps({"seed": 100000, "code": "x=1", "model": "qwen2.5-coder:7b",
+                                "revision": "a"}) + "\n", encoding="utf-8")
+    with pytest.raises(RuntimeError, match="different model"):
+        build_task_reference(object(), _Client(), n=2, path=path)

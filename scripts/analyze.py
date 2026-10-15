@@ -25,6 +25,9 @@ def main() -> None:
     ap.add_argument("--out", default="data/results/summary.json")
     ap.add_argument("--include-old", action="store_true",
                     help="also score traces from older orchestrator versions / crashed sessions (not comparable)")
+    ap.add_argument("--model", default=None,
+                    help="analyse traces from this model only (name or name@revision); default: the "
+                         "model of the most recent trace")
     args = ap.parse_args()
 
     # load any reference sets that exist, so novelty is computed where possible
@@ -47,7 +50,8 @@ def main() -> None:
         pass
 
     sessions, summary, pooled = analyse_dir(args.traces, backend=args.sandbox, references=references,
-                                            return_pooled=True, include_legacy=args.include_old)
+                                            return_pooled=True, include_legacy=args.include_old,
+                                            model=args.model)
     print(f"scored {len(sessions)} sessions; novelty available for {len(references)} tasks\n")
     if not sessions:
         print("no comparable traces yet - run sessions with the current code first, e.g.\n"

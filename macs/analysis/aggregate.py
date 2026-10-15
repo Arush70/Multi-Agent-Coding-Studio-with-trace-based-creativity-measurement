@@ -211,22 +211,44 @@ def _version_tuple(v: str) -> tuple[int, ...]:
         return (0,)
 
 
+def _model_id(start: dict) -> str:
+    h = start.get("header", {})
+    return f"{h.get('model', '?')}@{h.get('revision', '')}"
+
+
 def analyse_dir(traces_dir="data/traces", *, backend="subprocess", references=None, return_pooled=False,
-                include_legacy=False):
+                include_legacy=False, model=None):
     """Score + aggregate every trace in a directory. `references` maps task_id -> ReferenceStats.
 
     Traces whose task_id is no longer in the task bank are skipped with a printed note. Traces from
     an older orchestrator version, and sessions that crashed before completing, are excluded unless
     include_legacy=True.
+
+    Results from different models are never pooled. `model` selects one (a model name, or
+    "name@revision"); when it is None and the directory holds traces from several models, only the
+    model of the most recent trace is analysed and the others are reported as skipped.
     """
     from macs.orchestrator import ORCHESTRATOR_VERSION
     refs = references or {}
     sessions, skipped, legacy, incomplete = [], [], [], []
     pooled_codes: dict[tuple[str, str], list[str]] = defaultdict(list)
+    loaded = []
     for p in sorted(Path(traces_dir).glob("*.jsonl")):
         events = list(read_trace(p))
         start = next((e for e in events if e["event"] == "session_start"), None)
-        if not start:
+        if start:
+            loaded.append((p, events, start))
+    models = {_model_id(st) for _, _, st in loaded}
+    if model is not None:
+        target = {m for m in models if m == model or m.split("@", 1)[0] == model}
+    elif len(models) > 1:
+        newest = max(loaded, key=lambda x: str(x[2].get("ts", "")))[2]
+        target = {_model_id(newest)}
+    else:
+        target = models
+    other_model = [p.name for p, _, st in loaded if _model_id(st) not in target]
+    for p, events, start in loaded:
+        if _model_id(start) not in target:
             continue
         # traces from an older orchestrator version are not comparable with current ones
         version = start.get("header", {}).get("orchestrator_version", "0.1.0")
@@ -249,6 +271,10 @@ def analyse_dir(traces_dir="data/traces", *, backend="subprocess", references=No
     if incomplete:
         print(f"[analyse] skipped {len(incomplete)} incomplete trace(s) (session crashed): "
               + ", ".join(incomplete[:5]) + (" ..." if len(incomplete) > 5 else ""))
+    if other_model:
+        print(f"[analyse] analysing model {', '.join(sorted(target)) or model}; skipped "
+              f"{len(other_model)} trace(s) from other models (results from different models are "
+              f"never pooled; choose one with --model)")
     if legacy:
         print(f"[analyse] skipped {len(legacy)} trace(s) from an older orchestrator "
               f"(< {ORCHESTRATOR_VERSION}); use --include-old to keep them")
