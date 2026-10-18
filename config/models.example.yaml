@@ -14,16 +14,6 @@ profiles:
     max_tokens: 2048
     # extra_body: {reasoning_effort: none}   # extra request fields, e.g. thinking off for Qwen3.5
 
-  claude:                     # Claude API (OpenAI-compatible endpoint). Put your key in the
-                              # ANTHROPIC_API_KEY environment variable, or paste it below.
-    base_url: https://api.anthropic.com/v1
-    api_key: ${ANTHROPIC_API_KEY}
-    model: claude-sonnet-5-5         # or claude-opus-5-5 / claude-haiku-5-5
-    revision: ""                     # API models are pinned by their model id
-    quantisation: provider
-    temperature: 1.0                 # newer Claude models reject a temperature below 1
-    max_tokens: 2048
-
   deepseek:                   # DeepSeek, free: open weights run locally through Ollama.
                               # Install once with:  ollama pull deepseek-coder-v2:16b
                               # Used as the independent AI judge (ethics Method 4).
