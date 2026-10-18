@@ -14,22 +14,14 @@ profiles:
     max_tokens: 2048
     # extra_body: {reasoning_effort: none}   # extra request fields, e.g. thinking off for Qwen3.5
 
-  kaggle:                     # main experiment; served by vLLM inside the Kaggle notebook
-    base_url: http://localhost:8000/v1
-    api_key: none
-    model: ""                        # decide and pin in week 1
-    revision: ""                     # Hugging Face commit hash
-    quantisation: 4bit
-    temperature: 0.7
-    max_tokens: 2048
-
-  deepseek:                   # optional frontier replication and the separate LLM judge
-    base_url: https://api.deepseek.com/v1
-    api_key: ${DEEPSEEK_API_KEY}     # read from environment; never commit a key
-    model: deepseek-v4-flash
-    revision: ""
+  claude:                     # Claude API (OpenAI-compatible endpoint). Put your key in the
+                              # ANTHROPIC_API_KEY environment variable, or paste it below.
+    base_url: https://api.anthropic.com/v1
+    api_key: ${ANTHROPIC_API_KEY}
+    model: claude-sonnet-5-5         # or claude-opus-5-5 / claude-haiku-5-5
+    revision: ""                     # API models are pinned by their model id
     quantisation: provider
-    temperature: 0.7
+    temperature: 1.0                 # newer Claude models reject a temperature below 1
     max_tokens: 2048
 
 seed: 20260921

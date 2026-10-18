@@ -63,18 +63,18 @@ def test_cache_hit_avoids_second_backend_call(tmp_path, monkeypatch):
 
 
 def test_env_var_expands_into_api_key(tmp_path, monkeypatch):
-    # Proves the ${DEEPSEEK_API_KEY} mechanism works, i.e. the key is read from the
+    # Proves the ${ANTHROPIC_API_KEY} mechanism works, i.e. the key is read from the
     # environment and never has to be written into models.yaml.
-    monkeypatch.setenv("DEEPSEEK_API_KEY", "secret-123")
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "secret-123")
     cfg = tmp_path / "models.yaml"
     cfg.write_text(
-        "default_profile: deepseek\n"
+        "default_profile: claude\n"
         "cache_dir: %s\n"
         "profiles:\n"
-        "  deepseek:\n"
-        "    base_url: https://api.deepseek.com/v1\n"
-        "    api_key: ${DEEPSEEK_API_KEY}\n"
-        "    model: deepseek-v4-flash\n" % (tmp_path / "cache")
+        "  claude:\n"
+        "    base_url: https://api.anthropic.com/v1\n"
+        "    api_key: ${ANTHROPIC_API_KEY}\n"
+        "    model: claude-sonnet-5-5\n" % (tmp_path / "cache")
     )
     c = LLMClient.from_config(cfg)
     assert c.profile.api_key == "secret-123"
@@ -127,3 +127,18 @@ def test_cache_is_utf8_and_survives_legacy_or_broken_entries(tmp_path, monkeypat
     again = c.chat(msgs, seed=1)
     assert again.cached is False and again.text == "O(n * α(k)) ≤ n²"
     assert c.chat(msgs, seed=1).cached is True
+
+
+def test_client_error_is_reported_without_retrying(tmp_path, monkeypatch):
+    # A wrong key or model name comes back as 4xx; it must fail at once with the server's
+    # message rather than after three backoff retries.
+    class R:
+        status_code = 401
+        text = '{"error": "invalid x-api-key"}'
+    calls = []
+    c = LLMClient(_profile(), cache_dir=tmp_path)
+    monkeypatch.setattr(c._session, "post", lambda *a, **k: calls.append(1) or R())
+    import pytest
+    with pytest.raises(RuntimeError, match="invalid x-api-key"):
+        c.chat([{"role": "user", "content": "hi"}], use_cache=False)
+    assert len(calls) == 1

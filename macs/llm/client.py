@@ -7,8 +7,8 @@ Every model call goes through this client, for two reasons:
      saved answer without a model call, so analyses can be re-run at no cost and runs are
      reproducible.
 
-  2. One interface for every backend. A local Ollama server, a hosted GPU, or an API such as
-     DeepSeek's all speak the same protocol; switching between them is a change to
+  2. One interface for every backend. A local Ollama server, a hosted GPU, or the Claude API
+     (through its OpenAI-compatible endpoint) all speak the same protocol; switching between them is a change to
      config/models.yaml, not to the code. Nothing above this module imports 'requests' or
      knows a URL.
 """
@@ -27,7 +27,7 @@ import requests
 import yaml
 
 # Matches ${NAME} in the config so an API key can live in an environment variable instead
-# of in the file: models.yaml says ${DEEPSEEK_API_KEY}, never the key itself.
+# of in the file: models.yaml says ${ANTHROPIC_API_KEY}, never the key itself.
 _ENV_RE = re.compile(r"\$\{(\w+)\}")
 
 
@@ -87,7 +87,7 @@ class LLMClient:
     @classmethod
     def from_config(cls, path: str | Path = "config/models.yaml", profile: str | None = None) -> "LLMClient":
         # Reads config/models.yaml (the git-ignored one, not the .example). Pass
-        # profile="local" / "kaggle" / "deepseek" to pick a backend; omit it and the
+        # profile="local" / "claude" to pick a backend; omit it and the
         # file's default_profile is used. This is the only place a profile is built.
         cfg = yaml.safe_load(Path(path).read_text(encoding="utf-8"))
         name = profile or cfg["default_profile"]
@@ -169,9 +169,17 @@ class LLMClient:
             t0 = time.time()
             try:
                 r = self._session.post(url, json=body, headers=headers, timeout=300)
+                # A client error (wrong API key, unknown model, bad parameter) will not fix
+                # itself, so it is reported at once with the server's own message instead of
+                # being retried. Rate limits (429) and server errors are retried.
+                code = getattr(r, "status_code", 200)
+                if isinstance(code, int) and 400 <= code < 500 and code != 429:
+                    raise _ClientError(f"{code} from {url}: {r.text[:500]}")
                 r.raise_for_status()
                 raw = r.json()
                 break
+            except _ClientError as e:
+                raise RuntimeError(f"LLM call rejected: {e}") from None
             except Exception as e:  # noqa: BLE001
                 last_err = e
                 time.sleep(2 ** attempt)
@@ -202,6 +210,10 @@ class LLMClient:
             "profile": self.profile.identity,
         }, ensure_ascii=False, indent=1))
         return comp
+
+
+class _ClientError(Exception):
+    """A 4xx response other than a rate limit: retrying would not help."""
 
 
 def _read_cache(path: Path) -> dict[str, Any] | None:
