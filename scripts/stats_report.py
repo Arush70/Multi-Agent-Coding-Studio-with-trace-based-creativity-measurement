@@ -103,19 +103,20 @@ def main() -> None:
     n_tasks = len({r["task_id"] for r in sessions})
     print(f"S8 planned contrasts  ({n_tasks} task(s); {len(sessions)} sessions; "
           f"model: outcome ~ studio * two_learners + (1 | task), REML)\n")
-    head = f"{'contrast':<40}{'estimate':>10}{'95% CI':>22}{'p':>9}{'p (Holm)':>10}"
+    W = 56
+    head = f"{'contrast':<{W}}{'estimate':>10}{'95% CI':>22}{'p':>9}{'p (Holm)':>10}"
     n_est = sum(1 for c in primary if c is not None)
     print(f"PRIMARY (Holm family: {n_est} estimable of {len(PRIMARY)})\n" + head)
     for (o, k), c in zip(PRIMARY, primary):
         if c is None:
-            print(f"{o + ': ' + k:<40}{'not estimable (missing conditions or <2 tasks)':>51}")
+            print(f"{o + ': ' + k:<{W}}  not estimable (conditions not run, or fewer than 2 tasks)")
             continue
-        print(f"{c.label:<40}{c.estimate:>10.3f}   [{c.ci_low:>7.3f}, {c.ci_high:>7.3f}]{c.p:>9.3f}{c.p_holm:>10.3f}")
+        print(f"{c.label:<{W}}{c.estimate:>10.3f}   [{c.ci_low:>7.3f}, {c.ci_high:>7.3f}]{c.p:>9.3f}{c.p_holm:>10.3f}")
     print("\nSECONDARY (exploratory, unadjusted)\n" + head)
     for c in contrasts.values():
         if c in primary:
             continue
-        print(f"{c.label:<40}{c.estimate:>10.3f}   [{c.ci_low:>7.3f}, {c.ci_high:>7.3f}]{c.p:>9.3f}{'':>10}")
+        print(f"{c.label:<{W}}{c.estimate:>10.3f}   [{c.ci_low:>9.3f}, {c.ci_high:>9.3f}]{c.p:>9.3f}")
 
     print(f"\nMINIMUM DETECTABLE EFFECT for {args.tasks} tasks x {args.seeds} seeds per cell "
           f"(80% power, two-sided, Holm-strict alpha 0.05/{len(PRIMARY)}):")
