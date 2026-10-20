@@ -46,3 +46,11 @@ def test_bank_loads_all_three_tiers():
 def test_tier3_is_heuristic_scored():
     for t in load_bank(tier=3):
         assert t.scoring == "heuristic"          # no single right answer; metric-scored
+
+
+def test_main_set_meets_sc1_and_contamination_set_is_separate():
+    bank = load_bank()
+    main = [t for t in bank if t.task_set == "main"]
+    check = [t for t in bank if t.task_set == "contamination_check"]
+    assert len(main) >= 24                      # SC1: at least 24 tasks
+    assert len(check) == 3 and all(t.source == "EvoEval" for t in check)

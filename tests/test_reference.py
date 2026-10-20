@@ -95,3 +95,21 @@ def test_build_reference_tops_up_without_rewriting(tmp_path):
     assert path.read_text().startswith(first)                       # existing samples untouched
     assert [json.loads(l)["seed"] for l in path.read_text().splitlines()] == [br.REF_SEED_BASE + i for i in range(5)]
     assert br.build_task_reference(task, Client(), n=5, path=path, log=lambda *a: None) == 0
+
+
+def test_each_model_has_its_own_reference_location(tmp_path, monkeypatch):
+    import json as _json
+    from macs.metrics import reference as R
+    monkeypatch.setattr(R, "REFERENCE_ROOT", tmp_path)
+    (tmp_path / "t1.jsonl").write_text(_json.dumps({"seed": 0, "model": "qwen3.5:9b", "code": "x=1"}) + "\n",
+                                       encoding="utf-8")
+    assert R.reference_path("t1", "qwen3.5:9b") == tmp_path / "t1.jsonl"          # first model: legacy file
+    assert R.reference_path("t1", "llama3.1:8b") == tmp_path / "models" / "llama3.1_8b" / "t1.jsonl"
+    assert R.reference_path("t1") == tmp_path / "t1.jsonl"
+    other = tmp_path / "models" / "llama3.1_8b"
+    other.mkdir(parents=True)
+    (other / "t2.jsonl").write_text(_json.dumps({"seed": 0, "model": "llama3.1:8b", "code": "y=2"}) + "\n",
+                                    encoding="utf-8")
+    assert R.reference_tasks("llama3.1:8b") == ["t2"]
+    assert R.reference_tasks("qwen3.5:9b") == ["t1"]
+    assert R.load_reference_solutions("t2", model="llama3.1:8b") == ["y=2"]

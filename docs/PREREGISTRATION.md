@@ -28,6 +28,17 @@ Five conditions, one shared model, identical task bank and budgets:
 
 The B–A and D–C contrasts isolate the studio; the D–D_minus contrast isolates the Facilitator.
 
+**Extensions (amendment 2026-10-20, before any main-run results; see the log):**
+
+| Condition | Learners | Solver | Facilitator | Purpose |
+|-----------|----------|--------|-------------|---------|
+| E         | 2 | Studio, **neutral Innovator** (no list of earlier strategies, no instruction to differ) | on | Facilitator where ideas can converge |
+| E_minus   | 2 | Studio, neutral Innovator | **off** | its ablation |
+| S         | 2 | Tutor sampled at temperature 1.0 until 17,000 tokens (max 30 solutions) | – | studio vs more tries at equal compute |
+| P         | 2 | One call asked for K = 5 genuinely different approaches, each with code | – | studio vs a single diversity prompt |
+
+D, D_minus, E and E_minus form a 2 x 2 inside the studio: diversity scaffold x Facilitator.
+
 ## 2. Hypotheses / success criteria
 
 - **SC1 (diversity):** studio conditions (B, D) show more solution families among their proposals
@@ -198,5 +209,66 @@ and never edited to match results.
   a within-task contrast: (z(1 - 0.05/(2*5)) + z(0.80)) * sqrt(2 * residual variance / (tasks *
   seeds)), residual variance from the pilot. Implementation: `macs/analysis/stats.py` (checked
   against statsmodels MixedLM in the test suite); report: `scripts/stats_report.py`.
+- _2026-10-20_ — **Extended design (amendment, before any main-run results).** Recorded in full here
+  before any session in the new conditions is run; the core design above is unchanged.
+  1. *Conditions E, E_minus (RQ2).* The pilot showed the Facilitator rarely fires because the
+     Innovator is already told to differ. E and E_minus use a neutral Innovator prompt
+     (`innovator_neutral`: one strategy, no list of earlier strategies, no instruction to differ);
+     everything else as D / D_minus (2 learners, same τ rule, K = 5, revisions, ceiling).
+     Fitted as `outcome ~ scaffold * facilitator + (1 | task)` on D, D_minus, E, E_minus; contrasts
+     E - E_minus (Facilitator where convergence occurs), D_minus - E_minus (scaffold alone), and the
+     interaction (D - D_minus) - (E - E_minus).
+  2. *Baselines S and P.* S: the tutor prompt sampled at temperature 1.0 with a new seed per sample
+     until the session has used 17,000 tokens (the pilot's mean D session, rounded) or 30
+     solutions. P: one call (`single_prompt`) for K = 5 different approaches with code; parsed into
+     proposals (unparsed parts are logged, not repaired). Contrasts D - S and D - P, each fitted as
+     `outcome ~ is_D + (1 | task)` on the two conditions.
+  3. *Holm family (amended; 10 tests, contrasts not run are left out of the adjustment):* matched
+     families and correct-and-novel rate for B - A and D - C; matched families for D - D_minus and
+     E - E_minus; matched families and correct-and-novel rate for D - S and D - P. Secondary,
+     unadjusted: mean novelty, pass rate, tokens, learner uptake, learner-led share, the two
+     interactions, D_minus - E_minus. MDE uses alpha 0.05/10.
+  4. *Tasks.* Three HumanEval tasks added to reach SC1's 24 (HumanEval/20, 26, 57; 11 + 8 + 5).
+     A separate *contamination check* set of three EvoEval_creative rewrites of HumanEval problems
+     (EvoEval/13, 16, 31; Xia et al., 2024) is analysed on its own (`--task-set
+     contamination_check`) to check that effects do not depend on memorised benchmarks. Known
+     families for all six were written before any model output on them.
+  5. *Models.* Every condition is run on the main model (decision rule of 2026-10-15). A
+     cross-model panel of open models from other families (Llama 3.1 8B, Gemma 3 12B, Granite 4.2
+     8B on the laptop; Qwen3.5-27B and gpt-oss-20b where the University GPU allows) runs a reduced
+     design: the core conditions plus D_minus, E, E_minus on the 24 tasks with 3 seeds. Each model
+     has its own reference set and τ, and is analysed on its own. Consistency: each primary
+     contrast is combined across models with a DerSimonian-Laird random-effects meta-analysis;
+     reported per contrast are the per-model estimates, the pooled estimate and 95% CI, Cochran's
+     Q, I² and the number of models agreeing in sign (`scripts/model_consistency.py`). DeepSeek-
+     Coder-V2 Lite is reserved for the AI judge and is not in the panel.
+  6. *Learner contribution (RQ3, exploratory).* Constructs the learners mention (keyword
+     vocabulary in `macs/metrics/learners.py`) against constructs in the solutions: uptake by the
+     final solution, uptake by any solution, share of solutions led by a learner construct, and the
+     share of learner constructs that are rare (< 20%) in the reference set.
+  7. *Rating study analysis (SC4).* 60 pairs of distinct correct solutions to the same Tier 1/2
+     task, spread evenly over tasks, spanning small to large novelty gaps, each solution in at most
+     two pairs, A/B order randomised, seed 2026; code shown without comments or docstrings.
+     Bradley-Terry strengths per question (MM algorithm, prior of half a win against a reference
+     item); Spearman's rho between strength and automatic novelty with a pair-bootstrap 95% CI
+     (target 0.50); mean pairwise Cohen's kappa and Fleiss' kappa (target 0.60). AI judge
+     (DeepSeek-Coder-V2 Lite, temperature 0): each pair asked in both orders, counted only when the
+     two agree; reported separately and as agreement with the human majority.
+  8. *Open-problem search study.* On metric-scored problems (circle packing n = 26, online bin
+     packing, cap set; others optional), three strategies with the same budget of 40 scored
+     programs, 3 seeds: random (independent samples), single (one model shown the best 3 programs
+     with scores), studio (Innovator shown best programs and earlier strategies and told to differ;
+     Engineer implements; Facilitator in AST space with the default τ). Primary measure: area under
+     the best-so-far curve; also best score, best raw value against the best-known value, tokens.
+     Studio vs single and vs random compared by paired Wilcoxon over seeds when there are at least
+     6 seeds, otherwise reported descriptively.
+  9. *Measurement robustness.* UniXcoder analysed as the parallel representation (cosine
+     clustering, threshold calibrated on the same SC3 labels in that space; novelty against the
+     reference in that space), reported separately. Mutation testing of five tasks' held-out
+     tests with an AST mutator (operators: comparison, arithmetic, constant, boolean, return) in
+     place of mutmut, which does not run on Windows. Quality-diversity frontier and Tier 3 payoff
+     (Spearman's rho between novelty and heuristic score) from per-proposal records.
+  Orchestrator 0.3.0 (0.2.3 traces remain comparable: the core conditions are unchanged), role
+  prompts 0.3.0, trace schema 0.2.0 (condition enum extended). Details: `docs/DEV_LOG.md`.
 - _…_ — **[fill after SC3]** `CLUSTER_THRESHOLD` frozen at __ (mean ARI __; N labelled proposals
   over __ tasks). Table:

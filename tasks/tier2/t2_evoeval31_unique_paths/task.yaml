@@ -1,0 +1,32 @@
+# EvoEval problem EvoEval_creative/31 (from HumanEval/57). Source: Xia, C.S., Deng, Y. and Zhang, L. (2024), Top Leaderboard Ranking = Top Coding Proficiency, Always? EvoEval: Evolving Coding Benchmarks via LLM, COLM 2024, arXiv:2403.19114 (EvoEval_creative)
+# known_families are BLIND LABELS (strategies written before any model output); do not edit to match results.
+# Held-out tests come from the benchmark's own tests (expected values from the benchmark's canonical solution); only the scorer sees them.
+# Contamination check (pre-registered 2026-10-20): an EvoEval rewrite of a HumanEval problem, less likely to be memorised.
+id: t2_evoeval31_unique_paths
+tier: 2
+source: EvoEval
+source_id: EvoEval_creative/31 (from HumanEval/57)
+citation: 'Xia, C.S., Deng, Y. and Zhang, L. (2024), Top Leaderboard Ranking = Top Coding Proficiency, Always? EvoEval: Evolving Coding Benchmarks via LLM, COLM 2024, arXiv:2403.19114 (EvoEval_creative)'
+task_set: contamination_check
+entry_point: unique_paths
+prompt: "def unique_paths(m: int, n: int):\n    \"\"\"\n    A robot is located at the top-left corner of a m x n grid (marked 'Start' in the diagram below).\n    The robot can only move either down or right at any point in time. \n    The robot is trying to reach the bottom-right corner of the grid (marked 'Finish' in the diagram below).\n    How many possible unique paths are there from start to finish?\n    >>> unique_paths(3, 2)\n    3\n    >>> unique_paths(7, 3)\n    28\n    >>> unique_paths(3, 3)\n    6\n\n    :param m: the number of rows in the grid\n    :param n: the number of columns in the grid\n    :return: the number of possible unique paths from start to finish\n    \"\"\"\n\nComplete the function `unique_paths`.\n"
+known_families:
+  - dp_table              # 2-D DP table
+  - combinatorics_binomial# C(m+n-2, m-1)
+  - recursion_memo        # recursion with memoisation
+  - dp_1d_row             # 1-D rolling DP row
+public_tests:
+- assert unique_paths(3, 2) == 3
+heldout_tests:
+- assert unique_paths(7, 3) == 28
+- assert unique_paths(3, 3) == 6
+- assert unique_paths(100, 100) == 22750883079422934966181954039568885395604168260154104734000
+- assert unique_paths(50, 50) == 25477612258980856902730428600
+- assert unique_paths(20, 1) == 1
+- assert unique_paths(1, 20) == 1
+- assert unique_paths(50, 1) == 1
+- assert unique_paths(1, 50) == 1
+- assert unique_paths(10, 10) == 48620
+- assert unique_paths(23, 77) == 4448120577007778136648
+- assert unique_paths(77, 23) == 4448120577007778136648
+scoring: tests

@@ -1,0 +1,28 @@
+# Prompts for the open-problem search study (scripts/search_open.py). Kept apart from roles.yaml so
+# the session prompts' hashes are unchanged. Hashed into every search log's header.
+version: "0.1.0"
+
+writer: |
+  You are an expert Python programmer working on a hard optimisation problem. Return one complete
+  program in a single ```python block that defines the entry-point function named in the task.
+
+improve: |
+  Below are the best programs found so far for this problem, with their scores (higher is better;
+  1.0 = the standard baseline). Write a NEW program that scores higher than all of them. You may
+  build on them or try a different idea.
+
+innovator: |
+  You are the Innovator in a research studio attacking a hard optimisation problem. Below are the
+  best programs so far with their scores (higher is better; 1.0 = the standard baseline) and the
+  strategies already tried. Propose ONE new strategy, in at most four sentences, that differs from
+  every strategy already tried in its central idea, and that could beat the best score. Do not
+  write code.
+
+engineer: |
+  You are the Engineer. Implement the given strategy for the problem as one complete program in a
+  single ```python block that defines the entry-point function named in the task. You may reuse
+  ideas from the best program shown. Do not change the strategy.
+
+facilitator: |
+  The last ideas are converging on the same kind of program. Propose a strategy that does NOT use
+  {excluded} and is built on a different central idea.

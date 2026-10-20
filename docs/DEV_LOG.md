@@ -7,6 +7,30 @@ what changed, why, and which files. Pre-registration changes are also logged, da
 
 ---
 
+## 2026-10-20 (Week 5) - extended design: new conditions, models, tasks, rating study, open problems
+
+Everything below is pre-registered (PREREGISTRATION, 2026-10-20) before any session in the new
+conditions was run. Orchestrator 0.3.0 (0.2.3 traces stay comparable; the core conditions did not
+change), role prompts 0.3.0, trace schema 0.2.0.
+
+| Change | Why | Files |
+|---|---|---|
+| Conditions defined in one registry; E, E_minus (neutral Innovator, Facilitator on/off) | The Facilitator rarely fired because the Innovator is told to differ; E/E_minus give it convergence to act on (RQ2) | `macs/conditions.py`, `macs/orchestrator.py`, `macs/prompts/roles.yaml` |
+| Baselines S (tutor sampled to the studio's token budget) and P (one prompt for K different approaches) | Rules out "the studio just makes more tries" and "one diversity prompt does the same" | `macs/orchestrator.py` (`_run_sampling`, `_run_single_prompt`, `split_approaches`) |
+| Statistics: pairwise and studio-2x2 contrasts, interactions, Holm family of 10, MDE at alpha/10 | The new questions need planned tests | `macs/analysis/stats.py`, `scripts/stats_report.py` |
+| Several models: per-model reference sets (`data/reference/models/<model>/`), runner takes several profiles, per-model analysis, cross-model random-effects meta-analysis | Is the result the same on other models? | `macs/metrics/reference.py`, `scripts/run_experiment.py`, `scripts/analyze.py --all-models`, `scripts/model_consistency.py`, `config/models.example.yaml` |
+| Tasks: HumanEval/20, 26, 57 (24 main tasks, SC1); EvoEval_creative/13, 16, 31 as a contamination-check set; circle packing (n = 26) as an open problem | SC1 asks for 24; memorisation check; a problem with a published best-known value | `tasks/tier2/*`, `tasks/tier3/t3_circle_packing`, `macs/tasks/bank.py` (`task_set`), `docs/TASK_SOURCES.md` |
+| Learner contribution (RQ3): uptake of learner-mentioned constructs, learner-led share, rarity of learner ideas | RQ3 had no measure of the learners' influence | `macs/metrics/learners.py`, `macs/analysis/aggregate.py` |
+| Rating study tooling: 60 blind pairs, booklet + Microsoft Forms Quick-import document, response import, Bradley-Terry, kappas, Spearman with bootstrap CI; AI judge asked in both orders | SC4 by 9 Nov | `macs/rating/*`, `scripts/rating_study.py` |
+| Open-problem search: random / single / studio at an equal budget of scored programs, logs, best-so-far curves, report | Can the studio find better solutions to hard and open problems? | `macs/search/loop.py`, `macs/prompts/search.yaml`, `scripts/search_open.py` |
+| UniXcoder as the parallel representation (families and novelty), calibration in that space | Proposal: both representations, analysed separately | `macs/analysis/aggregate.py`, `scripts/analyze.py --representation`, `scripts/calibrate_clustering.py --representation` |
+| Mutation testing (AST mutator), quality-diversity frontier and Tier 3 payoff from per-proposal records | Test strength; does creativity pay off | `macs/analysis/mutation.py`, `scripts/mutation_test.py`, `scripts/frontier.py` |
+| Blind labelling: code shown without comments/docstrings; no pre-selected answer | The model's comments named the strategy and could unblind SC3 | `macs/ui/pipeline.py` (`blind_view`), `macs/ui/app.py` |
+| Batch runner pauses after 3 failures in a row and stops after 6 (model server down) | A long run should not mark every remaining session as failed | `scripts/run_experiment.py` |
+| Dashboard: Rating study and Open problems tabs; models, frontier and mutation in Statistics; reference sensitivity; plain-language conclusion; UniXcoder view; example outputs in Traces; several models in Multi-run | Everything stays runnable from the browser | `macs/ui/app.py`, `macs/ui/extra_tabs.py` |
+
+Tests: 123 passing (was 91). The dashboard renders all ten tabs headless (Streamlit AppTest).
+
 ## 2026-10-16 (Week 4) - the whole pipeline in the dashboard
 
 Everything that needed the terminal can now be done from `streamlit run macs/ui/app.py`:

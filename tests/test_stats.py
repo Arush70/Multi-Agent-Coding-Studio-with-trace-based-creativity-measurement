@@ -53,7 +53,7 @@ def test_planned_contrasts_and_confidence_interval_coverage():
     hits = 0
     for seed in range(100):
         cs = {c.label: c for c in planned_contrasts(_simulate(seed, n_tasks=8, reps=3), "y")}
-        assert set(cs) == {"y: B - A", "y: D - C", "y: D - D_minus"}
+        assert set(cs) == {"y: B - A", "y: D - C", "y: D - D_minus", "y: interaction (D - C) - (B - A)"}
         c = cs["y: D - C"]                                  # truth 0.5 + 0.3 = 0.8
         hits += c.ci_low <= 0.8 <= c.ci_high
     assert 88 <= hits <= 100                                 # nominal 95%
@@ -114,3 +114,47 @@ def test_matches_statsmodels_mixedlm():
     assert np.allclose(ours.beta, ref.fe_params.values, atol=1e-4)
     assert np.allclose(np.sqrt(np.diag(ours.cov)), ref.bse_fe.values, rtol=1e-3)
     assert ours.sigma2 == pytest.approx(ref.scale, rel=1e-3)
+
+
+def _simulate_extended(seed=0, n_tasks=16, reps=4, noise_sd=1.0):
+    """Core cells plus E, E_minus, S and P with known differences from D."""
+    rng = np.random.default_rng(seed)
+    truth = {"A": 0.0, "B": 1.0, "C": 0.0, "D": 1.2, "D_minus": 1.0, "E": 0.7, "E_minus": 0.2,
+             "S": 0.6, "P": 0.9}
+    rows = []
+    for t in range(n_tasks):
+        u = rng.normal(0, 1.0)
+        for c, mu in truth.items():
+            for _ in range(reps):
+                rows.append({"task_id": f"t{t}", "condition": c, "y": mu + u + rng.normal(0, noise_sd)})
+    return rows, truth
+
+
+def test_extended_contrasts_recover_their_true_values():
+    from macs.analysis.stats import PAIRWISE
+    est = {}
+    for seed in range(40):
+        for c in planned_contrasts(_simulate_extended(seed)[0], "y"):
+            est.setdefault(c.label, []).append(c.estimate)
+    _, truth = _simulate_extended()
+    for label, (a, b) in PAIRWISE.items():
+        assert abs(np.mean(est[f"y: {label}"]) - (truth[a] - truth[b])) < 0.08, label
+    inter = (truth["D"] - truth["D_minus"]) - (truth["E"] - truth["E_minus"])     # 0.2 - 0.5 = -0.3
+    assert abs(np.mean(est["y: interaction (D - D_minus) - (E - E_minus)"]) - inter) < 0.1
+
+
+def test_contrasts_for_conditions_not_run_are_absent():
+    rows = [r for r in _simulate_extended(1)[0] if r["condition"] in ("A", "B", "C", "D", "D_minus")]
+    labels = {c.label for c in planned_contrasts(rows, "y")}
+    assert "y: E - E_minus" not in labels and "y: D - S" not in labels and "y: D - D_minus" in labels
+
+
+def test_meta_analysis_detects_consistent_and_inconsistent_effects():
+    from macs.analysis.stats import meta_analysis
+    same = meta_analysis([0.50, 0.55, 0.45], [0.1, 0.1, 0.1])
+    assert abs(same["fixed"] - 0.5) < 1e-9 and same["I2"] == 0.0 and same["same_sign"] == 3
+    assert same["Q_p"] > 0.5 and same["random_ci"][0] > 0
+    diff = meta_analysis([1.0, -1.0, 0.9], [0.1, 0.1, 0.1])
+    assert diff["Q_p"] < 0.001 and diff["I2"] > 0.9 and diff["tau2"] > 0
+    assert diff["random_ci"][1] - diff["random_ci"][0] > same["random_ci"][1] - same["random_ci"][0]
+    assert meta_analysis([0.3], [0.1]) == {"k": 1}

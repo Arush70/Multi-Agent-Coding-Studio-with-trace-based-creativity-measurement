@@ -51,6 +51,9 @@ class Task:
     known_families: list[str] = field(default_factory=list)
     scoring: str = "tests"       # "tests" (pass/fail) or "heuristic" (metric-scored, Tier 3)
     heuristic: dict = field(default_factory=dict)
+    # "main" (counts toward SC1's 24 tasks) or "contamination_check" (EvoEval rewrites of
+    # HumanEval problems, analysed separately to check that results are not due to memorisation)
+    task_set: str = "main"
     path: Path | None = None
 
     # held-out tests are deliberately not a field: see heldout_tests()

@@ -1,0 +1,36 @@
+# Tier 3 OPEN problem (search study). Packing n circles in the unit square to maximise the sum of
+# their radii, the benchmark AlphaEvolve and its successors improved.
+# Sources: Novikov, A. et al. (2025), AlphaEvolve: A coding agent for scientific and algorithmic
+# discovery, Google DeepMind white paper, arXiv:2506.13131 (n = 26: 2.635862); best known values as
+# tabulated in Yuksekgonul, M. et al. (2026), Learning to Discover at Test Time, arXiv:2601.16175,
+# Table 3 (n = 26: 2.635983, AlphaEvolve V2 / ThetaEvolve / TTT-Discover).
+# Not part of the 24-task main bank: task_set open_problem, used by scripts/search_open.py.
+# known_families are BLIND LABELS written before any model output.
+id: t3_circle_packing
+tier: 3
+source: research
+citation: "Novikov et al. (2025), AlphaEvolve: A coding agent for scientific and algorithmic discovery, arXiv:2506.13131; best-known values from Yuksekgonul et al. (2026), Learning to Discover at Test Time, arXiv:2601.16175, Table 3"
+task_set: open_problem
+entry_point: pack_circles
+title: Circle packing in the unit square (sum of radii)
+prompt: |
+  Place n non-overlapping circles inside the unit square [0, 1] x [0, 1] so that the SUM of their
+  radii is as large as possible. Write `pack_circles(n)` that returns a list of n tuples
+  (x, y, r): centre and radius of each circle. Every circle must lie fully inside the square
+  (r <= x <= 1 - r and r <= y <= 1 - r), no two circles may overlap (the distance between centres
+  is at least the sum of their radii), and every radius must be positive. A larger total radius
+  scores higher; any violation scores zero. The function is scored with n = 26 and must finish
+  within 10 seconds; you may use the standard library and numpy-free pure Python.
+known_families:
+  - regular_grid            # equal circles on a square or hexagonal grid
+  - greedy_insertion        # add circles one at a time at the largest free spot
+  - ring_layout             # concentric rings of circles of different sizes
+  - local_optimisation      # start from a layout and improve positions/radii iteratively
+public_tests:
+  - "assert len(pack_circles(26)) == 26"
+heldout_tests: []
+scoring: heuristic
+heuristic:
+  sizes: [26]
+  baseline: regular_grid    # 6 x 6 grid, equal radii 1/12: sum = 26/12 = 2.1667
+  best_known: 2.635983      # n = 26 (Yuksekgonul et al. 2026, Table 3)

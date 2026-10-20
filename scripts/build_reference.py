@@ -47,9 +47,15 @@ def _is_dir(spec: str) -> bool:
 
 
 def resolve_tasks(spec: str) -> list:
-    """'all' | 'tier1' | 'tier2' | 'tier3' | a task directory | comma-separated task ids."""
+    """'all' | 'tier1' | 'tier2' | 'tier3' | 'main' | 'contamination' | 'open' | a task directory |
+    comma-separated task ids. 'all' and the tiers cover the experiment's tasks (the 24-task main
+    bank and the contamination check); open problems for the search study are chosen with 'open'
+    or by id."""
     if spec in ("all", "tier1", "tier2", "tier3"):
-        return load_bank(tier=None if spec == "all" else int(spec[-1]))
+        return [t for t in load_bank(tier=None if spec == "all" else int(spec[-1])) if t.task_set != "open_problem"]
+    if spec in ("main", "contamination", "open"):
+        want = {"main": "main", "contamination": "contamination_check", "open": "open_problem"}[spec]
+        return [t for t in load_bank() if t.task_set == want]
     if "," not in spec and _is_dir(spec):
         return [load_task(spec)]
     wanted = [s.strip() for s in spec.split(",") if s.strip()]
@@ -166,11 +172,13 @@ def main() -> None:
     ap.add_argument("--overwrite", action="store_true", help="rebuild from scratch even if samples exist")
     args = ap.parse_args()
 
+    from macs.metrics.reference import reference_path
     client = LLMClient.from_config(profile=args.profile)
-    out_dir = Path(args.out)
-    out_dir.mkdir(parents=True, exist_ok=True)
     for task in resolve_tasks(args.tasks):
-        build_task_reference(task, client, n=args.n, path=out_dir / f"{task.id}.jsonl",
+        # each model has its own reference set (see macs.metrics.reference.reference_path)
+        path = reference_path(task.id, client.profile.model, root=args.out)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        build_task_reference(task, client, n=args.n, path=path,
                              sandbox=args.sandbox, temperature=args.temperature, overwrite=args.overwrite)
 
 

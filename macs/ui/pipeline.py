@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 import time
 from pathlib import Path
 
@@ -54,8 +55,9 @@ def _reference_rows(path: Path) -> list[dict]:
 def reference_table(tasks, root: Path = REFERENCE_DIR, model: str | None = None, target: int = 100) -> list[dict]:
     """One row per task: samples present, which model made them, and whether it is usable."""
     out = []
+    from macs.metrics.reference import reference_path
     for t in tasks:
-        rows = _reference_rows(Path(root) / f"{t.id}.jsonl")
+        rows = _reference_rows(reference_path(t.id, model, root))
         models = sorted({f"{r.get('model', '?')}@{r.get('revision', '')}" for r in rows})
         names = {r.get("model") for r in rows}
         if not rows:
@@ -74,7 +76,7 @@ def reference_table(tasks, root: Path = REFERENCE_DIR, model: str | None = None,
 def archive_references(task_ids: list[str] | None = None, root: Path = REFERENCE_DIR,
                        archive_root: Path = REFERENCE_ARCHIVE, stamp: str | None = None) -> tuple[Path | None, int]:
     """Move reference files (all, or the given tasks) into archive_root/<stamp>/. Never deletes."""
-    files = sorted(Path(root).glob("*.jsonl"))
+    files = sorted(Path(root).rglob("*.jsonl"))       # every model's sets (data/reference/models/...)
     if task_ids is not None:
         wanted = set(task_ids)
         files = [f for f in files if f.stem in wanted]
@@ -88,7 +90,9 @@ def archive_references(task_ids: list[str] | None = None, root: Path = REFERENCE
         n += 1
     dest.mkdir(parents=True)
     for f in files:
-        f.replace(dest / f.name)
+        target = dest / f.relative_to(root)
+        target.parent.mkdir(parents=True, exist_ok=True)
+        f.replace(target)
     return dest, len(files)
 
 
@@ -119,12 +123,27 @@ def _key(task_id: str, session: str, proposal_id: str) -> str:
     return f"{task_id}|{session}|{proposal_id}"
 
 
+_COMMENT = re.compile(r"(?m)^\s*#.*$\n?|[ \t]+#.*$")
+
+
+def blind_view(code: str) -> str:
+    """The code as a rater sees it: docstrings and comments removed, layout normalised. The
+    model's comments often name the strategy ("Revised Strategy: ...", "Sorting-based approach"),
+    which would reveal the condition and unblind the labelling. Variable names are kept so the
+    code stays readable. Code that does not parse only has its comments removed."""
+    from macs.metrics.represent import normalise
+    try:
+        return normalise(code, canonicalise_names=False).strip()
+    except Exception:  # noqa: BLE001 - unparseable code: strip comment lines only
+        return _COMMENT.sub("", code).strip()
+
+
 def label_pool(traces_dir: Path = TRACES_DIR, per_task: int = 40, seed: int = 0) -> list[dict]:
     """A blind labelling pool from the current traces: for each task, up to `per_task` solutions
     from all conditions, in a fixed shuffled order so the condition cannot be read off the order.
     Only traces from the current orchestrator and the newest model are used."""
     from macs.analysis.score import implementations
-    from macs.orchestrator import ORCHESTRATOR_VERSION
+    from macs.orchestrator import is_comparable
     from macs.trace.writer import read_trace
     loaded = []
     for p in sorted(Path(traces_dir).glob("*.jsonl")):
@@ -135,7 +154,7 @@ def label_pool(traces_dir: Path = TRACES_DIR, per_task: int = 40, seed: int = 0)
         if not events or events[0].get("event") != "session_start":
             continue
         h = events[0].get("header", {})
-        if h.get("orchestrator_version") != ORCHESTRATOR_VERSION:
+        if not is_comparable(h.get("orchestrator_version")):
             continue
         loaded.append((p, events, h))
     if not loaded:
@@ -149,7 +168,8 @@ def label_pool(traces_dir: Path = TRACES_DIR, per_task: int = 40, seed: int = 0)
         for pid, code in implementations(events):
             if code.strip():
                 by_task.setdefault(tid, []).append({"key": _key(tid, p.stem, pid), "task_id": tid,
-                                                     "session": p.stem, "proposal_id": pid, "code": code})
+                                                     "session": p.stem, "proposal_id": pid, "code": code,
+                                                     "display": blind_view(code)})
     pool = []
     for tid, rows in sorted(by_task.items()):
         rows.sort(key=lambda r: hashlib.sha256(f"{seed}:{r['key']}".encode()).hexdigest())
@@ -196,3 +216,53 @@ def rater_agreement(path_a: Path, path_b: Path) -> dict:
     agree = sum(x == y for x, y in zip(ya, yb)) / len(both)
     kappa = float(cohen_kappa_score(ya, yb)) if len(set(ya) | set(yb)) > 1 else 1.0
     return {"n": len(both), "kappa": round(kappa, 3), "agreement": round(agree, 3)}
+
+
+# ------------------------------------------------------------------ example outputs (Traces tab)
+
+_OUTPUT_DRIVER = r'''
+res = []
+for call in __data__["calls"]:
+    try:
+        res.append(repr(eval(call)))
+    except Exception as e:
+        res.append("error: " + type(e).__name__ + ": " + str(e)[:80])
+__valid__ = True
+__metric__ = 0.0
+__detail__ = res
+'''
+
+
+def example_calls(public_tests: list[str]) -> list[str]:
+    """The function calls in a task's public tests, e.g. 'assert f([1, 2]) == 3' -> 'f([1, 2])'."""
+    import ast
+    calls = []
+    for s in public_tests:
+        try:
+            node = ast.parse(s).body[0]
+        except SyntaxError:
+            continue
+        expr = node.test if isinstance(node, ast.Assert) else getattr(node, "value", None)
+        if isinstance(expr, ast.Compare):
+            expr = expr.left
+        if isinstance(expr, ast.Call) and isinstance(expr.func, ast.Name) and expr.func.id in ("set", "sorted", "list") \
+                and expr.args and isinstance(expr.args[0], ast.Call):
+            expr = expr.args[0]           # assert set(f(x)) == ... -> f(x)
+        if expr is not None:
+            calls.append(ast.unparse(expr))
+    return calls
+
+
+def example_outputs(task, code: str, backend: str = "subprocess") -> list[tuple[str, str]]:
+    """Run a solution on the example inputs (public tests only) in the sandbox and return
+    [(call, repr of the value it returned)]."""
+    from macs.sandbox import runner
+    calls = example_calls(task.public_tests)
+    if not calls:
+        return []
+    try:
+        r = runner.run_metric(code, _OUTPUT_DRIVER, {"calls": calls}, backend=backend, cpu_seconds=5)
+    except Exception as ex:  # noqa: BLE001
+        return [(c, f"could not run: {ex}") for c in calls]
+    vals = r.detail if isinstance(r.detail, list) else [r.error or "no result"] * len(calls)
+    return list(zip(calls, [str(v) for v in vals]))

@@ -22,7 +22,7 @@ dependencies = [
 [project.optional-dependencies]
 dev = ["pytest>=8.0", "statsmodels>=0.14", "pandas>=2.0"]   # statsmodels cross-checks the S8 model
 embed = ["torch", "transformers>=4.40"]
-ui = ["streamlit>=1.37", "pandas>=2.0"]       # dashboard (auto-refreshing job panels need 1.37+)   # UniXcoder; install separately on the GPU machine
+ui = ["streamlit>=1.37", "pandas>=2.0", "python-docx>=1.1", "openpyxl>=3.1"]       # dashboard (auto-refreshing job panels need 1.37+)   # UniXcoder; install separately on the GPU machine
 
 [tool.setuptools.packages.find]
 include = ["macs*"]

@@ -112,3 +112,18 @@ def test_traces_from_different_models_are_never_pooled(tmp_path):
     assert list(summary) == ["B"]                    # newest trace's model only
     _, summary = analyse_dir(tmp_path, backend="subprocess", model="qwen2.5-coder:7b")
     assert list(summary) == ["A"]
+
+
+@posix_only
+def test_unixcoder_representation_is_analysed_separately(tmp_path):
+    # the stand-in embedding (tests/conftest.py) maps identical code to identical unit vectors and
+    # different code to nearly orthogonal ones
+    p = tmp_path / "u.jsonl"
+    _write(p, "B", [CORRECT, CORRECT, CORRECT2])
+    m = session_metrics(p, backend="subprocess", representation="unixcoder")
+    assert m["families"] == 2 and m["diversity_scale"] == "unit-norm" and m["n_correct"] == 3
+    from macs.analysis.aggregate import pooled_diversity
+    pooled = pooled_diversity({(TASK_ID, "A"): [CORRECT, CORRECT], (TASK_ID, "B"): [CORRECT, CORRECT2]},
+                              representation="unixcoder")
+    t = pooled["per_task"][TASK_ID]
+    assert t["families_total"] == {"A": 1, "B": 2}

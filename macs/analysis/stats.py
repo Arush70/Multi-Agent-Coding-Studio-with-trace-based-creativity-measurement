@@ -7,6 +7,9 @@ interaction, and task as a random intercept. Planned contrasts:
   * B - A        studio vs tutor with one learner          (= the studio coefficient)
   * D - C        studio vs tutor with two learners         (= studio + interaction)
   * D - D_minus  Facilitator on vs off (separate model on D and D_minus)
+Extensions (pre-registered 2026-10-20): E - E_minus (Facilitator where ideas can converge),
+D_minus - E_minus (diversity scaffold), the studio 2 x 2 interaction, and the baselines D - S
+(equal token budget) and D - P (single diversity prompt). See PAIRWISE and STUDIO_CODES.
 
 Multiplicity across the planned contrasts on the primary outcomes is controlled with Holm's
 step-down procedure. The minimum detectable effect (MDE) for a within-task contrast is derived
@@ -184,15 +187,58 @@ def facilitator_fit(rows: list[dict], outcome: str) -> MixedFit | None:
     return fit_random_intercept(y, X, [r["task_id"] for r in use], names=["intercept", "facilitator"])
 
 
+def pairwise_fit(rows: list[dict], outcome: str, a: str, b: str) -> MixedFit | None:
+    """Fit outcome ~ is_a + (1 | task) on conditions a and b: the difference a - b, with task as
+    a random intercept. Used for every two-condition contrast (Facilitator, baselines)."""
+    use = [r for r in rows if r.get("condition") in (a, b) and r.get(outcome) is not None]
+    if len({r["condition"] for r in use}) < 2 or len({r["task_id"] for r in use}) < 2:
+        return None
+    X = np.array([[1.0, 1.0 if r["condition"] == a else 0.0] for r in use])
+    y = [float(r[outcome]) for r in use]
+    return fit_random_intercept(y, X, [r["task_id"] for r in use], names=["intercept", "effect"])
+
+
+# Studio 2 x 2 (pre-registered 2026-10-20): diversity scaffold (Innovator sees earlier strategies
+# and is told to differ) x Facilitator. D = (1, 1), D_minus = (1, 0), E = (0, 1), E_minus = (0, 0).
+STUDIO_CODES = {"D": (1, 1), "D_minus": (1, 0), "E": (0, 1), "E_minus": (0, 0)}
+
+
+def studio_factorial_fit(rows: list[dict], outcome: str) -> MixedFit | None:
+    use = [r for r in rows if r.get("condition") in STUDIO_CODES and r.get(outcome) is not None]
+    if len({r["condition"] for r in use}) < 4 or len({r["task_id"] for r in use}) < 2:
+        return None
+    X = np.array([[1.0, *STUDIO_CODES[r["condition"]],
+                   STUDIO_CODES[r["condition"]][0] * STUDIO_CODES[r["condition"]][1]] for r in use])
+    y = [float(r[outcome]) for r in use]
+    return fit_random_intercept(y, X, [r["task_id"] for r in use],
+                                names=["intercept", "scaffold", "facilitator", "scaffold:facilitator"])
+
+
+# Two-condition contrasts, each fitted on its own pair: label -> (a, b)
+PAIRWISE = {
+    "D - D_minus": ("D", "D_minus"),      # Facilitator, Innovator told to differ (original RQ2 test)
+    "E - E_minus": ("E", "E_minus"),      # Facilitator where ideas can converge (RQ2)
+    "D_minus - E_minus": ("D_minus", "E_minus"),   # the diversity scaffold alone
+    "D - S": ("D", "S"),                  # studio vs tutor sampled to the same token budget
+    "D - P": ("D", "P"),                  # studio vs one prompt asking for K different approaches
+}
+
+
 def planned_contrasts(rows: list[dict], outcome: str) -> list[Contrast]:
     out = []
     f = factorial_fit(rows, outcome)
     if f is not None:
         out.append(f.contrast({"studio": 1}, f"{outcome}: B - A"))
         out.append(f.contrast({"studio": 1, "studio:two_learners": 1}, f"{outcome}: D - C"))
-    g = facilitator_fit(rows, outcome)
-    if g is not None:
-        out.append(g.contrast({"facilitator": 1}, f"{outcome}: D - D_minus"))
+        out.append(f.contrast({"studio:two_learners": 1}, f"{outcome}: interaction (D - C) - (B - A)"))
+    for label, (a, b) in PAIRWISE.items():
+        g = pairwise_fit(rows, outcome, a, b)
+        if g is not None:
+            out.append(g.contrast({"effect": 1}, f"{outcome}: {label}"))
+    h = studio_factorial_fit(rows, outcome)
+    if h is not None:
+        out.append(h.contrast({"scaffold:facilitator": 1},
+                              f"{outcome}: interaction (D - D_minus) - (E - E_minus)"))
     return out
 
 
@@ -207,3 +253,38 @@ def mde(sigma2: float, n_tasks: int, reps_per_cell: int, *, alpha: float = 0.05,
     se = np.sqrt(2.0 * sigma2 / (n_tasks * reps_per_cell))
     z = stats.norm.ppf(1 - alpha / (2 * n_tests)) + stats.norm.ppf(power)
     return float(z * se)
+
+
+# ------------------------------------------------------------------ consistency across models
+
+def meta_analysis(estimates: list[float], ses: list[float]) -> dict:
+    """Combine one contrast estimated separately on several models.
+
+    Fixed-effect (inverse-variance) and DerSimonian-Laird random-effects pooled estimates, Cochran's
+    Q with its p-value, I^2 (share of the spread between models beyond chance), and how many models
+    agree in sign with the pooled estimate. Each model is analysed on its own data, so the estimates
+    are independent. Needs at least two models with a positive standard error.
+    """
+    e = np.asarray(estimates, dtype=float)
+    s = np.asarray(ses, dtype=float)
+    ok = np.isfinite(e) & np.isfinite(s) & (s > 0)
+    e, s = e[ok], s[ok]
+    k = len(e)
+    if k < 2:
+        return {"k": int(k)}
+    w = 1.0 / s ** 2
+    fe = float(np.sum(w * e) / np.sum(w))
+    q = float(np.sum(w * (e - fe) ** 2))
+    df = k - 1
+    p_q = float(stats.chi2.sf(q, df))
+    i2 = float(max(0.0, (q - df) / q)) if q > 0 else 0.0
+    tau2 = float(max(0.0, (q - df) / (np.sum(w) - np.sum(w ** 2) / np.sum(w))))
+    wr = 1.0 / (s ** 2 + tau2)
+    re = float(np.sum(wr * e) / np.sum(wr))
+    se_re = float(np.sqrt(1.0 / np.sum(wr)))
+    z = stats.norm.ppf(0.975)
+    return {"k": int(k), "fixed": fe, "random": re, "random_se": se_re,
+            "random_ci": [re - z * se_re, re + z * se_re],
+            "random_p": float(2 * stats.norm.sf(abs(re / se_re))) if se_re > 0 else float("nan"),
+            "Q": q, "Q_p": p_q, "I2": i2, "tau2": tau2,
+            "same_sign": int(np.sum(np.sign(e) == np.sign(re))) if re != 0 else 0}

@@ -41,6 +41,8 @@ CALIB_PATH = Path("data/calibration/labels.jsonl")
 # the grid of thresholds to try: euclidean distance in the within-sample standardised AST space
 # (same space macs/analysis/aggregate.py clusters in). Units are per-feature standard deviations.
 THRESHOLD_GRID = [round(t, 2) for t in np.arange(0.5, 6.01, 0.5)]
+# UniXcoder (parallel representation): cosine distance between unit-norm embeddings
+UNIXCODER_GRID = [round(t, 3) for t in np.arange(0.02, 0.401, 0.02)]
 
 
 def _make_stub(traces_dir: str) -> None:
@@ -97,7 +99,9 @@ def _feature_matrix(codes: list[str]) -> tuple[np.ndarray, list[int]]:
     return (np.vstack(rows) if rows else np.empty((0, 0))), keep
 
 
-def calibrate(by_task: dict[str, list[tuple[str, str]]]) -> None:
+def calibrate(by_task: dict[str, list[tuple[str, str]]], representation: str = "ast") -> None:
+    from macs.analysis.aggregate import _embed
+    grid = THRESHOLD_GRID if representation == "ast" else UNIXCODER_GRID
     # per (task, threshold) ARI, then averaged over tasks so no single big task dominates
     per_threshold: dict[float, list[float]] = defaultdict(list)
     print(f"\ncalibrating on {sum(len(v) for v in by_task.values())} labelled proposals "
@@ -105,16 +109,20 @@ def calibrate(by_task: dict[str, list[tuple[str, str]]]) -> None:
     for task_id, rows in sorted(by_task.items()):
         codes = [c for c, _ in rows]
         hand = [f for _, f in rows]
-        X, keep = _feature_matrix(codes)
+        X, keep = _feature_matrix(codes) if representation == "ast" else _embed(codes, representation)
         if len(X) < 2:
             print(f"  {task_id}: <2 parseable labelled solutions, skipped")
             continue
         hand = [hand[i] for i in keep]
-        Xs = StandardScaler().fit_transform(X)      # within-sample, same as the analysis pipeline
-        src = "within-sample"
+        if representation == "ast":
+            Xs = StandardScaler().fit_transform(X)      # within-sample, same as the analysis pipeline
+            src = "within-sample"
+        else:
+            Xs, src = X, "unit-norm"
         best = (-2.0, None)
-        for thr in THRESHOLD_GRID:
-            labels = cluster_families(Xs, distance_threshold=thr)
+        for thr in grid:
+            labels = (cluster_families(Xs, distance_threshold=thr) if representation == "ast"
+                      else cluster_families(Xs, distance_threshold=thr, metric="cosine"))
             ari = validate_against_labels(labels, hand)
             per_threshold[thr].append(ari)
             if ari > best[0]:
@@ -124,14 +132,15 @@ def calibrate(by_task: dict[str, list[tuple[str, str]]]) -> None:
     print("\n threshold   mean ARI over tasks")
     print(" ---------   -------------------")
     pooled = {thr: float(np.mean(v)) for thr, v in per_threshold.items() if v}
-    for thr in THRESHOLD_GRID:
+    for thr in grid:
         if thr in pooled:
             star = "  <-- best" if thr == max(pooled, key=pooled.get) else ""
             print(f"   {thr:<9} {pooled[thr]:+.3f}{star}")
     if pooled:
         best_thr = max(pooled, key=pooled.get)
         best_ari = pooled[best_thr]
-        print(f"\nRECOMMENDED CLUSTER_THRESHOLD = {best_thr}  (mean ARI {best_ari:.3f}, "
+        name = "CLUSTER_THRESHOLD" if representation == "ast" else "UNIXCODER_CLUSTER_THRESHOLD"
+        print(f"\nRECOMMENDED {name} = {best_thr}  (mean ARI {best_ari:.3f}, "
               f"SC3 target >= 0.60 {'MET' if best_ari >= 0.60 else 'NOT met - inspect labels/features'})")
         print("Record this value + the table + today's date in docs/PREREGISTRATION.md, then freeze it.")
 
@@ -140,11 +149,13 @@ def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--make-stub", action="store_true", help="build data/calibration/labels.jsonl from traces")
     ap.add_argument("--traces", default="data/traces", help="traces directory for --make-stub")
+    ap.add_argument("--representation", default="ast", choices=["ast", "unixcoder"],
+                    help="calibrate the AST threshold (main) or the UniXcoder one (parallel representation)")
     args = ap.parse_args()
     if args.make_stub:
         _make_stub(args.traces)
         return
-    calibrate(_load_labels())
+    calibrate(_load_labels(), args.representation)
 
 
 if __name__ == "__main__":

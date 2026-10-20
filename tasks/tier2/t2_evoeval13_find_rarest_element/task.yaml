@@ -1,0 +1,32 @@
+# EvoEval problem EvoEval_creative/13 (from HumanEval/22). Source: Xia, C.S., Deng, Y. and Zhang, L. (2024), Top Leaderboard Ranking = Top Coding Proficiency, Always? EvoEval: Evolving Coding Benchmarks via LLM, COLM 2024, arXiv:2403.19114 (EvoEval_creative)
+# known_families are BLIND LABELS (strategies written before any model output); do not edit to match results.
+# Held-out tests come from the benchmark's own tests (expected values from the benchmark's canonical solution); only the scorer sees them.
+# Contamination check (pre-registered 2026-10-20): an EvoEval rewrite of a HumanEval problem, less likely to be memorised.
+id: t2_evoeval13_find_rarest_element
+tier: 2
+source: EvoEval
+source_id: EvoEval_creative/13 (from HumanEval/22)
+citation: 'Xia, C.S., Deng, Y. and Zhang, L. (2024), Top Leaderboard Ranking = Top Coding Proficiency, Always? EvoEval: Evolving Coding Benchmarks via LLM, COLM 2024, arXiv:2403.19114 (EvoEval_creative)'
+task_set: contamination_check
+entry_point: find_rarest_element
+prompt: "from typing import List\n\ndef find_rarest_element(elems: List[str]) -> str:\n    \"\"\" Find the rarest element in a list of strings. If there are multiple rarest elements, return the one that appears first. \n    If the list is empty, return None.\n\n    >>> find_rarest_element(['apple', 'banana', 'apple', 'orange', 'banana', 'orange', 'apple'])\n    'banana'\n    >>> find_rarest_element(['cat', 'dog', 'bird', 'cat', 'dog', 'cat'])\n    'bird'\n    >>> find_rarest_element([])\n    None\n    \"\"\"\n\nComplete the function `find_rarest_element`.\n"
+known_families:
+  - counter_min           # Counter then min by count
+  - dict_count_scan       # dict counts then first with minimum
+  - count_method          # list.count per element
+  - sort_group            # sort/group by count
+public_tests:
+- assert find_rarest_element(['apple', 'apple', 'apple', 'banana', 'banana', 'orange', 'orange']) == 'banana'
+heldout_tests:
+- assert find_rarest_element(['bird', 'cat', 'cat', 'cat', 'dog', 'dog']) == 'bird'
+- assert find_rarest_element([]) == None
+- assert find_rarest_element(['a', 'a', 'b', 'b', 'c', 'c', 'd', 'd', 'e']) == 'e'
+- assert find_rarest_element(['a']) == 'a'
+- assert find_rarest_element(['a', 'b', 'b', 'a', 'a', 'b', 'b', 'c']) == 'c'
+- assert find_rarest_element(['z', 'y', 'x', 'w', 'v', 'u', 't', 's', 'r', 'q', 'p', 'o', 'n', 'm', 'l', 'k', 'j', 'i', 'h', 'g', 'f', 'e', 'd', 'c', 'b', 'a']) == 'z'
+- assert find_rarest_element([' ', ' ', ' ', 'a', 'b', 'c']) == 'a'
+- assert find_rarest_element(['apple', 'Apple', 'APPLE', 'aPple']) == 'apple'
+- assert find_rarest_element(['1', '2', '3', '1', '2', '3', '4']) == '4'
+- assert find_rarest_element(['1', '1', '2', '2', '3', '3', ' ', ' ']) == '1'
+- assert find_rarest_element(['', '', 'a', 'b', 'c']) == 'a'
+scoring: tests

@@ -12,6 +12,7 @@ problems from **HumanEval**; and the hard / open problems from the **FunSearch**
 - **FunSearch** — Romera-Paredes, B. et al. (2024). *Mathematical discoveries from program search with large language models.* Nature 625, 468–475. doi:10.1038/s41586-023-06924-6.
 - **ReEvo** — Ye, H. et al. (2024). *ReEvo: Large Language Models as Hyper-Heuristics with Reflective Evolution.* NeurIPS 2024. arXiv:2402.01145.
 - **CO-Bench** — Sun, W. et al. (2025). *CO-Bench: Benchmarking Language Model Agents in Algorithm Search for Combinatorial Optimization.* arXiv:2504.04310.
+- **EvoEval** — Xia, C.S., Deng, Y. and Zhang, L. (2024). *Top Leaderboard Ranking = Top Coding Proficiency, Always? EvoEval: Evolving Coding Benchmarks via LLM.* COLM 2024. arXiv:2403.19114.
 - **APPS** (documented alternative for competition-level problems, not used in the current bank due to access limits) — Hendrycks, D. et al. (2021). *Measuring Coding Challenge Competence With APPS.* NeurIPS 2021 D&B. arXiv:2105.09938.
 
 ## Tier 1 — introductory (MBPP)
@@ -39,6 +40,11 @@ problems from **HumanEval**; and the hard / open problems from the **FunSearch**
 | `t2_humaneval48_is_palindrome` | HumanEval/48 | `is_palindrome` |
 | `t2_humaneval55_fib` | HumanEval/55 | `fib` |
 | `t2_humaneval9_rolling_max` | HumanEval/9 | `rolling_max` |
+| `t2_humaneval20_find_closest_elements` | HumanEval/20 | `find_closest_elements` |
+| `t2_humaneval26_remove_duplicates` | HumanEval/26 | `remove_duplicates` |
+| `t2_humaneval57_monotonic` | HumanEval/57 | `monotonic` |
+
+The last three were added on 2026-10-20 to reach the 24 tasks that SC1 requires (11 + 8 + 5).
 
 ## Tier 3 — hard / open (NP-hard and open problems)
 
@@ -52,6 +58,22 @@ judged by a metric against a baseline. This is where creative, non-obvious appro
 | `t3_graph_coloring` | Graph colouring order | ReEvo | `vertex_order` |
 | `t3_scheduling` | Makespan scheduling | ReEvo | `priority` |
 | `t3_tsp_construction` | Travelling salesman heuristic | CO-Bench / ReEvo | `choose_next` |
+
+## Contamination check — EvoEval rewrites (separate task set)
+
+MBPP and HumanEval are public and probably in every model's training data, so the "ordinary"
+solution may be memorised. EvoEval rewrites HumanEval problems into new problems ("creative"
+set) that are much less likely to have been seen. Three of them are run as a separate task set
+(`task_set: contamination_check`), analysed on their own (`stats_report.py --task-set
+contamination_check`), to check that the studio's effect does not depend on memorised
+benchmarks. Held-out tests use EvoEval's own inputs, with expected values from its canonical
+solution (checked to pass when the tasks were added).
+
+| Task id | Benchmark item (parent) | Function |
+|---|---|---|
+| `t2_evoeval13_find_rarest_element` | EvoEval_creative/13 (HumanEval/22) | `find_rarest_element` |
+| `t2_evoeval16_fibonacci_sum` | EvoEval_creative/16 (HumanEval/31) | `fibonacci_sum` |
+| `t2_evoeval31_unique_paths` | EvoEval_creative/31 (HumanEval/57) | `unique_paths` |
 
 ---
 

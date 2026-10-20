@@ -63,18 +63,18 @@ def test_cache_hit_avoids_second_backend_call(tmp_path, monkeypatch):
 
 
 def test_env_var_expands_into_api_key(tmp_path, monkeypatch):
-    # Proves the ${ANTHROPIC_API_KEY} mechanism works, i.e. the key is read from the
+    # Proves the ${MY_API_KEY} mechanism works, i.e. the key is read from the
     # environment and never has to be written into models.yaml.
-    monkeypatch.setenv("ANTHROPIC_API_KEY", "secret-123")
+    monkeypatch.setenv("MY_API_KEY", "secret-123")
     cfg = tmp_path / "models.yaml"
     cfg.write_text(
-        "default_profile: claude\n"
+        "default_profile: remote\n"
         "cache_dir: %s\n"
         "profiles:\n"
-        "  claude:\n"
-        "    base_url: https://api.anthropic.com/v1\n"
-        "    api_key: ${ANTHROPIC_API_KEY}\n"
-        "    model: claude-sonnet-5-5\n" % (tmp_path / "cache")
+        "  remote:\n"
+        "    base_url: https://api.example.org/v1\n"
+        "    api_key: ${MY_API_KEY}\n"
+        "    model: some-model\n" % (tmp_path / "cache")
     )
     c = LLMClient.from_config(cfg)
     assert c.profile.api_key == "secret-123"
