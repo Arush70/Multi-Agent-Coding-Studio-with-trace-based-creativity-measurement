@@ -88,10 +88,10 @@ Coding Studio whose Facilitator sustains rather than resolves divergence.
 
 | ID | Criterion | Status |
 |----|-----------|--------|
-| SC1 | All configurations run end to end on at least 24 tasks, with complete schema-valid traces and no manual intervention. | Bank has 21 tasks (see section 3). Runner and traces ready. |
+| SC1 | All configurations run end to end on at least 24 tasks, with complete schema-valid traces and no manual intervention. | Bank has 24 main tasks (11 MBPP, 8 HumanEval, 5 heuristic) plus 3 contamination-check tasks (EvoEval). Runner and traces ready. |
 | SC2 | All three measures computed for every session from saved traces alone. | Met by design (`scripts/analyze.py`). |
-| SC3 | Automatic family detection agrees with independent hand labels at ARI >= 0.60 on at least four tasks. | Tooling ready; labelling not started. |
-| SC4 | (a) automated novelty vs blind human originality ranking (Bradley-Terry) Spearman rho >= 0.50; (b) mean pairwise Cohen's kappa across three external raters >= 0.60; (c) human vs LLM-judge agreement reported. | Ethics application submitted 10 Oct 2026; rating study after approval. |
+| SC3 | Automatic family detection agrees with independent hand labels at ARI >= 0.60 on at least four tasks. | Tooling ready (blind view without comments, no default answer); labelling not started. |
+| SC4 | (a) automated novelty vs blind human originality ranking (Bradley-Terry) Spearman rho >= 0.50; (b) mean pairwise Cohen's kappa across three external raters >= 0.60; (c) human vs LLM-judge agreement reported. | Tooling built (pairs, booklet, Forms import, Bradley-Terry, kappas, bootstrap CI, judge in both orders). Ethics revision resubmitted 19 Oct 2026; rating study after approval. |
 | SC5 | For each primary outcome: effect, 95% CI, model specification and minimum detectable effect, with adjusted p-values for planned contrasts. | Not started (needs main run). |
 | SC6 | All statistics recomputable from released traces on a CPU; full experiment rerunnable without paid model or API access. | On track (open models, cache, CPU analysis). |
 
@@ -103,12 +103,12 @@ Stated openly so examiners see considered decisions, not drift. Each is also in 
 
 | Proposal | Build | Reason / decision |
 |---|---|---|
-| 24 tasks in 2 tiers (16 introductory incl. ASTRA tasks; 8 APPS competition + heuristic) | 21 tasks in 3 tiers: 11 MBPP, 5 HumanEval, 5 heuristic-design (FunSearch, ReEvo, CO-Bench) | Supervisor asked for every task to come from a published, citable benchmark. APPS host was unreachable from the build environment. **To confirm with supervisor in writing; SC1 says 24, so either add 3 tasks or record the amendment.** |
+| 24 tasks in 2 tiers (16 introductory incl. ASTRA tasks; 8 APPS competition + heuristic) | 24 tasks in 3 tiers: 11 MBPP, 8 HumanEval, 5 heuristic-design (FunSearch, ReEvo, CO-Bench); plus 3 EvoEval contamination-check tasks and circle packing for the search study | Every task comes from a published, citable benchmark. APPS host was unreachable from the build environment. |
 | Tier 2 = competition-level | HumanEval (standard) as Tier 2; heuristic problems as Tier 3 | RQ4 wording ("competition-level") to be reconciled with the bank. |
 | Clustering with a calibrated threshold (distance unspecified) | Within-session standardised AST features, Euclidean distance, average linkage; plus a matched-sample comparison across conditions | Earlier versions collapsed distinct strategies into one family. Logged in PREREGISTRATION.md (1 Oct and 7 Oct 2026). |
-| UniXcoder as a parallel primary analysis | Implemented (`represent.embed`), not yet run | Planned for the main run on GPU. |
-| Mutation testing on five tasks; learner-contribution metric | Not built yet | In the plan (section 17). |
-| 6 repetitions x 5 cells x 24 tasks = 720 sessions | Batch runner ready; pilot first | Main run after pilot and SC3. |
+| UniXcoder as a parallel primary analysis | Implemented for families and novelty (`analyze.py --representation unixcoder`), calibrated on the SC3 labels in its own space | Run after the main run. |
+| Mutation testing with mutmut on five tasks; learner-contribution metric | AST mutator (mutmut does not run on Windows); learner metric from constructs the learners mention vs those in the solutions | Built 20 Oct (`scripts/mutation_test.py`, `macs/metrics/learners.py`). |
+| 6 repetitions x 5 cells x 24 tasks = 720 sessions | 9 conditions (core 5 + E, E_minus, S, P) x 24 tasks x 6 seeds on the main model; reduced design on 3-5 further models | Extended design pre-registered 20 Oct 2026 (RQ2 test, compute-matched baselines, cross-model consistency). |
 
 ---
 
@@ -409,22 +409,26 @@ Priorities: **now** = before the next supervision, **soon** = this month, **late
 - [ ] Re-run the pilot: 3 tasks x 5 conditions x 3 seeds. *(now)*
 - [ ] Check the pilot: Facilitator firing rate, selection fallback rate, revision rounds, tokens. *(soon)*
 - [ ] SC3: hand-label four tasks, second rater, freeze `CLUSTER_THRESHOLD`. *(soon)*
-- [ ] Build references for all 21 tasks; sensitivity at 50 / 200 on a subset. *(soon)*
+- [x] References for all 21 original tasks (15 Oct); the 3 new tasks and the contamination set still need theirs. Sensitivity at 50 / 200 on a subset. *(soon)*
 
 ### B. Main experiment
-- [ ] Decide the main-run model (stronger open model on GPU / Kaggle). *(soon)*
-- [ ] Main run: all tasks x 5 conditions x 6 seeds on the Docker sandbox. *(soon)*
+- [ ] Main-run model by the 15 Oct rule (Qwen3.5-27B on the University GPU, else the 9B). *(soon)*
+- [ ] Main run: 24 tasks (+3 contamination) x 9 conditions x 6 seeds on the Docker sandbox. *(soon)*
+- [ ] Cross-model panel: reduced design on further models; `model_consistency.py`. *(soon)*
+- [ ] Open-problem search study: circle packing, bin packing, cap set; 3 strategies x 3 seeds. *(soon)*
 - [ ] Run UniXcoder as the parallel representation. *(later)*
 
 ### C. Remaining measures
-- [ ] Learner-contribution metric (share of final-solution lineage from learner turns; novelty of learner ideas). *(soon)*
-- [ ] Mutation testing (mutmut) on the held-out suites of five tasks. *(later)*
+- [x] Learner-contribution metric (20 Oct).
+- [x] Mutation testing tool (20 Oct); run it. *(later)*
+- [x] Quality-diversity frontier and Tier 3 payoff (20 Oct).
 
 ### D. Statistics
 - [x] Mixed-effects models (learner x solver, task random effect), planned contrasts B-A, D-C, D-D_minus, Holm-adjusted, 95% CIs, minimum detectable effect from pilot variance. Done 15 Oct: `macs/analysis/stats.py`, `scripts/stats_report.py`.
 
 ### E. Human validation
-- [ ] On ethics approval: recruit raters, build 60 pairs, run the rating study, LLM judge, analysis. *(later)*
+- [x] Rating-study tooling and AI judge (20 Oct).
+- [ ] On ethics approval: recruit raters, build the 60 pairs, run the study and the judge, analyse. *(later)*
 
 ### F. Dissertation
 - [ ] Draft chapters; figures and tables from the analysis. *(later)*
@@ -432,7 +436,7 @@ Priorities: **now** = before the next supervision, **soon** = this month, **late
 ### G. Dashboard polish (from the Week 2 review)
 - [x] "Clear traces" button (12 Oct).
 - [x] Whole pipeline in the dashboard (16 Oct): References, Multi-run (seed count), Statistics, SC3 Labelling, Setup; background jobs.
-- [ ] Show the value each solution returns for the example inputs; auto-conclusion after analysis. *(later)*
+- [x] Value each solution returns for the example inputs; plain-language conclusion after analysis (20 Oct).
 
 ---
 
@@ -509,9 +513,9 @@ Main run: `--tasks all --seeds 1-6 --sandbox docker`.
 - **Weak development model.** The 7B model may give near-identical reference solutions even at 100,
   so tau falls back to the default and novelty saturates. Mitigation: stronger model for the main run;
   stated as a limitation if it persists.
-- **Task bank vs SC1.** 21 tasks against "at least 24"; decide with the supervisor.
-- **Compute.** About 80 GPU-hours estimated for the main run; Kaggle quota plus laptop for tutor
-  cells; repetitions drop to 4 if short (proposal fallback).
+- **Compute.** Measured on the laptop (9B): references about 5 hours for 21 tasks; a 630-session run
+  about 15-24 hours; the extended design (9 conditions) roughly 1.6 times that. The University GPU
+  is the plan for the 27B and the larger panel models; repetitions drop to 4 if short (proposal fallback).
 - **SC3 second rater** needed for the rigorous version.
 - **Ethics timing.** The rating study cannot start until approval.
 - **Simulation.** The learner factor measures personas, not students; no claims about real learners.

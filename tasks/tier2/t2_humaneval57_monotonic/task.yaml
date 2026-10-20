@@ -1,0 +1,37 @@
+# HumanEval problem HumanEval/57. Source: Chen et al. (2021), Evaluating Large Language Models Trained on Code, arXiv:2107.03374 (HumanEval)
+# known_families are BLIND LABELS (strategies written before any model output); do not edit to match results.
+# Held-out tests come from the benchmark's own tests; only the scorer sees them.
+id: t2_humaneval57_monotonic
+tier: 2
+source: HumanEval
+source_id: HumanEval/57
+citation: Chen et al. (2021), Evaluating Large Language Models Trained on Code, arXiv:2107.03374 (HumanEval)
+entry_point: monotonic
+prompt: |
+  def monotonic(l: list):
+      """Return True is list elements are monotonically increasing or decreasing.
+      >>> monotonic([1, 2, 4, 20])
+      True
+      >>> monotonic([1, 20, 4, 10])
+      False
+      >>> monotonic([4, 1, 0, -10])
+      True
+      """
+
+  Complete the function `monotonic`.
+known_families:
+  - sorted_compare        # compare with sorted / reverse-sorted copy
+  - pairwise_all          # all(a<=b) or all(a>=b) over neighbours
+  - diff_signs            # signs of differences
+  - single_scan_flags     # one loop with inc/dec flags
+public_tests:
+- assert monotonic([1, 2, 4, 10]) == True
+heldout_tests:
+- assert monotonic([1, 2, 4, 20]) == True
+- assert monotonic([1, 20, 4, 10]) == False
+- assert monotonic([4, 1, 0, -10]) == True
+- assert monotonic([4, 1, 1, 0]) == True
+- assert monotonic([1, 2, 3, 2, 5, 60]) == False
+- assert monotonic([1, 2, 3, 4, 5, 60]) == True
+- assert monotonic([9, 9, 9, 9]) == True
+scoring: tests

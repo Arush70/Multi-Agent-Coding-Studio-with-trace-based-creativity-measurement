@@ -1,12 +1,13 @@
 """Session orchestrator: the loop that turns model calls into a trace.
 
-Takes a task, runs a session in one of the five conditions, and writes every step to a trace.
-Two families of condition:
+Takes a task, runs a session in one of the conditions defined in macs/conditions.py, and writes
+every step to a trace. Four kinds of solver:
 
-    A  1 learner  + Tutor            C  2 learners + Tutor          (Tutor: one solution)
-    B  1 learner  + Studio           D  2 learners + Studio         (Studio: Innovator ->
-    D_minus  2 learners + Studio, Facilitator disabled              Engineer -> Verifier loop,
-                                                                    Critic + Facilitator)
+    tutor          A, C      one solution
+    studio         B, D, D_minus, E, E_minus
+                             Innovator -> Engineer -> Verifier loop, Critic + Facilitator
+    sampling       S         the tutor sampled repeatedly up to the studio's token budget
+    single_prompt  P         one call asked for K different approaches, each with code
 
 In the studio the Innovator proposes several strategies, the Engineer implements each, the
 Verifier runs the sandbox, the Facilitator watches for convergence and pushes for a fresh idea,
@@ -27,6 +28,7 @@ from pathlib import Path
 import numpy as np
 import yaml
 
+from macs import conditions as conds
 from macs.llm.client import prompt_hash
 from macs.sandbox import runner
 from macs.tasks.bank import Task
@@ -41,7 +43,20 @@ PERSONAS = yaml.safe_load((Path(__file__).parent / "prompts" / "personas.yaml").
 # Bumped when the session logic changes in a way that makes older traces incomparable. It is
 # stamped into every trace header; the analysis skips traces from older versions by default
 # (scripts/analyze.py --include-old keeps them). History of changes: docs/DEV_LOG.md.
-ORCHESTRATOR_VERSION = "0.2.3"
+ORCHESTRATOR_VERSION = "0.3.0"
+# Oldest version whose traces are still comparable. 0.3.0 added conditions (E, E_minus, S, P) and
+# changed nothing in how A, B, C, D and D_minus run, so 0.2.3 traces stay in the analysis.
+COMPATIBLE_SINCE = "0.2.3"
+
+
+def is_comparable(version: str | None) -> bool:
+    """True when a trace from this orchestrator version can be analysed with current traces."""
+    def tup(v):
+        try:
+            return tuple(int(x) for x in str(v).split("."))
+        except ValueError:
+            return (0,)
+    return tup(version or "0.1.0") >= tup(COMPATIBLE_SINCE)
 
 K_PROPOSALS = 5
 # Critique-revision rounds (proposal: "bounded critique-revision, max 3 rounds"). The studio
@@ -64,6 +79,12 @@ FACILITATOR_REPRESENTATION = "unixcoder"
 SELECTION_REMINDER = ("Reply with exactly one line, SELECTED: <id>, naming one of {ids}. "
                       "Do not write code.")
 TAU_RULE = "p25_window_mean_on_reference_sequences"
+# Baseline S: the tutor is sampled at this temperature, with a new seed each time, until the
+# session has used SAMPLING_TOKEN_TARGET tokens (the pilot's mean studio session, D, rounded) or
+# made SAMPLING_MAX solutions. Pre-registered 2026-10-20.
+SAMPLING_TEMPERATURE = 1.0
+SAMPLING_TOKEN_TARGET = 17_000
+SAMPLING_MAX = 30
 
 CODE_BLOCK = re.compile(r"```[ \t]*(?:python3?|py)?[ \t]*\n(.*?)```", re.S | re.I)
 OPEN_BLOCK = re.compile(r"```[ \t]*(?:python3?|py)?[ \t]*\n(.*)", re.S | re.I)
@@ -107,23 +128,24 @@ def check_facilitator_dependencies(representation: str = FACILITATOR_REPRESENTAT
     return None
 
 
-_REFERENCE_CACHE: dict[tuple[str, str], np.ndarray] = {}
+_REFERENCE_CACHE: dict[tuple[str, str, str | None], np.ndarray] = {}
 
 
-def _reference_matrix(task_id: str, representation: str) -> np.ndarray:
+def _reference_matrix(task_id: str, representation: str, model: str | None = None) -> np.ndarray:
     """The task's frozen reference in the Facilitator's space, computed once per process
     (embedding 100 solutions takes a few seconds, and a batch run starts many sessions)."""
-    key = (task_id, representation)
+    key = (task_id, representation, model)
     if key not in _REFERENCE_CACHE:
         from macs.metrics.reference import build_reference_stats
         rep = "embed" if representation == "unixcoder" else "ast"
-        _REFERENCE_CACHE[key] = build_reference_stats(task_id, representation=rep, standardise=False).X_ref
+        _REFERENCE_CACHE[key] = build_reference_stats(task_id, representation=rep, standardise=False,
+                                                      model=model).X_ref
     return _REFERENCE_CACHE[key]
 
 
 @dataclass
 class SessionConfig:
-    condition: str                    # A | B | C | D | D_minus
+    condition: str                    # see macs/conditions.py
     seed: int
     sandbox_backend: str = "docker"   # real runs use docker; dev on Windows uses "subprocess"
     n_learners: int = 1
@@ -133,17 +155,24 @@ class SessionConfig:
     max_revisions: int = MAX_REVISIONS
     facilitator_representation: str = FACILITATOR_REPRESENTATION
     reference_n: int | None = field(default=None, init=False)   # size of the reference used for tau
+    model: str | None = field(default=None, init=False)         # set by run_session: whose reference to use
 
     def __post_init__(self) -> None:
-        self.n_learners = 2 if self.condition in ("C", "D", "D_minus") else 1
+        self.spec = conds.get(self.condition)
+        self.n_learners = self.spec.n_learners
 
     @property
     def is_studio(self) -> bool:
-        return self.condition in ("B", "D", "D_minus")
+        return self.spec.is_studio
 
     @property
     def facilitator_enabled(self) -> bool:
-        return self.condition in ("B", "D")          # OFF only in D_minus
+        return self.spec.facilitator
+
+    @property
+    def scaffold(self) -> bool:
+        """Studio Innovator sees the earlier strategies and is told to differ (off in E, E_minus)."""
+        return self.spec.scaffold
 
     def resolve_tau(self, task: Task) -> tuple[float, str]:
         """Return (tau, tau_source). Uses the pre-registered reference rule when the task has a
@@ -159,11 +188,11 @@ class SessionConfig:
         """
         if self.tau is not None:
             return self.tau, "override"
-        from macs.metrics.reference import REFERENCE_ROOT
-        if not (Path(REFERENCE_ROOT) / f"{task.id}.jsonl").exists():
+        from macs.metrics.reference import reference_path
+        if not reference_path(task.id, self.model).exists():
             return DEFAULT_TAU, "default:no_reference"
         try:
-            X_ref = _reference_matrix(task.id, self.facilitator_representation)
+            X_ref = _reference_matrix(task.id, self.facilitator_representation, self.model)
         except (ImportError, ModuleNotFoundError):
             raise
         except Exception:  # noqa: BLE001 - empty or unparseable reference file
@@ -219,12 +248,18 @@ class _BudgetedClient:
 def run_session(task: Task, cfg: SessionConfig, client, out_dir: str | Path = "data/traces") -> Path:
     session_id = f"{task.id}-{cfg.condition}-{cfg.seed}-{uuid.uuid4().hex[:6]}"
     client = _BudgetedClient(client, cfg.token_ceiling)
+    cfg.model = getattr(client.profile, "model", None)
     path = Path(out_dir) / f"{session_id}.jsonl"
 
-    extra = {"n_learners": cfg.n_learners}
+    extra = {"n_learners": cfg.n_learners, "solver": cfg.spec.solver}
+    if cfg.spec.solver == "sampling":
+        extra.update({"sampling_temperature": SAMPLING_TEMPERATURE,
+                      "sampling_token_target": SAMPLING_TOKEN_TARGET, "sampling_max": SAMPLING_MAX})
+    if cfg.spec.solver == "single_prompt":
+        extra["k_proposals"] = cfg.k_proposals
     if cfg.is_studio:
         tau, tau_source = cfg.resolve_tau(task)
-        extra.update({"facilitator_enabled": cfg.facilitator_enabled, "tau": float(tau),
+        extra.update({"facilitator_enabled": cfg.facilitator_enabled, "scaffold": cfg.scaffold, "tau": float(tau),
                       "tau_source": tau_source, "tau_rule": TAU_RULE,
                       "facilitator_representation": cfg.facilitator_representation, "k_proposals": cfg.k_proposals,
                       "convergence_window": CONVERGENCE_WINDOW})
@@ -235,6 +270,10 @@ def run_session(task: Task, cfg: SessionConfig, client, out_dir: str | Path = "d
         try:
             if cfg.is_studio:
                 _run_studio(task, cfg, client, tr, tau=tau, tau_source=tau_source)
+            elif cfg.spec.solver == "sampling":
+                _run_sampling(task, cfg, client, tr)
+            elif cfg.spec.solver == "single_prompt":
+                _run_single_prompt(task, cfg, client, tr)
             else:
                 _run_tutor(task, cfg, client, tr)
             tr.end_note = f"completed; tokens_used={client.used}"
@@ -284,7 +323,67 @@ def _run_tutor(task: Task, cfg: SessionConfig, client, tr: TraceWriter) -> None:
     tr.log("verifier", "verification", **res.as_trace_fields("public"))
 
 
-# --------------------------------------------------------------------- Studio (B, D, D_minus)
+# --------------------------------------------------------------------- Baseline S (sampling)
+def _run_sampling(task: Task, cfg: SessionConfig, client, tr: TraceWriter) -> None:
+    """The tutor, sampled again and again at temperature 1.0 with a new seed each time, until the
+    session has used the studio's token budget. Same prompt as the tutor conditions, so the only
+    difference from C is the number of tries; the only difference from the studio is that the
+    tries are independent instead of coordinated."""
+    learners = _run_learners(task, cfg, client, tr)
+    messages = [{"role": "system", "content": PROMPTS["tutor"]},
+                {"role": "user", "content": task.agent_view + _learner_block(learners)}]
+    for i in range(1, SAMPLING_MAX + 1):
+        if client.used >= SAMPLING_TOKEN_TARGET:
+            break
+        t = client.chat(messages, seed=cfg.seed + 500 + i, temperature=SAMPLING_TEMPERATURE)
+        code = extract_code(t.text)
+        pid = f"s{i}"
+        tr.log("tutor", "implementation", content=code, proposal_id=pid, prompt_tokens=t.prompt_tokens,
+               completion_tokens=t.completion_tokens, request_hash=t.request_hash)
+        res = runner.run(code, task.public_tests, backend=cfg.sandbox_backend)
+        tr.log("verifier", "verification", proposal_id=pid, **res.as_trace_fields("public"))
+
+
+# --------------------------------------------------------------------- Baseline P (single prompt)
+def split_approaches(text: str) -> list[tuple[str, str]]:
+    """Split a single-prompt reply into [(strategy, code), ...], one per fenced code block. The
+    strategy is the prose between the previous block (or the start) and this block."""
+    out, pos = [], 0
+    for m in CODE_BLOCK.finditer(text):
+        prose = text[pos:m.start()].strip()
+        out.append((prose[-600:], m.group(1).strip()))
+        pos = m.end()
+    # a final block that was opened but never closed (a long reply cut off) still counts
+    tail = OPEN_BLOCK.search(text, pos)
+    if tail:
+        out.append((text[pos:tail.start()].strip()[-600:], tail.group(1).strip()))
+    return out
+
+
+def _run_single_prompt(task: Task, cfg: SessionConfig, client, tr: TraceWriter) -> None:
+    """One model call asked for K genuinely different approaches, each with its own code. The
+    strongest single-agent competitor to the studio: it asks for diversity directly, with no team,
+    no Facilitator and no critique."""
+    learners = _run_learners(task, cfg, client, tr)
+    r = client.chat([{"role": "system", "content": PROMPTS["single_prompt"].format(k=cfg.k_proposals)},
+                     {"role": "user", "content": task.agent_view + _learner_block(learners)}],
+                    seed=cfg.seed + 600)
+    parts = split_approaches(r.text)[:cfg.k_proposals]
+    for k, (strategy, code) in enumerate(parts):
+        pid = f"p{k}"
+        # token counts belong to the one call; they are recorded on the first proposal only
+        tok = {"prompt_tokens": r.prompt_tokens, "completion_tokens": r.completion_tokens,
+               "request_hash": r.request_hash} if k == 0 else {"request_hash": r.request_hash}
+        tr.log("tutor", "proposal", content=strategy or f"approach {k + 1}", proposal_id=pid, **tok)
+        tr.log("tutor", "implementation", content=code, proposal_id=pid, parent_ids=[pid])
+        res = runner.run(code, task.public_tests, backend=cfg.sandbox_backend)
+        tr.log("verifier", "verification", proposal_id=pid, **res.as_trace_fields("public"))
+    if not parts:
+        tr.log("tutor", "proposal", content=r.text.strip()[:2000] or "(empty reply)", proposal_id="p0",
+               prompt_tokens=r.prompt_tokens, completion_tokens=r.completion_tokens, request_hash=r.request_hash)
+
+
+# --------------------------------------------------------------------- Studio (B, D, D_minus, E, E_minus)
 def _run_studio(task: Task, cfg: SessionConfig, client, tr: TraceWriter, *, tau: float, tau_source: str) -> None:
     # simulated-learner contributions, same as the tutor conditions; the Innovator sees them
     learners = _run_learners(task, cfg, client, tr)
@@ -299,11 +398,17 @@ def _run_studio(task: Task, cfg: SessionConfig, client, tr: TraceWriter, *, tau:
 
     # ---- divergence: K rounds of Innovator -> Engineer -> Verifier, with the Facilitator watching
     for k in range(cfg.k_proposals):
-        prior = "\n".join(f"- {s}" for s in strategies) or "(none yet)"
-        inn_user = (task.agent_view + learner_ctx + f"\n\nStrategies proposed so far:\n{prior}"
-                    + (f"\n\nFacilitator: {pending}" if pending else ""))
+        if cfg.scaffold:
+            prior = "\n".join(f"- {s}" for s in strategies) or "(none yet)"
+            inn_user = task.agent_view + learner_ctx + f"\n\nStrategies proposed so far:\n{prior}"
+            inn_prompt = PROMPTS["innovator"]
+        else:
+            # neutral Innovator (E, E_minus): no list of earlier strategies, no instruction to differ
+            inn_user = task.agent_view + learner_ctx
+            inn_prompt = PROMPTS["innovator_neutral"]
+        inn_user += f"\n\nFacilitator: {pending}" if pending else ""
         pending = None                  # an instruction applies to the next proposal only
-        inn = client.chat([{"role": "system", "content": PROMPTS["innovator"]},
+        inn = client.chat([{"role": "system", "content": inn_prompt},
                            {"role": "user", "content": inn_user}], seed=cfg.seed + 100 + k)
         strategy = inn.text.strip()
         pid = f"p{k}"

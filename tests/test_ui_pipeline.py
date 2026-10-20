@@ -64,8 +64,16 @@ def test_reference_table_and_archive(tmp_path):
                                            for i in range(100)), encoding="utf-8")
     (root / "tb.jsonl").write_text(json.dumps({"seed": 0, "model": "m7", "revision": "x"}) + "\n", encoding="utf-8")
     rows = {r["task"]: r for r in pipeline.reference_table(tasks, root, model="m9")}
-    assert rows["ta"]["state"] == "ready" and rows["tb"]["state"] == "other model"
+    # tb's file belongs to model m7, so m9 has no set for tb yet (each model has its own sets)
+    assert rows["ta"]["state"] == "ready" and rows["tb"]["state"] == "missing"
     assert rows["tc"]["state"] == "missing"
+    assert {r["task"]: r for r in pipeline.reference_table(tasks, root, model="m7")}["tb"]["state"] == "incomplete"
+    other = root / "models" / "m9"
+    other.mkdir(parents=True)
+    (other / "tb.jsonl").write_text("".join(json.dumps({"seed": i, "model": "m9", "revision": "r"}) + "\n"
+                                            for i in range(100)), encoding="utf-8")
+    assert {r["task"]: r for r in pipeline.reference_table(tasks, root, model="m9")}["tb"]["state"] == "ready"
+    (other / "tb.jsonl").unlink(); other.rmdir(); (root / "models").rmdir()
     dest, n = pipeline.archive_references(["tb"], root, arch, stamp="s")
     assert n == 1 and (dest / "tb.jsonl").exists() and (root / "ta.jsonl").exists()
     dest2, n2 = pipeline.archive_references(None, root, arch, stamp="s")

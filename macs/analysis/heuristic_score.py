@@ -159,6 +159,36 @@ __metric__ = (sum(vals) / len(vals)) if vals else None
 __detail__ = res
 '''
 
+_CIRCLE_PACKING_DRIVER = r'''
+fn = globals()[__data__["entry_point"]]
+EPS = 1e-9
+res = []
+for n in __data__["params"]["sizes"]:
+    try:
+        cs = [tuple(float(v) for v in c) for c in fn(n)]
+    except Exception:
+        res.append(None); continue
+    ok = len(cs) == n and all(len(c) == 3 for c in cs)
+    if ok:
+        for (x, y, r) in cs:
+            if not (r > 0 and x - r >= -EPS and x + r <= 1 + EPS and y - r >= -EPS and y + r <= 1 + EPS):
+                ok = False; break
+    if ok:
+        for i in range(n):
+            xi, yi, ri = cs[i]
+            for j in range(i + 1, n):
+                xj, yj, rj = cs[j]
+                if ((xi - xj) ** 2 + (yi - yj) ** 2) ** 0.5 < ri + rj - EPS:
+                    ok = False; break
+            if not ok:
+                break
+    res.append(sum(c[2] for c in cs) if ok else 0.0)
+vals = [r for r in res if r is not None]
+__valid__ = len(vals) == len(res) and all(r > 0 for r in vals)
+__metric__ = (sum(vals) / len(vals)) if vals else None
+__detail__ = res
+'''
+
 # ---------------------------------------------------------------- baselines (same signature)
 # The standard heuristic for each task, run through the SAME driver to give a reference metric.
 
@@ -181,6 +211,12 @@ _BASELINES = {
         "            S.append(v); Sset.add(v)\n"
         "    return S\n"
     ),  # greedy_lexicographic
+    "t3_circle_packing": (
+        "def pack_circles(n):\n"
+        "    import math\n"
+        "    k = math.ceil(math.sqrt(n)); r = 1 / (2 * k)\n"
+        "    return [((i % k) * 2 * r + r, (i // k) * 2 * r + r, r) for i in range(n)]\n"
+    ),  # regular_grid
 }
 
 # task.id -> (driver, direction). direction = +1 if higher raw metric is better, -1 if lower is better.
@@ -190,6 +226,7 @@ _SPEC = {
     "t3_tsp_construction": (_TSP_DRIVER, -1),
     "t3_graph_coloring": (_GRAPH_COLORING_DRIVER, -1),
     "t3_cap_set": (_CAP_SET_DRIVER, +1),
+    "t3_circle_packing": (_CIRCLE_PACKING_DRIVER, +1),
 }
 
 

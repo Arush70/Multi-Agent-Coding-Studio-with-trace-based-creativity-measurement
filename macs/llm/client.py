@@ -7,8 +7,8 @@ Every model call goes through this client, for two reasons:
      saved answer without a model call, so analyses can be re-run at no cost and runs are
      reproducible.
 
-  2. One interface for every backend. A local Ollama server, a hosted GPU, or the Claude API
-     (through its OpenAI-compatible endpoint) all speak the same protocol; switching between them is a change to
+  2. One interface for every backend. A local Ollama server, a University GPU server, or any hosted
+     API with an OpenAI-compatible endpoint all speak the same protocol; switching between them is a change to
      config/models.yaml, not to the code. Nothing above this module imports 'requests' or
      knows a URL.
 """
@@ -27,7 +27,7 @@ import requests
 import yaml
 
 # Matches ${NAME} in the config so an API key can live in an environment variable instead
-# of in the file: models.yaml says ${ANTHROPIC_API_KEY}, never the key itself.
+# of in the file: models.yaml says ${MY_API_KEY}, never the key itself.
 _ENV_RE = re.compile(r"\$\{(\w+)\}")
 
 
@@ -87,7 +87,7 @@ class LLMClient:
     @classmethod
     def from_config(cls, path: str | Path = "config/models.yaml", profile: str | None = None) -> "LLMClient":
         # Reads config/models.yaml (the git-ignored one, not the .example). Pass
-        # profile="local" / "claude" to pick a backend; omit it and the
+        # profile="local" / "deepseek" / ... to pick a backend; omit it and the
         # file's default_profile is used. This is the only place a profile is built.
         cfg = yaml.safe_load(Path(path).read_text(encoding="utf-8"))
         name = profile or cfg["default_profile"]

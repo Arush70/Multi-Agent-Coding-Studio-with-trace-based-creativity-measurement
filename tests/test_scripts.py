@@ -107,3 +107,55 @@ def test_resolve_tasks_accepts_a_long_list_of_ids():
     from macs.tasks.bank import load_bank
     ids = [t.id for t in load_bank()]
     assert [t.id for t in resolve_tasks(",".join(ids))] == ids
+
+
+def test_model_consistency_reads_per_model_summaries(tmp_path):
+    import json as _json
+    import random
+    import subprocess as sp
+    import sys as _sys
+    from pathlib import Path as _P
+    rng = random.Random(0)
+    for model, shift in (("m-a", 0.0), ("m-b", 0.1)):
+        sessions, per_task = [], {}
+        for t in range(6):
+            fam = {}
+            for c, mu in (("A", 0.1), ("B", 0.5), ("C", 0.1), ("D", 0.6), ("D_minus", 0.55)):
+                for s in range(3):
+                    sessions.append({"task_id": f"t{t}", "condition": c, "n_proposals": 5, "n_correct": 4,
+                                     "correct_and_novel_rate": mu + shift + rng.gauss(0, 0.05),
+                                     "mean_novelty": mu * 3 + rng.gauss(0, 0.1), "tokens": 1000 + rng.random()})
+                fam[c] = 1 + 3 * mu + rng.gauss(0, 0.1)
+            per_task[f"t{t}"] = {"families_at_m": fam}
+        d = tmp_path / "models" / model
+        d.mkdir(parents=True)
+        (d / "summary.json").write_text(_json.dumps({"model": model, "sessions": sessions,
+                                                      "pooled_diversity": {"per_task": per_task}}))
+    root = _P(__file__).resolve().parents[1]
+    out = tmp_path / "mc.json"
+    r = sp.run([_sys.executable, str(root / "scripts" / "model_consistency.py"), "--root", str(tmp_path / "models"),
+                "--out", str(out)], capture_output=True, text=True, cwd=root)
+    assert r.returncode == 0, r.stderr
+    rep = _json.loads(out.read_text())
+    meta = rep["contrasts"]["correct_and_novel_rate: B - A"]["meta"]
+    assert rep["models"] == ["m-a", "m-b"] and meta["k"] == 2 and meta["same_sign"] == 2
+    assert abs(meta["random"] - 0.4) < 0.05
+
+
+def test_frontier_report(tmp_path):
+    import json as _json, subprocess as sp, sys as _sys
+    from pathlib import Path as _P
+    sessions = []
+    for c, pr, nz in (("A", 1.0, 0.0), ("D", 0.8, 2.0), ("S", 0.7, 0.5)):
+        sessions.append({"task_id": "t", "condition": c, "scoring": "tests",
+                         "proposals": [{"correct": i < pr * 10, "novelty": nz, "heuristic_score": None} for i in range(10)]})
+        sessions.append({"task_id": "h", "condition": c, "scoring": "heuristic",
+                         "proposals": [{"correct": True, "novelty": float(i), "heuristic_score": 0.9 + 0.05 * i} for i in range(5)]})
+    (tmp_path / "s.json").write_text(_json.dumps({"sessions": sessions}))
+    root = _P(__file__).resolve().parents[1]
+    r = sp.run([_sys.executable, str(root / "scripts" / "frontier.py"), "--summary", str(tmp_path / "s.json"),
+                "--out", str(tmp_path / "f.json")], capture_output=True, text=True)
+    assert r.returncode == 0, r.stderr
+    f = _json.loads((tmp_path / "f.json").read_text())
+    assert f["frontier"]["A"]["pareto"] and f["frontier"]["D"]["pareto"] and not f["frontier"]["S"]["pareto"]
+    assert abs(f["tier3"]["D"]["rho_novelty_score"] - 1.0) < 1e-9 and f["tier3"]["D"]["best"] == 1.1

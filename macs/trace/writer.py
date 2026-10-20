@@ -27,7 +27,9 @@ SCHEMA_PATH = Path(__file__).with_name("schema.json")
 # Bumped when the schema changes shape. It is stamped into every session header, so a
 # trace always says which schema version produced it. Frozen as the git tag
 # schema-v0.1.0; any later schema change is a deliberate, versioned amendment.
-SCHEMA_VERSION = "0.1.0"
+# 0.2.0 (2026-10-20): conditions E, E_minus, S and P added to the condition enum (additive; every
+# 0.1.0 trace is still valid).
+SCHEMA_VERSION = "0.2.0"
 
 _SCHEMA = json.loads(SCHEMA_PATH.read_text(encoding="utf-8"))
 _VALIDATOR = jsonschema.Draft202012Validator(_SCHEMA)

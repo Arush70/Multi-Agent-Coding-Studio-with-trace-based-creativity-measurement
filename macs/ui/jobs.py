@@ -25,7 +25,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 JOBS_DIR = ROOT / "data" / "jobs"
-MODEL_JOBS = {"references", "multirun", "smoke"}     # these call the model server
+MODEL_JOBS = {"references", "multirun", "smoke", "judge", "search"}     # these call the model server
 
 _PROGRESS = re.compile(r"\[(\d+)/(\d+)\]")
 

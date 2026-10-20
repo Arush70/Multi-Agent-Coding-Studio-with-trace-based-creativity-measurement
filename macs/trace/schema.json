@@ -8,7 +8,7 @@
   "properties": {
     "session_id": {"type": "string"},
     "task_id": {"type": "string"},
-    "condition": {"type": "string", "enum": ["A", "B", "C", "D", "D_minus", "REF"]},
+    "condition": {"type": "string", "enum": ["A", "B", "C", "D", "D_minus", "E", "E_minus", "S", "P", "REF"]},
     "seq": {"type": "integer", "minimum": 0, "description": "Monotonic counter within a session; the analysis relies on event order"},
     "ts": {"type": "string", "format": "date-time"},
     "role": {

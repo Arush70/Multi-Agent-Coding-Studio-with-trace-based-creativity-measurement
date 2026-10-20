@@ -29,10 +29,12 @@ from build_reference import resolve_tasks  # noqa: E402  (same task selection sy
 from macs.llm.client import LLMClient  # noqa: E402
 from macs.metrics.reference import REFERENCE_ROOT, REFERENCE_N  # noqa: E402
 from macs.orchestrator import (  # noqa: E402
-    ORCHESTRATOR_VERSION, SessionConfig, check_facilitator_dependencies, run_session)
+    ORCHESTRATOR_VERSION, SessionConfig, check_facilitator_dependencies, is_comparable, run_session)
+from macs import conditions as conds  # noqa: E402
 from macs.trace.writer import validate_file, read_trace  # noqa: E402
 
-CONDITIONS = ["A", "B", "C", "D", "D_minus"]
+CONDITIONS = conds.ALL            # every known condition; the default run uses conds.CORE
+PAUSE_AFTER, PAUSE_SECONDS, STOP_AFTER = 3, 60, 6
 
 
 def parse_seeds(spec: str) -> list[int]:
@@ -64,7 +66,7 @@ def done_cells(traces_dir: Path, model: str | None = None) -> set[tuple[str, str
         if not str(events[-1].get("content", "")).startswith(("completed", "stopped")):
             continue
         h = events[0].get("header", {})
-        if h.get("orchestrator_version") != ORCHESTRATOR_VERSION:
+        if not is_comparable(h.get("orchestrator_version")):
             continue
         if model is not None and h.get("model") != model:
             continue
@@ -82,8 +84,9 @@ def profile_model(profile: str, config: str = "config/models.yaml") -> str | Non
         return None
 
 
-def reference_status(task_id: str) -> str:
-    p = Path(REFERENCE_ROOT) / f"{task_id}.jsonl"
+def reference_status(task_id: str, model: str | None = None) -> str:
+    from macs.metrics.reference import reference_path
+    p = reference_path(task_id, model)
     if not p.exists():
         return "no reference (novelty off, default tau)"
     n = sum(1 for line in p.read_text(encoding="utf-8").splitlines() if line.strip())
@@ -93,49 +96,63 @@ def reference_status(task_id: str) -> str:
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--tasks", default="all", help="'all', 'tier1/2/3', a task dir, or comma-separated ids")
-    ap.add_argument("--conditions", default=",".join(CONDITIONS))
+    ap.add_argument("--conditions", default=",".join(conds.CORE),
+                    help="comma-separated; 'all' for every condition (" + ",".join(CONDITIONS) + ")")
     ap.add_argument("--seeds", default="1-6", help="e.g. 1-6 or 1,2,3 (proposal: 6 repetitions)")
-    ap.add_argument("--profile", default="local")
+    ap.add_argument("--profile", default="local",
+                    help="model profile in config/models.yaml; several comma-separated profiles run one "
+                         "after another (each model is analysed separately, never pooled)")
     ap.add_argument("--sandbox", default="subprocess", choices=["subprocess", "docker"])
     ap.add_argument("--out", default="data/traces")
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args()
 
     tasks = resolve_tasks(args.tasks)
-    conditions = [c.strip() for c in args.conditions.split(",") if c.strip()]
+    conditions = CONDITIONS if args.conditions.strip() == "all" else \
+        [c.strip() for c in args.conditions.split(",") if c.strip()]
     bad = [c for c in conditions if c not in CONDITIONS]
     if bad:
         raise SystemExit(f"unknown condition(s): {', '.join(bad)}")
     seeds = parse_seeds(args.seeds)
     out = Path(args.out); out.mkdir(parents=True, exist_ok=True)
+    profiles = [p.strip() for p in args.profile.split(",") if p.strip()]
+    for profile in profiles:
+        # failed sessions are listed and retried on the next run; they do not stop the other models
+        run_profile(profile, tasks, conditions, seeds, out, args.sandbox, args.dry_run)
 
-    done = done_cells(out, model=profile_model(args.profile))
+
+def run_profile(profile, tasks, conditions, seeds, out, sandbox, dry_run) -> list:
+    model = profile_model(profile)
+    done = done_cells(out, model=model)
     plan = [(t, c, s) for t in tasks for s in seeds for c in conditions if (t.id, c, s) not in done]
     total = len(tasks) * len(conditions) * len(seeds)
+    print(f"== profile {profile} (model {model}) ==")
     print(f"{len(tasks)} task(s) x {len(conditions)} condition(s) x {len(seeds)} seed(s) = {total} sessions; "
           f"{total - len(plan)} already done, {len(plan)} to run  (orchestrator {ORCHESTRATOR_VERSION})")
     for t in tasks:
-        print(f"  {t.id:<40} {reference_status(t.id)}")
-    if args.sandbox == "subprocess":
+        print(f"  {t.id:<40} {reference_status(t.id, model)}")
+    if sandbox == "subprocess":
         print("[note] sandbox=subprocess is for development; report numbers from --sandbox docker.")
-    if args.dry_run or not plan:
-        return
-    if any(c in ("B", "D", "D_minus") for _, c, _ in plan):
+    if dry_run or not plan:
+        return []
+    if any(conds.get(c).is_studio for _, c, _ in plan):
         problem = check_facilitator_dependencies()
         if problem:
             raise SystemExit(problem)
 
-    client = LLMClient.from_config(profile=args.profile)
+    client = LLMClient.from_config(profile=profile)
     failures = []
+    consecutive = 0
     t0 = time.time()
     for i, (task, cond, seed) in enumerate(plan, start=1):
         label = f"[{i}/{len(plan)}] {task.id} {cond} seed={seed}"
         try:
-            path = run_session(task, SessionConfig(condition=cond, seed=seed, sandbox_backend=args.sandbox),
+            path = run_session(task, SessionConfig(condition=cond, seed=seed, sandbox_backend=sandbox),
                                client, out_dir=out)
             errors = validate_file(path)
             end = list(read_trace(path))[-1].get("content", "")
             print(f"{label}  ok  {end}" + (f"  VALIDATION: {errors[:2]}" if errors else ""))
+            consecutive = 0
         except KeyboardInterrupt:
             print("\nstopped by user; re-run the same command to continue")
             break
@@ -143,13 +160,24 @@ def main() -> None:
             failures.append((label, repr(e)))
             print(f"{label}  FAILED  {e!r}")
             traceback.print_exc(limit=2)
+            consecutive += 1
+            # several failures in a row usually mean the model server is down: wait, then give up
+            # rather than marking every remaining session as failed
+            if consecutive == PAUSE_AFTER:
+                print(f"      {consecutive} failures in a row; waiting {PAUSE_SECONDS}s for the model server ...")
+                time.sleep(PAUSE_SECONDS)
+            elif consecutive >= STOP_AFTER:
+                print(f"\n{consecutive} failures in a row: stopping this model's run. Check the model server "
+                      "(Setup tab), then start the same run again; it continues where it stopped.")
+                break
         elapsed = time.time() - t0
         print(f"      elapsed {elapsed/60:.1f} min, about {elapsed / i * (len(plan) - i) / 60:.1f} min left")
     if failures:
         print(f"\n{len(failures)} session(s) failed (they will be retried on the next run):")
         for label, err in failures:
             print(f"  {label}: {err}")
-    print("\nnext: python scripts/analyze.py --sandbox", args.sandbox)
+    print("\nnext: python scripts/analyze.py --sandbox", sandbox, "--model", model or "<model>")
+    return failures
 
 
 if __name__ == "__main__":

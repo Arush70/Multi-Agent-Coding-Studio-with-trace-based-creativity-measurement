@@ -25,5 +25,57 @@ profiles:
     temperature: 0.7
     max_tokens: 2048
 
+  # ---- cross-model panel (pre-registered 2026-10-20) --------------------------------------
+  # Same experiment on open models from different families and sizes. Install with
+  # `ollama pull <model>`, then paste the ID from `ollama list` into revision. Each model gets
+  # its own reference set (References tab, or build_reference.py --profile <name>).
+  llama31_8b:                 # Meta Llama 3.1 8B (Llama 3.1 community licence)
+    base_url: http://localhost:11434/v1
+    api_key: ollama
+    model: llama3.1:8b
+    revision: ""
+    quantisation: q4_K_M
+    temperature: 0.7
+    max_tokens: 2048
+
+  gemma3_12b:                 # Google Gemma 3 12B (Gemma terms of use)
+    base_url: http://localhost:11434/v1
+    api_key: ollama
+    model: gemma3:12b
+    revision: ""
+    quantisation: q4_K_M
+    temperature: 0.7
+    max_tokens: 2048
+
+  granite42_8b:               # IBM Granite 4.2 8B (Apache 2.0)
+    base_url: http://localhost:11434/v1
+    api_key: ollama
+    model: granite4.2:8b
+    revision: ""
+    quantisation: q4_K_M
+    temperature: 0.7
+    max_tokens: 2048
+
+  # larger models for the University GPU (point base_url at that machine's Ollama or vLLM server)
+  qwen35_27b:                 # Qwen3.5 27B (Apache 2.0), the same family as the main model at a larger size
+    base_url: http://localhost:11434/v1
+    api_key: ollama
+    model: qwen3.5:27b
+    revision: ""
+    quantisation: q4_K_M
+    temperature: 0.7
+    max_tokens: 2048
+    extra_body: {reasoning_effort: none}
+
+  gpt_oss_20b:                # OpenAI gpt-oss 20B (Apache 2.0); always reasons a little, kept at "low"
+    base_url: http://localhost:11434/v1
+    api_key: ollama
+    model: gpt-oss:20b
+    revision: ""
+    quantisation: mxfp4
+    temperature: 0.7
+    max_tokens: 4096
+    extra_body: {reasoning_effort: low}
+
 seed: 20260921
 cache_dir: data/cache

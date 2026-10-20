@@ -25,33 +25,49 @@ def main() -> None:
     ap.add_argument("--out", default="data/results/summary.json")
     ap.add_argument("--include-old", action="store_true",
                     help="also score traces from older orchestrator versions / crashed sessions (not comparable)")
+    ap.add_argument("--representation", default="ast", choices=["ast", "unixcoder"],
+                    help="ast (main analysis) or unixcoder (the parallel representation; needs torch); "
+                         "unixcoder results go to summary_unixcoder.json")
+    ap.add_argument("--all-models", action="store_true",
+                    help="analyse every model separately; each goes to data/results/models/<model>/summary.json "
+                         "(input for scripts/model_consistency.py)")
     ap.add_argument("--model", default=None,
                     help="analyse traces from this model only (name or name@revision); default: the "
                          "model of the most recent trace")
     args = ap.parse_args()
+    if args.all_models:
+        from macs.analysis.aggregate import trace_models
+        from macs.metrics.reference import model_slug
+        names = sorted({m.split("@", 1)[0] for m in trace_models(args.traces)})
+        for name in names:
+            out = Path(args.out).parent / "models" / model_slug(name) / _name(args)
+            print(f"\n######## {name} -> {out}")
+            analyse_one(args, name, out)
+        return
+    out = Path(args.out)
+    if args.representation != "ast" and out.name == "summary.json":
+        out = out.with_name(_name(args))
+    analyse_one(args, args.model, out)
 
-    # load any reference sets that exist, so novelty is computed where possible
-    references = {}
-    try:
-        from macs.metrics.reference import build_reference_stats, REFERENCE_ROOT, REFERENCE_N
-        small = []
-        for f in Path(REFERENCE_ROOT).glob("*.jsonl"):
-            tid = f.stem
-            try:
-                references[tid] = build_reference_stats(tid)
-                if len(references[tid].X_ref) < REFERENCE_N:
-                    small.append(f"{tid} ({len(references[tid].X_ref)})")
-            except Exception:
-                pass
-        if small:
-            print(f"[warn] reference sets below {REFERENCE_N} parseable samples (novelty less reliable): "
-                  + ", ".join(sorted(small)) + "\n       top up with: python scripts/build_reference.py --tasks all")
-    except Exception:
-        pass
+
+def _name(args) -> str:
+    return "summary.json" if args.representation == "ast" else f"summary_{args.representation}.json"
+
+
+def analyse_one(args, model, out_path) -> None:
+
+    # reference sets for the model being analysed, so novelty is computed where possible
+    from macs.analysis.aggregate import resolve_model
+    from macs.metrics.reference import load_references
+    target = resolve_model(args.traces, model)
+    rep = "embed" if args.representation == "unixcoder" else "ast"
+    references = load_references(target, representation=rep) if target else {}
+    if target:
+        print(f"model: {target}; reference sets: {len(references)}")
 
     sessions, summary, pooled = analyse_dir(args.traces, backend=args.sandbox, references=references,
                                             return_pooled=True, include_legacy=args.include_old,
-                                            model=args.model)
+                                            model=model or target, representation=args.representation)
     print(f"scored {len(sessions)} sessions; novelty available for {len(references)} tasks\n")
     if not sessions:
         print("no comparable traces yet - run sessions with the current code first, e.g.\n"
@@ -74,8 +90,10 @@ def main() -> None:
     for cond, v in pooled["by_condition"].items():
         print(f"  {cond:<9} mean over {v['n_tasks']} task(s): {v['avg_families_at_matched_m']}")
 
-    out = Path(args.out); out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text(json.dumps({"sessions": sessions, "summary": summary, "pooled_diversity": pooled}, indent=2), encoding="utf-8")
+    out = Path(out_path); out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(json.dumps({"model": target, "representation": args.representation,
+                               "sessions": sessions, "summary": summary,
+                               "pooled_diversity": pooled}, indent=2), encoding="utf-8")
     print(f"\nsaved {out}")
 
 

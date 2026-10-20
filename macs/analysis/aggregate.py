@@ -6,11 +6,12 @@ For each session:
   * novelty     - how unusual the proposals are relative to the task's frozen reference set
                   (only where a reference exists)
   * the joint correct-and-novel rate, Tier 3 scores, tokens used and interventions.
-These are averaged by condition (A / B / C / D / D_minus). pooled_diversity adds the fair
+These are averaged by condition (see macs/conditions.py). pooled_diversity adds the fair
 tutor-vs-studio comparison: families at a matched number of solutions per task.
 """
 from __future__ import annotations
 
+import json
 from collections import defaultdict
 from pathlib import Path
 from statistics import mean
@@ -33,17 +34,42 @@ from macs.analysis.score import implementations, task_by_id, score_code_heldout
 # diversity measure.
 CLUSTER_THRESHOLD = 3.0
 NOVELTY_PERCENTILE = 0.90
+# Parallel representation (proposal: AST and UniXcoder analysed separately, never combined). In
+# UniXcoder space families are clustered by cosine distance (embeddings are unit-norm, so no
+# standardisation), average linkage. Provisional; frozen by SC3 calibration in that space
+# (scripts/calibrate_clustering.py --representation unixcoder).
+UNIXCODER_CLUSTER_THRESHOLD = 0.10
+REPRESENTATIONS = ("ast", "unixcoder")
 
 
-def _embed(codes: list[str]) -> tuple[np.ndarray, list[int]]:
-    """AST-feature matrix for the codes that parse; returns (matrix, indices kept)."""
-    rows, keep = [], []
+def _embed(codes: list[str], representation: str = "ast") -> tuple[np.ndarray, list[int]]:
+    """Feature matrix for the codes that parse, in the chosen representation; (matrix, indices kept)."""
+    normed, keep = [], []
     for i, c in enumerate(codes):
         try:
-            rows.append(ast_features(normalise(c))); keep.append(i)
+            n = normalise(c)
+            if representation == "ast":
+                normed.append(ast_features(n))
+            else:
+                normed.append(n)
+            keep.append(i)
         except Exception:  # noqa: BLE001
             pass
-    return (np.vstack(rows) if rows else np.empty((0, 0))), keep
+    if not normed:
+        return np.empty((0, 0)), keep
+    if representation == "ast":
+        return np.vstack(normed), keep
+    from macs.metrics.represent import embed
+    return embed(normed), keep
+
+
+def _cluster(X: np.ndarray, representation: str, threshold: float | None = None) -> tuple[np.ndarray, str]:
+    """Family labels in the representation's own space and rule; returns (labels, scale note)."""
+    if representation == "ast":
+        Xc, note = _standardise_for_clustering(X)
+        return cluster_families(Xc, distance_threshold=CLUSTER_THRESHOLD if threshold is None else threshold), note
+    return cluster_families(X, distance_threshold=UNIXCODER_CLUSTER_THRESHOLD if threshold is None else threshold,
+                            metric="cosine"), "unit-norm"
 
 
 def _standardise_for_clustering(X: np.ndarray) -> tuple[np.ndarray, str]:
@@ -60,7 +86,8 @@ def _standardise_for_clustering(X: np.ndarray) -> tuple[np.ndarray, str]:
     return StandardScaler().fit_transform(X), "within-sample"
 
 
-def session_metrics(path, *, backend="subprocess", reference=None, cluster_threshold=CLUSTER_THRESHOLD) -> dict:
+def session_metrics(path, *, backend="subprocess", reference=None, cluster_threshold=None,
+                    representation: str = "ast") -> dict:
     events = list(read_trace(path))
     start = next(e for e in events if e["event"] == "session_start")
     task = task_by_id(start["task_id"])
@@ -71,6 +98,7 @@ def session_metrics(path, *, backend="subprocess", reference=None, cluster_thres
     # ('correct' = feasible), and the heuristic score relative to the baseline is kept as well
     # (>1 beats it). Both feed `correct_flags`, so the correct-and-novel rate works for either.
     correct_flags = []
+    heur_scores: list[float | None] = []
     heur_mean = heur_best = None
     if task.scoring == "tests":
         for c in codes:
@@ -81,6 +109,7 @@ def session_metrics(path, *, backend="subprocess", reference=None, cluster_thres
         for c in codes:
             r = score_heuristic_code(task, c, backend=backend)
             correct_flags.append(bool(r["valid"]))
+            heur_scores.append(r["score"])
             if r["valid"] and r["score"] is not None:
                 scores.append(r["score"])
         if scores:
@@ -88,11 +117,10 @@ def session_metrics(path, *, backend="subprocess", reference=None, cluster_thres
     n_correct = int(sum(correct_flags))
 
     # --- diversity (families among proposals) ---
-    X, keep = _embed(codes)
+    X, keep = _embed(codes, representation)
     scale_source = "none"
     if len(X) >= 1:
-        Xc, scale_source = _standardise_for_clustering(X)
-        labels = cluster_families(Xc, distance_threshold=cluster_threshold)
+        labels, scale_source = _cluster(X, representation, cluster_threshold)
         fams = n_families(labels); ent = family_entropy(labels)
         fams_first10 = n_families(labels[:10])
     else:
@@ -100,6 +128,7 @@ def session_metrics(path, *, backend="subprocess", reference=None, cluster_thres
 
     # --- novelty (vs frozen reference, if available) ---
     mean_novelty = None; cn_rate = None
+    z = None
     if reference is not None and len(X) >= 1:
         z = reference.novelty(X)
         mean_novelty = float(np.mean(z))
@@ -108,6 +137,17 @@ def session_metrics(path, *, backend="subprocess", reference=None, cluster_thres
         # align correctness to the kept (parseable) rows
         corr_kept = np.array([correct_flags[i] for i in keep]) if correct_flags else np.zeros(len(keep), bool)
         cn_rate = correct_and_novel_rate(corr_kept, is_novel)
+
+    # per-proposal record (for the quality-diversity frontier and "does creativity pay off")
+    zmap = {i: float(z[j]) for j, i in enumerate(keep)} if z is not None else {}
+    proposals = [{"correct": bool(correct_flags[i]) if i < len(correct_flags) else None,
+                  "novelty": zmap.get(i),
+                  "heuristic_score": heur_scores[i] if i < len(heur_scores) else None}
+                 for i in range(len(codes))]
+
+    # --- learner contribution (RQ3, exploratory) ---
+    from macs.metrics.learners import learner_contribution
+    lc = learner_contribution(events, _reference_codes(task.id, start.get("header", {}).get("model")))
 
     # --- cost (proposal: token counts reported with every contrast) ---
     tokens = sum(int(e.get("prompt_tokens", 0) or 0) + int(e.get("completion_tokens", 0) or 0) for e in events)
@@ -127,7 +167,26 @@ def session_metrics(path, *, backend="subprocess", reference=None, cluster_thres
         "scoring": task.scoring,          # 'tests' or 'heuristic'
         "heuristic_score": heur_mean,     # Tier 3 only: mean score vs baseline (>1 beats it)
         "heuristic_best": heur_best,      # Tier 3 only: best proposal's score vs baseline
+        "learner_uptake_final": lc["uptake_final"], "learner_uptake_any": lc["uptake_any"],
+        "learner_led_share": lc["learner_led_share"], "final_from_learners": lc["final_from_learners"],
+        "learner_novel_share": lc["learner_novel_share"], "learner_constructs": lc["learner_constructs"],
+        "proposals": proposals,
     }
+
+
+_REF_CODES: dict[tuple[str, str | None], list[str]] = {}
+
+
+def _reference_codes(task_id: str, model: str | None) -> list[str]:
+    """The task's reference solutions for this model (empty if none), loaded once per process."""
+    key = (task_id, model)
+    if key not in _REF_CODES:
+        from macs.metrics.reference import load_reference_solutions
+        try:
+            _REF_CODES[key] = load_reference_solutions(task_id, model=model)
+        except (FileNotFoundError, OSError, ValueError):
+            _REF_CODES[key] = []
+    return _REF_CODES[key]
 
 
 def aggregate_by_condition(session_dicts: list[dict]) -> dict:
@@ -153,12 +212,16 @@ def aggregate_by_condition(session_dicts: list[dict]) -> dict:
             "avg_tokens": avg("tokens"),
             "avg_interventions": avg("n_interventions"),
             "n_stopped_by_token_ceiling": sum(1 for r in rows if r.get("stopped_by_token_ceiling")),
+            # RQ3 (exploratory): how much of the solver's output traces back to the learners
+            "avg_learner_uptake_final": avg("learner_uptake_final"),
+            "avg_learner_led_share": avg("learner_led_share"),
+            "avg_learner_novel_share": avg("learner_novel_share"),
         }
     return out
 
 
 def pooled_diversity(codes_by_task_cond: dict[tuple[str, str], list[str]], *,
-                     cluster_threshold=CLUSTER_THRESHOLD, seed: int = 0) -> dict:
+                     cluster_threshold=None, seed: int = 0, representation: str = "ast") -> dict:
     """Families per condition at a MATCHED number of solutions, per task.
 
     The per-session family count cannot compare tutor and studio: a tutor session writes one
@@ -174,19 +237,20 @@ def pooled_diversity(codes_by_task_cond: dict[tuple[str, str], list[str]], *,
     rng = np.random.default_rng(seed)
     per_task: dict[str, dict] = {}
     for task_id, conds in sorted(by_task.items()):
-        rows, owner = [], []
+        all_codes, owner = [], []
         for cond, codes in sorted(conds.items()):
             for c in codes:
-                try:
-                    rows.append(ast_features(normalise(c))); owner.append(cond)
-                except Exception:  # noqa: BLE001 - unparseable code has no features
-                    pass
-        if not rows:
+                all_codes.append(c); owner.append(cond)
+        X, keep = _embed(all_codes, representation)
+        if not keep:
             continue
-        X = np.vstack(rows)
-        Xc = StandardScaler().fit_transform(X) if len(X) >= 2 else X
-        labels = cluster_families(Xc, distance_threshold=cluster_threshold)
-        owner = np.array(owner)
+        owner = np.array([owner[i] for i in keep])
+        if representation == "ast":
+            Xc = StandardScaler().fit_transform(X) if len(X) >= 2 else X
+            labels = cluster_families(Xc, distance_threshold=CLUSTER_THRESHOLD if cluster_threshold is None
+                                      else cluster_threshold)
+        else:
+            labels, _ = _cluster(X, representation, cluster_threshold)
         counts = {c: int((owner == c).sum()) for c in sorted(set(owner))}
         m = min(counts.values())
         out = {"m": m, "n_by_condition": counts, "families_at_m": {}, "families_total": {}}
@@ -216,8 +280,35 @@ def _model_id(start: dict) -> str:
     return f"{h.get('model', '?')}@{h.get('revision', '')}"
 
 
+def trace_models(traces_dir="data/traces") -> dict[str, str]:
+    """{model@revision: timestamp of its newest trace} for every trace in a directory."""
+    out: dict[str, str] = {}
+    for p in Path(traces_dir).glob("*.jsonl"):
+        try:
+            with open(p, encoding="utf-8") as fh:
+                first = json.loads(fh.readline())
+        except (OSError, ValueError):
+            continue
+        if first.get("event") != "session_start":
+            continue
+        mid = _model_id(first)
+        out[mid] = max(out.get(mid, ""), str(first.get("ts", "")))
+    return out
+
+
+def resolve_model(traces_dir="data/traces", model: str | None = None) -> str | None:
+    """The model NAME an analysis will use: `model` (name or name@revision) if given, otherwise the
+    model of the most recent trace. None when there are no traces."""
+    if model:
+        return model.split("@", 1)[0]
+    models = trace_models(traces_dir)
+    if not models:
+        return None
+    return max(models.items(), key=lambda kv: kv[1])[0].split("@", 1)[0]
+
+
 def analyse_dir(traces_dir="data/traces", *, backend="subprocess", references=None, return_pooled=False,
-                include_legacy=False, model=None):
+                include_legacy=False, model=None, representation: str = "ast"):
     """Score + aggregate every trace in a directory. `references` maps task_id -> ReferenceStats.
 
     Traces whose task_id is no longer in the task bank are skipped with a printed note. Traces from
@@ -228,7 +319,7 @@ def analyse_dir(traces_dir="data/traces", *, backend="subprocess", references=No
     "name@revision"); when it is None and the directory holds traces from several models, only the
     model of the most recent trace is analysed and the others are reported as skipped.
     """
-    from macs.orchestrator import ORCHESTRATOR_VERSION
+    from macs.orchestrator import COMPATIBLE_SINCE
     refs = references or {}
     sessions, skipped, legacy, incomplete = [], [], [], []
     pooled_codes: dict[tuple[str, str], list[str]] = defaultdict(list)
@@ -252,7 +343,7 @@ def analyse_dir(traces_dir="data/traces", *, backend="subprocess", references=No
             continue
         # traces from an older orchestrator version are not comparable with current ones
         version = start.get("header", {}).get("orchestrator_version", "0.1.0")
-        if not include_legacy and _version_tuple(version) < _version_tuple(ORCHESTRATOR_VERSION):
+        if not include_legacy and _version_tuple(version) < _version_tuple(COMPATIBLE_SINCE):
             legacy.append(p.name)
             continue
         end = events[-1] if events and events[-1].get("event") == "session_end" else {}
@@ -260,7 +351,8 @@ def analyse_dir(traces_dir="data/traces", *, backend="subprocess", references=No
             incomplete.append(p.name)       # crashed mid-session (e.g. model server down)
             continue
         try:
-            sessions.append(session_metrics(p, backend=backend, reference=refs.get(start["task_id"])))
+            sessions.append(session_metrics(p, backend=backend, reference=refs.get(start["task_id"]),
+                                            representation=representation))
         except KeyError:
             skipped.append((p.name, start.get("task_id")))
             continue
@@ -277,9 +369,9 @@ def analyse_dir(traces_dir="data/traces", *, backend="subprocess", references=No
               f"never pooled; choose one with --model)")
     if legacy:
         print(f"[analyse] skipped {len(legacy)} trace(s) from an older orchestrator "
-              f"(< {ORCHESTRATOR_VERSION}); use --include-old to keep them")
+              f"(< {COMPATIBLE_SINCE}); use --include-old to keep them")
     summary = aggregate_by_condition(sessions)
-    pooled = pooled_diversity(pooled_codes)
+    pooled = pooled_diversity(pooled_codes, representation=representation)
     for cond, v in pooled["by_condition"].items():
         if cond in summary:
             summary[cond]["avg_families_matched"] = v["avg_families_at_matched_m"]

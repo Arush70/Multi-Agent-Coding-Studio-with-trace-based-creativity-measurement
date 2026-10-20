@@ -1,0 +1,32 @@
+# EvoEval problem EvoEval_creative/16 (from HumanEval/31). Source: Xia, C.S., Deng, Y. and Zhang, L. (2024), Top Leaderboard Ranking = Top Coding Proficiency, Always? EvoEval: Evolving Coding Benchmarks via LLM, COLM 2024, arXiv:2403.19114 (EvoEval_creative)
+# known_families are BLIND LABELS (strategies written before any model output); do not edit to match results.
+# Held-out tests come from the benchmark's own tests (expected values from the benchmark's canonical solution); only the scorer sees them.
+# Contamination check (pre-registered 2026-10-20): an EvoEval rewrite of a HumanEval problem, less likely to be memorised.
+id: t2_evoeval16_fibonacci_sum
+tier: 2
+source: EvoEval
+source_id: EvoEval_creative/16 (from HumanEval/31)
+citation: 'Xia, C.S., Deng, Y. and Zhang, L. (2024), Top Leaderboard Ranking = Top Coding Proficiency, Always? EvoEval: Evolving Coding Benchmarks via LLM, COLM 2024, arXiv:2403.19114 (EvoEval_creative)'
+task_set: contamination_check
+entry_point: fibonacci_sum
+prompt: "def fibonacci_sum(n):\n    \"\"\"\n    Given a positive integer n, return the sum of the first n numbers in the Fibonacci sequence.\n    The Fibonacci sequence is a series of numbers where a number is the sum of the two preceding ones, starting with 0 and 1.\n    \n    >>> fibonacci_sum(1)\n    0\n    >>> fibonacci_sum(2)\n    1\n    >>> fibonacci_sum(3)\n    2\n    >>> fibonacci_sum(10)\n    88\n    >>> fibonacci_sum(20)\n    10945\n    >>> fibonacci_sum(30)\n    1346268\n    \"\"\"\n\nComplete the function `fibonacci_sum`.\n"
+known_families:
+  - iterative_sum         # loop with two variables
+  - list_build            # build the list then sum
+  - closed_form_fib       # sum = F(n+1) - 1 identity
+  - recursion_memo        # recursion with memoisation
+public_tests:
+- assert fibonacci_sum(1) == 0
+heldout_tests:
+- assert fibonacci_sum(2) == 1
+- assert fibonacci_sum(3) == 2
+- assert fibonacci_sum(10) == 88
+- assert fibonacci_sum(20) == 10945
+- assert fibonacci_sum(30) == 1346268
+- assert fibonacci_sum(40) == 165580140
+- assert fibonacci_sum(50) == 20365011073
+- assert fibonacci_sum(60) == 2504730781960
+- assert fibonacci_sum(70) == 308061521170128
+- assert fibonacci_sum(80) == 37889062373143905
+- assert fibonacci_sum(90) == 4660046610375530308
+scoring: tests

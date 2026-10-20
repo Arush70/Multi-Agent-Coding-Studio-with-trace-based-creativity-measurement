@@ -13,13 +13,14 @@ from macs.llm.client import LLMClient
 from macs.tasks.bank import load_task
 from macs.orchestrator import SessionConfig, check_facilitator_dependencies, run_session
 from macs.trace.writer import validate_file, read_trace
+from macs import conditions as conds
 
 
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--task", required=True, help="path to a task dir, e.g. tasks/tier1/t1_two_sum")
-    ap.add_argument("--condition", default="A", choices=["A", "B", "C", "D", "D_minus"],
-                    help="A/C = Tutor (1/2 learners); B/D = Studio (1/2 learners); D_minus = Studio, Facilitator off")
+    ap.add_argument("--condition", default="A", choices=conds.ALL,
+                    help="; ".join(f"{c} = {v.description}" for c, v in conds.CONDITIONS.items()))
     ap.add_argument("--seed", type=int, default=1)
     ap.add_argument("--profile", default="local", help="model profile in config/models.yaml")
     ap.add_argument("--sandbox", default="subprocess", choices=["subprocess", "docker"],
@@ -31,7 +32,7 @@ def main() -> None:
         print("[note] sandbox=subprocess is DEVELOPMENT ONLY (no memory isolation). "
               "Use --sandbox docker for results you report.\n")
 
-    if args.condition in ("B", "D", "D_minus"):
+    if conds.get(args.condition).is_studio:
         problem = check_facilitator_dependencies()
         if problem:
             raise SystemExit(problem)
