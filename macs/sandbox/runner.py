@@ -14,6 +14,13 @@ so it never runs in the main process. Two backends:
 The harness runs as a child process with a timeout on every OS and additionally applies
 CPU/memory limits where the OS supports them (POSIX).
 
+Before the candidate's code, the harness runs `from typing import *`: HumanEval-style prompts
+import List, Tuple, ... in the prompt header, and models often leave that line out of their
+answer. Python up to 3.13 evaluates annotations when a function is defined, so without the
+prelude `def f(x: List[int])` fails there but works on 3.14, and the same code would be scored
+differently on different machines (found 2026-10-20). The prelude makes scoring identical
+everywhere, as in HumanEval's own evaluation, which runs prompt + completion.
+
 The harness never guesses: if the code cannot run (crash/timeout), the result carries an
 explicit error rather than a silent "0 passed" that could be mistaken for wrong code.
 """
@@ -25,11 +32,13 @@ from pathlib import Path
 
 HARNESS = r'''
 import json, sys, time, traceback
+PRELUDE = "from typing import *"
 src = open(sys.argv[1], encoding='utf-8').read()
 tests = json.load(open(sys.argv[2], encoding='utf-8'))
 results = []
 ns = {}
 try:
+    exec(PRELUDE, ns)
     exec(compile(src, "candidate.py", "exec"), ns)
     load_ok = True
 except Exception:
@@ -58,12 +67,14 @@ print("__MACS_RESULT__" + json.dumps(results))
 # same security boundary as everything else; only the harness differs.
 METRIC_HARNESS = r'''
 import json, sys, traceback
+PRELUDE = "from typing import *"
 src = open(sys.argv[1], encoding='utf-8').read()
 driver = open(sys.argv[2], encoding='utf-8').read()
 data = json.load(open(sys.argv[3], encoding='utf-8'))
 ns = {}
 out = {"ok": False}
 try:
+    exec(PRELUDE, ns)
     exec(compile(src, "candidate.py", "exec"), ns)      # defines the candidate's entry point
     ns["__data__"] = data                               # frozen instances the driver runs on
     exec(compile(driver, "driver.py", "exec"), ns)      # driver must set ns["__metric__"]
