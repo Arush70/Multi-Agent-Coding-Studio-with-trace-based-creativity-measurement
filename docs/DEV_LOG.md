@@ -26,10 +26,11 @@ change), role prompts 0.3.0, trace schema 0.2.0.
 | UniXcoder as the parallel representation (families and novelty), calibration in that space | Proposal: both representations, analysed separately | `macs/analysis/aggregate.py`, `scripts/analyze.py --representation`, `scripts/calibrate_clustering.py --representation` |
 | Mutation testing (AST mutator), quality-diversity frontier and Tier 3 payoff from per-proposal records | Test strength; does creativity pay off | `macs/analysis/mutation.py`, `scripts/mutation_test.py`, `scripts/frontier.py` |
 | Blind labelling: code shown without comments/docstrings; no pre-selected answer | The model's comments named the strategy and could unblind SC3 | `macs/ui/pipeline.py` (`blind_view`), `macs/ui/app.py` |
+| Scoring is the same on every Python version: the sandbox runs `from typing import *` before the candidate's code | Found by re-scoring the pilot under Python 3.10: 9 HumanEval/0 studio sessions lost correct proposals because `List` was undefined (Python up to 3.13 evaluates annotations eagerly; the laptop's 3.14 does not). HumanEval's own evaluation runs prompt + completion, so the import is in scope there too | `macs/sandbox/runner.py`, `tests/test_sandbox.py` |
 | Batch runner pauses after 3 failures in a row and stops after 6 (model server down) | A long run should not mark every remaining session as failed | `scripts/run_experiment.py` |
 | Dashboard: Rating study and Open problems tabs; models, frontier and mutation in Statistics; reference sensitivity; plain-language conclusion; UniXcoder view; example outputs in Traces; several models in Multi-run | Everything stays runnable from the browser | `macs/ui/app.py`, `macs/ui/extra_tabs.py` |
 
-Tests: 123 passing (was 91). The dashboard renders all ten tabs headless (Streamlit AppTest).
+Tests: 124 passing (was 91). The dashboard renders all ten tabs headless (Streamlit AppTest).
 
 ## 2026-10-16 (Week 4) - the whole pipeline in the dashboard
 

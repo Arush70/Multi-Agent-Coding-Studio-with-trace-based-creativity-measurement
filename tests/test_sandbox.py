@@ -35,3 +35,11 @@ def test_as_trace_fields_shape():
     r = run(GOOD, ["assert two_sum([2,7,11,15],9)==[0,1]"], backend="subprocess")
     fields = r.as_trace_fields("public")
     assert set(fields) == {"code_hash", "tests_passed", "tests_failed", "test_set", "runtime_s"}
+
+
+def test_typing_names_are_available_on_every_python_version():
+    # HumanEval prompts import List in the header; a model's answer often omits it. Python < 3.14
+    # evaluates annotations eagerly, so this would fail there without the harness prelude.
+    code = "def f(xs: List[int]) -> Optional[int]:\n    return max(xs) if xs else None\n"
+    r = run(code, ["assert f([1, 3, 2]) == 3", "assert f([]) is None"], backend="subprocess")
+    assert r.tests_passed == 2 and r.tests_failed == 0
