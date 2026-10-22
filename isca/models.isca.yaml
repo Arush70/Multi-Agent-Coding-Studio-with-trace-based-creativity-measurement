@@ -1,0 +1,39 @@
+# Model profiles for ISCA (University of Exeter HPC). isca/setup.sh copies this to
+# config/models.yaml and fills in each revision from `ollama list`. No keys are stored here.
+# OLLAMA_HOST is set by the job script, so every job talks to its own Ollama server.
+
+default_profile: qwen35_27b
+
+profiles:
+  qwen35_27b:                 # main model by the 15 Oct 2026 decision rule (GPU available by 26 Oct)
+    base_url: http://${OLLAMA_HOST}/v1
+    api_key: ollama
+    model: qwen3.5:27b
+    revision: ""
+    quantisation: q4_K_M
+    temperature: 0.7
+    max_tokens: 2048
+    extra_body: {reasoning_effort: none}
+
+  gpt_oss_20b:                # optional cross-model panel member
+    base_url: http://${OLLAMA_HOST}/v1
+    api_key: ollama
+    model: gpt-oss:20b
+    revision: ""
+    quantisation: mxfp4
+    temperature: 0.7
+    max_tokens: 4096
+    extra_body: {reasoning_effort: low}
+
+  local:                      # same 9B model as the laptop (only if you want it on ISCA too)
+    base_url: http://${OLLAMA_HOST}/v1
+    api_key: ollama
+    model: qwen3.5:9b
+    revision: "56671c2ab938"
+    quantisation: q4_K_M
+    temperature: 0.7
+    max_tokens: 2048
+    extra_body: {reasoning_effort: none}
+
+seed: 20260921
+cache_dir: data/cache
