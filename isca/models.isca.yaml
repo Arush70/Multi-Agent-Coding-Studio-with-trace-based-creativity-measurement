@@ -15,6 +15,18 @@ profiles:
     max_tokens: 2048
     extra_body: {reasoning_effort: none}
 
+  qwen35_122b:                # Qwen3.5-122B-A10B (MoE, 10B active; Apache 2.0): the largest Qwen3.5
+                              # that fits one ISCA node (about 70 GB at 4-bit, run on both A100s).
+                              # Scale point added on 22 Oct 2026 before any 27B results; reduced design.
+    base_url: http://${OLLAMA_HOST}/v1
+    api_key: ollama
+    model: qwen3.5:122b
+    revision: ""
+    quantisation: q4_K_M
+    temperature: 0.7
+    max_tokens: 2048
+    extra_body: {reasoning_effort: none}
+
   gpt_oss_20b:                # optional cross-model panel member
     base_url: http://${OLLAMA_HOST}/v1
     api_key: ollama

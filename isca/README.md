@@ -73,6 +73,15 @@ When the log says `all done`, on the laptop in PowerShell, inside the project fo
 
 The traces carry the model name, so the dashboard and the analysis keep 27B and 9B apart.
 
+## Bigger model: Qwen3.5-122B-A10B (scale check)
+
+The largest Qwen3.5 that fits one ISCA node (about 70 GB at 4-bit, so it uses both A100s on the
+node). It runs the reduced design, so the study has 9B, 27B and 122B from one model family.
+Download it during setup by running `MACS_MODELS="qwen3.5:27b qwen3.5:122b" bash isca/setup.sh`
+(allow 3 hours for the srun job), then, after the 27B job has started:
+
+    PROFILE=qwen35_122b TASKS=main CONDITIONS=A,B,C,D,D_minus,E,E_minus SEEDS=1-3 sbatch --gres=gpu:2 --mem=128G isca/run_model.sbatch
+
 ## Optional: more models on the GPU
 
 gpt-oss-20b for the cross-model panel (reduced design):
