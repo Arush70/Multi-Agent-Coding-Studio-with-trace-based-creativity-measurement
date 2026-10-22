@@ -82,6 +82,23 @@ Download it during setup by running `MACS_MODELS="qwen3.5:27b qwen3.5:122b" bash
 
     PROFILE=qwen35_122b TASKS=main CONDITIONS=A,B,C,D,D_minus,E,E_minus SEEDS=1-3 sbatch --gres=gpu:2 --mem=128G isca/run_model.sbatch
 
+## Large models from other families (cross-model panel)
+
+gpt-oss 120B (OpenAI), Llama 4 Scout 109B (Meta) and Gemma 4 31B (Google). Download them with a
+second setup run (inside an srun job, as in step 3; installed parts are skipped):
+
+    MACS_MODELS="qwen3.5:27b qwen3.5:122b gpt-oss:120b llama4:16x17b gemma4:31b" bash isca/setup.sh
+
+Then submit one job per model (reduced design):
+
+    D="TASKS=main CONDITIONS=A,B,C,D,D_minus,E,E_minus SEEDS=1-3"
+    env $D PROFILE=gpt_oss_120b sbatch isca/run_model.sbatch
+    env $D PROFILE=llama4_scout sbatch --gres=gpu:2 --mem=128G isca/run_model.sbatch
+    env $D PROFILE=gemma4_31b   sbatch isca/run_model.sbatch
+
+DeepSeek is not in the panel: it is the independent AI judge in the rating study, and its full
+models (about 400 GB) do not fit an ISCA node.
+
 ## Optional: more models on the GPU
 
 gpt-oss-20b for the cross-model panel (reduced design):

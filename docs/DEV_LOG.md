@@ -7,6 +7,19 @@ what changed, why, and which files. Pre-registration changes are also logged, da
 
 ---
 
+## 2026-10-22 (Week 5) - University GPU (ISCA): 27B becomes the main model
+
+- ISCA access arrived (A100 80 GB, account COMM514). By the 15 Oct decision rule the main model
+  is now Qwen3.5-27B; the laptop's full 9B run continues and is reported as a second model.
+- `isca/setup.sh` installs Miniforge, Ollama, the models and UniXcoder in `~/macs-tools` and
+  writes `config/models.yaml` with revisions pinned from `ollama list`.
+- `isca/run_model.sbatch` runs one model on a full A100: per task it builds the 100 references,
+  then the sessions, 6 at a time against one Ollama server (context 4096, as on the laptop). It
+  resumes after the 24 h limit through a queued follow-up job, then runs the open-problem search
+  and packs the results for download.
+- Panel extended with large open models: Qwen3.5-122B-A10B, gpt-oss-120b, Llama 4 Scout,
+  Gemma 4 31B (reduced design). Recorded in PREREGISTRATION before any main-run analysis.
+
 ## 2026-10-20 (Week 5) - extended design: new conditions, models, tasks, rating study, open problems
 
 Everything below is pre-registered (PREREGISTRATION, 2026-10-20) before any session in the new

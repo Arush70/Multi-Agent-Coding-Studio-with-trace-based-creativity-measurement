@@ -270,5 +270,17 @@ and never edited to match results.
      (Spearman's rho between novelty and heuristic score) from per-proposal records.
   Orchestrator 0.3.0 (0.2.3 traces remain comparable: the core conditions are unchanged), role
   prompts 0.3.0, trace schema 0.2.0 (condition enum extended). Details: `docs/DEV_LOG.md`.
+- _2026-10-22_ — **University GPU available: decision rule of 2026-10-15 applied (recorded before
+  any main-run output was analysed; the 9B main run on the laptop was in progress).** ISCA access
+  (A100 80 GB, account COMM514) arrived on 22 October, before the 26 October cut-off, so the main
+  model is Qwen3.5-27B (`qwen3.5:27b`, revision pinned from `ollama list` on ISCA), with reference
+  sets and tau rebuilt on it and `CLUSTER_THRESHOLD` re-checked on a subset. The full 9B run
+  (all conditions, 6 seeds) is kept and reported as a second full-design model, never pooled.
+  Cross-model panel (reduced design: core conditions plus D_minus, E, E_minus; 24 main tasks;
+  3 seeds) extended to large open models that fit one ISCA node: Qwen3.5-122B-A10B (scale point
+  within the main family), gpt-oss-120b (replaces gpt-oss-20b), Llama 4 Scout 109B-A17B and
+  Gemma 4 31B, alongside the laptop panel (Llama 3.1 8B, Gemma 3 12B, Granite 4.2 8B). DeepSeek
+  stays reserved for the AI judge. ISCA runs use Ollama with the laptop's 4096-token context and
+  up to 6 concurrent sessions per server. Scripts: `isca/`.
 - _…_ — **[fill after SC3]** `CLUSTER_THRESHOLD` frozen at __ (mean ARI __; N labelled proposals
   over __ tasks). Table:
