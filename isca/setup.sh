@@ -26,7 +26,7 @@ fi
 source "$PREFIX/miniforge3/etc/profile.d/conda.sh"
 conda env list | grep -q "^macs " || conda create -y -n macs python=3.12 zstd
 conda activate macs
-pip install -q -e ".[dev,embed]"          # torch from PyPI already includes CUDA for the A100
+pip install -q -e ".[dev,embed]" python-docx openpyxl   # torch from PyPI includes CUDA for the A100
 
 echo "== 2/5 Ollama =="
 if [ ! -x "$PREFIX/ollama/bin/ollama" ]; then
@@ -56,7 +56,6 @@ export HF_HOME="$PREFIX/hf"
 python -c "from transformers import AutoModel, AutoTokenizer; n='microsoft/unixcoder-base'; AutoTokenizer.from_pretrained(n); AutoModel.from_pretrained(n); print('UniXcoder ready')"
 
 echo "== 5/5 config/models.yaml with pinned revisions =="
-cp isca/models.isca.yaml config/models.yaml   # rebuilt each time; revisions come from ollama list
 python - "$PREFIX/ollama-list.txt" <<'PY'
 import re, sys
 ids = {}
@@ -64,8 +63,9 @@ for line in open(sys.argv[1]).read().splitlines()[1:]:
     parts = line.split()
     if len(parts) >= 2:
         ids[parts[0]] = parts[1][:12]
-path = "config/models.yaml"
-text = open(path).read()
+import os
+path = "config/models.yaml"          # rebuilt from the template; revisions from ollama list
+text = open("isca/models.isca.yaml").read()
 out, model = [], None
 for line in text.splitlines():
     m = re.match(r"\s+model:\s*(\S+)", line)
@@ -76,7 +76,8 @@ for line in text.splitlines():
         line = f'{r.group(1)}"{ids[model]}"'
         print(f"pinned {model} -> {ids[model]}")
     out.append(line)
-open(path, "w").write("\n".join(out) + "\n")
+open(path + ".tmp", "w").write("\n".join(out) + "\n")
+os.replace(path + ".tmp", path)   # atomic: running jobs never see a half-written file
 PY
 
 python -m pytest -q -x || echo "(some tests failed; send the output to Claude before submitting jobs)"
