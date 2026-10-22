@@ -56,7 +56,7 @@ export HF_HOME="$PREFIX/hf"
 python -c "from transformers import AutoModel, AutoTokenizer; n='microsoft/unixcoder-base'; AutoTokenizer.from_pretrained(n); AutoModel.from_pretrained(n); print('UniXcoder ready')"
 
 echo "== 5/5 config/models.yaml with pinned revisions =="
-[ -f config/models.yaml ] || cp isca/models.isca.yaml config/models.yaml
+cp isca/models.isca.yaml config/models.yaml   # rebuilt each time; revisions come from ollama list
 python - "$PREFIX/ollama-list.txt" <<'PY'
 import re, sys
 ids = {}

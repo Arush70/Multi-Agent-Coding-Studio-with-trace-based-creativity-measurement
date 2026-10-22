@@ -27,6 +27,35 @@ profiles:
     max_tokens: 2048
     extra_body: {reasoning_effort: none}
 
+  # ---- large open models from other families (cross-model panel on ISCA, added 22 Oct 2026) ----
+  gpt_oss_120b:               # OpenAI gpt-oss 120B (MoE; Apache 2.0); about 65 GB, one A100
+    base_url: http://${OLLAMA_HOST}/v1
+    api_key: ollama
+    model: gpt-oss:120b
+    revision: ""
+    quantisation: mxfp4
+    temperature: 0.7
+    max_tokens: 4096
+    extra_body: {reasoning_effort: low}
+
+  llama4_scout:               # Meta Llama 4 Scout 109B (16 experts, 17B active); about 67 GB, both A100s
+    base_url: http://${OLLAMA_HOST}/v1
+    api_key: ollama
+    model: llama4:16x17b
+    revision: ""
+    quantisation: q4_K_M
+    temperature: 0.7
+    max_tokens: 2048
+
+  gemma4_31b:                 # Google Gemma 4 31B (dense); about 20 GB, one A100
+    base_url: http://${OLLAMA_HOST}/v1
+    api_key: ollama
+    model: gemma4:31b
+    revision: ""
+    quantisation: q4_K_M
+    temperature: 0.7
+    max_tokens: 2048
+
   gpt_oss_20b:                # optional cross-model panel member
     base_url: http://${OLLAMA_HOST}/v1
     api_key: ollama
