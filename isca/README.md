@@ -105,6 +105,15 @@ Then submit one job per model (reduced design):
 DeepSeek is not in the panel: it is the independent AI judge in the rating study, and its full
 models (about 400 GB) do not fit an ISCA node.
 
+## Small open models (cross-model panel)
+
+Llama 3.1 8B, Gemma 3 12B and Granite 4.2 8B. A job downloads its model if it is missing:
+
+    D="TASKS=main CONDITIONS=A,B,C,D,D_minus,E,E_minus SEEDS=1-3"
+    env $D PROFILE=llama31_8b   sbatch isca/run_model.sbatch
+    env $D PROFILE=gemma3_12b   sbatch isca/run_model.sbatch
+    env $D PROFILE=granite42_8b sbatch isca/run_model.sbatch
+
 ## Optional: more models on the GPU
 
 gpt-oss-20b for the cross-model panel (reduced design):

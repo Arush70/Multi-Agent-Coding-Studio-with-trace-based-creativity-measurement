@@ -62,6 +62,10 @@ fi
 SERVER=$!
 trap 'kill $SERVER 2>/dev/null || true' EXIT
 for _ in $(seq 90); do curl -sf "http://$OLLAMA_HOST/api/version" >/dev/null && break; sleep 2; done
+# download this profile's model if it is not there yet, then pin every revision in the config
+MODEL=$(python isca/pin_revisions.py --profile-model "$PROFILE")
+"$OLLAMA" list | awk 'NR > 1 {print $1}' | grep -qx "$MODEL" || "$OLLAMA" pull "$MODEL"
+OLLAMA="$OLLAMA" python isca/pin_revisions.py
 "$OLLAMA" list
 
 # work units: (task, seed), the slow tier-3 tasks first so no worker is left with them at the end

@@ -68,6 +68,34 @@ profiles:
     context_length: 16384         # reasoning plus answer can pass 8192
     extra_body: {reasoning_effort: low}
 
+  # ---- small open models (cross-model panel; moved from the laptop to ISCA on 23 Oct 2026) ----
+  llama31_8b:                 # Meta Llama 3.1 8B (Llama 3.1 community licence)
+    base_url: http://${OLLAMA_HOST}/v1
+    api_key: ollama
+    model: llama3.1:8b
+    revision: ""
+    quantisation: q4_K_M
+    temperature: 0.7
+    max_tokens: 2048
+
+  gemma3_12b:                 # Google Gemma 3 12B (Gemma terms of use)
+    base_url: http://${OLLAMA_HOST}/v1
+    api_key: ollama
+    model: gemma3:12b
+    revision: ""
+    quantisation: q4_K_M
+    temperature: 0.7
+    max_tokens: 2048
+
+  granite42_8b:               # IBM Granite 4.2 8B (Apache 2.0)
+    base_url: http://${OLLAMA_HOST}/v1
+    api_key: ollama
+    model: granite4.2:8b
+    revision: ""
+    quantisation: q4_K_M
+    temperature: 0.7
+    max_tokens: 2048
+
   local:                      # same 9B model as the laptop (only if you want it on ISCA too)
     base_url: http://${OLLAMA_HOST}/v1
     api_key: ollama
