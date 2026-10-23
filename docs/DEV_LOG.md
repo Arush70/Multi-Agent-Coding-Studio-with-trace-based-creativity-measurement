@@ -21,6 +21,9 @@ what changed, why, and which files. Pre-registration changes are also logged, da
   jobs run with 16384.
 - `scripts/archive_traces.py` moves traces older than `COMPATIBLE_SINCE` (now 0.4.0) and their
   results into `data/archive/<name>/`. Trace schema 0.3.0 (C4, D4, learner_3..6). 129 tests pass.
+- The small panel (Llama 3.1 8B, Gemma 3 12B, Granite 4.2 8B) moved from the laptop to ISCA:
+  about a day of laptop time each, a few hours on an A100. Jobs now download a missing model
+  themselves and pin every revision (`isca/pin_revisions.py`). Same design and settings as before.
 
 ## 2026-10-22 (Week 5) - University GPU (ISCA): 27B becomes the main model
 

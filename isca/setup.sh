@@ -56,29 +56,7 @@ export HF_HOME="$PREFIX/hf"
 python -c "from transformers import AutoModel, AutoTokenizer; n='microsoft/unixcoder-base'; AutoTokenizer.from_pretrained(n); AutoModel.from_pretrained(n); print('UniXcoder ready')"
 
 echo "== 5/5 config/models.yaml with pinned revisions =="
-python - "$PREFIX/ollama-list.txt" <<'PY'
-import re, sys
-ids = {}
-for line in open(sys.argv[1]).read().splitlines()[1:]:
-    parts = line.split()
-    if len(parts) >= 2:
-        ids[parts[0]] = parts[1][:12]
-import os
-path = "config/models.yaml"          # rebuilt from the template; revisions from ollama list
-text = open("isca/models.isca.yaml").read()
-out, model = [], None
-for line in text.splitlines():
-    m = re.match(r"\s+model:\s*(\S+)", line)
-    if m:
-        model = m.group(1)
-    r = re.match(r'(\s+revision:\s*)""', line)
-    if r and model in ids:
-        line = f'{r.group(1)}"{ids[model]}"'
-        print(f"pinned {model} -> {ids[model]}")
-    out.append(line)
-open(path + ".tmp", "w").write("\n".join(out) + "\n")
-os.replace(path + ".tmp", path)   # atomic: running jobs never see a half-written file
-PY
+OLLAMA="$OLLAMA" python isca/pin_revisions.py
 
 python -m pytest -q -x || echo "(some tests failed; send the output to Claude before submitting jobs)"
 echo
