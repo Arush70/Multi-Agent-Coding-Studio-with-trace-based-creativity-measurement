@@ -30,6 +30,10 @@ what changed, why, and which files. Pre-registration changes are also logged, da
   several jobs started together. Jobs now copy Ollama to node-local disk, check the server log
   for `library=CUDA`, restart it up to three times, and stop rather than run on the CPU. The six
   jobs were cancelled; their references (partly built on the CPU) are archived and rebuilt.
+- Root cause from the Ollama log: "llama-server GPU discovery watchdog timed out" (30 s). The A100s
+  run with persistence mode off, so waking an idle GPU can take longer than that. Jobs now start a
+  small torch helper that initialises CUDA and holds a context for the job's lifetime before
+  Ollama starts, and Vulkan discovery is off.
 
 ## 2026-10-22 (Week 5) - University GPU (ISCA): 27B becomes the main model
 
