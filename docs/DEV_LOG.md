@@ -24,6 +24,12 @@ what changed, why, and which files. Pre-registration changes are also logged, da
 - The small panel (Llama 3.1 8B, Gemma 3 12B, Granite 4.2 8B) moved from the laptop to ISCA:
   about a day of laptop time each, a few hours on an A100. Jobs now download a missing model
   themselves and pin every revision (`isca/pin_revisions.py`). Same design and settings as before.
+- Six ISCA jobs (122B, Llama 4, Gemma 4, Llama 3.1, Gemma 3, Granite) started with Ollama on the
+  CPU (`library=cpu`, GPU idle) and timed out; 27B, 9B and gpt-oss found the GPU. Likely cause:
+  Ollama's GPU discovery timing out while loading its CUDA libraries from shared storage when
+  several jobs started together. Jobs now copy Ollama to node-local disk, check the server log
+  for `library=CUDA`, restart it up to three times, and stop rather than run on the CPU. The six
+  jobs were cancelled; their references (partly built on the CPU) are archived and rebuilt.
 
 ## 2026-10-22 (Week 5) - University GPU (ISCA): 27B becomes the main model
 

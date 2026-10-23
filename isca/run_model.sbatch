@@ -38,7 +38,7 @@ export PYTHONUNBUFFERED=1 HF_HOME="$PREFIX/hf" HF_HUB_OFFLINE=1 TRANSFORMERS_OFF
 export OLLAMA_MODELS="$PREFIX/models" OLLAMA_HOST="127.0.0.1:$((11500 + SLURM_JOB_ID % 400))"
 export OLLAMA_NUM_PARALLEL=$WORKERS OLLAMA_KEEP_ALIVE=-1 OLLAMA_MAX_LOADED_MODELS=1
 export OLLAMA_CONTEXT_LENGTH=16384             # at least every profile's context_length (checked by run_experiment)
-OLLAMA="$PREFIX/ollama/bin/ollama"
+OLLAMA="$PREFIX/ollama/bin/ollama"     # replaced by a node-local copy below
 echo "== job $SLURM_JOB_ID on $(hostname) $(date) profile=$PROFILE tasks=$TASKS conditions=$CONDITIONS seeds=$SEEDS workers=$WORKERS"
 nvidia-smi --query-gpu=name,memory.total --format=csv,noheader
 
@@ -58,10 +58,29 @@ if [ "$RESUBMIT" -gt 0 ]; then
     isca/run_model.sbatch
 fi
 
-"$OLLAMA" serve > "data/jobs/ollama-$SLURM_JOB_ID.log" 2>&1 &
-SERVER=$!
-trap 'kill $SERVER 2>/dev/null || true' EXIT
-for _ in $(seq 90); do curl -sf "http://$OLLAMA_HOST/api/version" >/dev/null && break; sleep 2; done
+# Ollama is copied to the node's local disk first: loading its GPU libraries from the shared
+# home storage can be slow enough that Ollama gives up on the GPU and silently runs on the CPU.
+LOCAL=${TMPDIR:-/tmp}/ollama-$SLURM_JOB_ID
+mkdir -p "$LOCAL" && cp -r "$PREFIX/ollama/." "$LOCAL/" && OLLAMA="$LOCAL/bin/ollama"
+SERVER=""
+trap 'kill $SERVER 2>/dev/null || true; rm -rf "$LOCAL"' EXIT
+for attempt in 1 2 3; do
+  "$OLLAMA" serve > "data/jobs/ollama-$SLURM_JOB_ID.log" 2>&1 &
+  SERVER=$!
+  for _ in $(seq 90); do curl -sf "http://$OLLAMA_HOST/api/version" >/dev/null && break; sleep 2; done
+  sleep 5
+  if grep -q 'inference compute.*library=CUDA' "data/jobs/ollama-$SLURM_JOB_ID.log"; then
+    echo "GPU found by Ollama (attempt $attempt)"; break
+  fi
+  echo "Ollama did not find the GPU (attempt $attempt); restarting it"
+  kill $SERVER 2>/dev/null; wait $SERVER 2>/dev/null; SERVER=""; sleep 20
+done
+if [ -z "$SERVER" ]; then
+  echo "Ollama could not use the GPU after 3 attempts; stopping instead of running on the CPU."
+  nvidia-smi
+  exit 1
+fi
+
 # download this profile's model if it is not there yet, then pin every revision in the config
 MODEL=$(python isca/pin_revisions.py --profile-model "$PROFILE")
 "$OLLAMA" list | awk 'NR > 1 {print $1}' | grep -qx "$MODEL" || "$OLLAMA" pull "$MODEL"
