@@ -62,8 +62,25 @@ fi
 # home storage can be slow enough that Ollama gives up on the GPU and silently runs on the CPU.
 LOCAL=${TMPDIR:-/tmp}/ollama-$SLURM_JOB_ID
 mkdir -p "$LOCAL" && cp -r "$PREFIX/ollama/." "$LOCAL/" && OLLAMA="$LOCAL/bin/ollama"
+# The GPUs run with persistence mode off, so an idle GPU's driver state is unloaded and waking it
+# can take longer than Ollama's 30-second GPU discovery watchdog; Ollama then falls back to the
+# CPU. A small helper wakes the GPU first and keeps a CUDA context open for the whole job
+# (about 0.5 GB of GPU memory), so discovery always finds a GPU that is already awake.
+python - > "data/jobs/gpu-keeper-$SLURM_JOB_ID.log" 2>&1 <<'PY' &
+import time, torch
+t = time.time()
+for i in range(torch.cuda.device_count()):
+    torch.zeros(1, device=f"cuda:{i}")
+print(f"GPU awake: {torch.cuda.device_count()} device(s) in {time.time() - t:.1f} s", flush=True)
+while True:
+    time.sleep(3600)
+PY
+KEEPER=$!
+for _ in $(seq 120); do grep -q "GPU awake" "data/jobs/gpu-keeper-$SLURM_JOB_ID.log" 2>/dev/null && break; sleep 2; done
+cat "data/jobs/gpu-keeper-$SLURM_JOB_ID.log"
+export OLLAMA_VULKAN=false                   # CUDA only: do not spend discovery time on Vulkan
 SERVER=""
-trap 'kill $SERVER 2>/dev/null || true; rm -rf "$LOCAL"' EXIT
+trap 'kill $SERVER $KEEPER 2>/dev/null || true; rm -rf "$LOCAL"' EXIT
 for attempt in 1 2 3; do
   "$OLLAMA" serve > "data/jobs/ollama-$SLURM_JOB_ID.log" 2>&1 &
   SERVER=$!
