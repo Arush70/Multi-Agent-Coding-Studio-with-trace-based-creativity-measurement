@@ -29,7 +29,8 @@ SCHEMA_PATH = Path(__file__).with_name("schema.json")
 # schema-v0.1.0; any later schema change is a deliberate, versioned amendment.
 # 0.2.0 (2026-10-20): conditions E, E_minus, S and P added to the condition enum (additive; every
 # 0.1.0 trace is still valid).
-SCHEMA_VERSION = "0.2.0"
+# 0.3.0 (2026-10-23): conditions C4 and D4 and roles learner_3 to learner_6 (up to six learners).
+SCHEMA_VERSION = "0.3.0"
 
 _SCHEMA = json.loads(SCHEMA_PATH.read_text(encoding="utf-8"))
 _VALIDATOR = jsonschema.Draft202012Validator(_SCHEMA)

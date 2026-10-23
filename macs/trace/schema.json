@@ -8,12 +8,12 @@
   "properties": {
     "session_id": {"type": "string"},
     "task_id": {"type": "string"},
-    "condition": {"type": "string", "enum": ["A", "B", "C", "D", "D_minus", "E", "E_minus", "S", "P", "REF"]},
+    "condition": {"type": "string", "enum": ["A", "B", "C", "D", "D_minus", "E", "E_minus", "S", "P", "C4", "D4", "REF"]},
     "seq": {"type": "integer", "minimum": 0, "description": "Monotonic counter within a session; the analysis relies on event order"},
     "ts": {"type": "string", "format": "date-time"},
     "role": {
       "type": "string",
-      "enum": ["system", "learner_1", "learner_2", "tutor", "innovator", "engineer", "critic", "verifier", "facilitator"]
+      "enum": ["system", "learner_1", "learner_2", "learner_3", "learner_4", "learner_5", "learner_6", "tutor", "innovator", "engineer", "critic", "verifier", "facilitator"]
     },
     "event": {
       "type": "string",

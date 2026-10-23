@@ -36,6 +36,7 @@ profiles:
     quantisation: mxfp4
     temperature: 0.7
     max_tokens: 4096
+    context_length: 16384         # reasoning plus answer can pass 8192
     extra_body: {reasoning_effort: low}
 
   llama4_scout:               # Meta Llama 4 Scout 109B (16 experts, 17B active); about 67 GB, both A100s
@@ -64,13 +65,14 @@ profiles:
     quantisation: mxfp4
     temperature: 0.7
     max_tokens: 4096
+    context_length: 16384         # reasoning plus answer can pass 8192
     extra_body: {reasoning_effort: low}
 
   local:                      # same 9B model as the laptop (only if you want it on ISCA too)
     base_url: http://${OLLAMA_HOST}/v1
     api_key: ollama
     model: qwen3.5:9b
-    revision: "56671c2ab938"
+    revision: ""
     quantisation: q4_K_M
     temperature: 0.7
     max_tokens: 2048

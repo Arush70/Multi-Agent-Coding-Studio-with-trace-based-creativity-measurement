@@ -102,7 +102,7 @@ def main() -> None:
 
     n_tasks = len({r["task_id"] for r in sessions})
     print(f"S8 planned contrasts  ({n_tasks} task(s); {len(sessions)} sessions; "
-          f"model: outcome ~ studio * two_learners + (1 | task), REML)\n")
+          f"model: outcome ~ studio * six_learners + (1 | task), REML)\n")
     W = 56
     head = f"{'contrast':<{W}}{'estimate':>10}{'95% CI':>22}{'p':>9}{'p (Holm)':>10}"
     n_est = sum(1 for c in primary if c is not None)

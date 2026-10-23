@@ -118,7 +118,7 @@ def test_D_minus_disables_facilitator(tmp_path):
     assert validate_file(path) == []
     assert not any(e["event"] == "intervention" for e in _events(path))
     roles = [e["role"] for e in _events(path)]
-    assert "learner_2" in roles                     # D_minus is a two-learner condition
+    assert "learner_2" in roles                     # D_minus is a six-learner condition
 
 
 # --- learners, critique and revision inputs, tau fallback, header ----------------------------
@@ -143,7 +143,7 @@ def test_learner_turns_reach_the_tutor(tmp_path):
     c = RecordingClient()
     run_session(load_task(TASK), SessionConfig("C", seed=1, sandbox_backend="subprocess"), c, out_dir=tmp_path)
     tutor_prompt = _user_prompts(c, "programming tutor")[0]
-    assert tutor_prompt.count("LEARNER-IDEA-") == 2          # both learners' turns are shown
+    assert tutor_prompt.count("LEARNER-IDEA-") == 6          # all six learners' turns are shown
     second_learner = [m[1]["content"] for m in c.seen if "learner in an introductory" in m[0]["content"]][1]
     assert "LEARNER-IDEA-" in second_learner                  # learner 2 sees learner 1
 
@@ -184,7 +184,7 @@ def test_header_records_tau_and_learners(tmp_path):
     path = run_session(load_task(TASK), SessionConfig("D", seed=1, sandbox_backend="subprocess", tau=0.5),
                        VariedClient(), out_dir=tmp_path)
     h = next(e for e in _events(path) if e["event"] == "session_start")["header"]
-    assert h["tau"] == 0.5 and h["tau_source"] == "override" and h["n_learners"] == 2
+    assert h["tau"] == 0.5 and h["tau_source"] == "override" and h["n_learners"] == 6
     assert h["max_revision_rounds"] == 3 and h["orchestrator_version"] == orchestrator.ORCHESTRATOR_VERSION
     assert h["tau_rule"] == orchestrator.TAU_RULE
 

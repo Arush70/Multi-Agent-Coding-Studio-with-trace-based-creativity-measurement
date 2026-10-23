@@ -282,5 +282,22 @@ and never edited to match results.
   Gemma 4 31B, alongside the laptop panel (Llama 3.1 8B, Gemma 3 12B, Granite 4.2 8B). DeepSeek
   stays reserved for the AI judge. ISCA runs use Ollama with the laptop's 4096-token context and
   up to 6 concurrent sessions per server. Scripts: `isca/`.
+- _2026-10-23_ — **Learner levels 1 vs 6, and an 8192-token context (amendment, before any
+  analysis of a run under this design).** (i) The learner factor's second level changes from 2
+  to 6 simulated learners, so it is a real group: C, D, D_minus, E, E_minus, S and P now have 6
+  learners (each of the six personas once, order rotated by seed; each learner sees all earlier
+  turns). Two conditions are added for a learner curve: C4 (4 learners + Tutor) and D4 (4
+  learners + Studio, Facilitator on). Primary contrasts are unchanged in form (B - A and D - C
+  are now studio vs tutor at 1 and 6 learners). Secondary: D4 - C4, and the change per extra
+  learner fitted over A, C4, C (tutor) and B, D4, D (studio), each with task as a random
+  intercept. (ii) The 9B run under the previous design showed that Ollama's default 4096-token
+  context cut some Critic prompts short (B 50/180, D 55/182, D_minus 54/181, E 11/162, E_minus
+  10/162 sessions had a call at or above 4096 tokens). From orchestrator 0.4.0 the server must
+  give at least 8192 tokens (16384 on ISCA); `run_experiment.py` checks this before a run, the
+  value is in every trace header and in the response-cache key. (iii) All traces from earlier
+  versions, including the complete 2-learner 9B run, are moved to
+  `data/archive/2026-10-23_two_learner_ctx4096/` and reported only as a pilot. Every model,
+  9B included, is run again under this design. Orchestrator 0.4.0 (comparable only with
+  itself), trace schema 0.3.0.
 - _…_ — **[fill after SC3]** `CLUSTER_THRESHOLD` frozen at __ (mean ARI __; N labelled proposals
   over __ tasks). Table:

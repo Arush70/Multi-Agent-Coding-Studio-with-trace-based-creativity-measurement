@@ -53,7 +53,8 @@ def test_planned_contrasts_and_confidence_interval_coverage():
     hits = 0
     for seed in range(100):
         cs = {c.label: c for c in planned_contrasts(_simulate(seed, n_tasks=8, reps=3), "y")}
-        assert set(cs) == {"y: B - A", "y: D - C", "y: D - D_minus", "y: interaction (D - C) - (B - A)"}
+        assert set(cs) == {"y: B - A", "y: D - C", "y: D - D_minus", "y: interaction (D - C) - (B - A)",
+                           "y: per extra learner (tutor: A, C4, C)", "y: per extra learner (studio: B, D4, D)"}
         c = cs["y: D - C"]                                  # truth 0.5 + 0.3 = 0.8
         hits += c.ci_low <= 0.8 <= c.ci_high
     assert 88 <= hits <= 100                                 # nominal 95%
@@ -120,7 +121,7 @@ def _simulate_extended(seed=0, n_tasks=16, reps=4, noise_sd=1.0):
     """Core cells plus E, E_minus, S and P with known differences from D."""
     rng = np.random.default_rng(seed)
     truth = {"A": 0.0, "B": 1.0, "C": 0.0, "D": 1.2, "D_minus": 1.0, "E": 0.7, "E_minus": 0.2,
-             "S": 0.6, "P": 0.9}
+             "S": 0.6, "P": 0.9, "C4": 0.0, "D4": 1.1}
     rows = []
     for t in range(n_tasks):
         u = rng.normal(0, 1.0)

@@ -43,10 +43,11 @@ PERSONAS = yaml.safe_load((Path(__file__).parent / "prompts" / "personas.yaml").
 # Bumped when the session logic changes in a way that makes older traces incomparable. It is
 # stamped into every trace header; the analysis skips traces from older versions by default
 # (scripts/analyze.py --include-old keeps them). History of changes: docs/DEV_LOG.md.
-ORCHESTRATOR_VERSION = "0.3.0"
-# Oldest version whose traces are still comparable. 0.3.0 added conditions (E, E_minus, S, P) and
-# changed nothing in how A, B, C, D and D_minus run, so 0.2.3 traces stay in the analysis.
-COMPATIBLE_SINCE = "0.2.3"
+ORCHESTRATOR_VERSION = "0.4.0"
+# Oldest version whose traces are still comparable. 0.4.0 moved the second learner level from 2
+# to 6 (plus 4 for the curve) and requires an 8192-token server context (the 4096 context cut
+# some Critic prompts short), so every earlier trace is archived (scripts/archive_traces.py).
+COMPATIBLE_SINCE = "0.4.0"
 
 
 def is_comparable(version: str | None) -> bool:
@@ -292,7 +293,8 @@ def _run_learners(task: Task, cfg: SessionConfig, client, tr: TraceWriter) -> li
     for i, persona in enumerate(_pick_personas(cfg), start=1):
         user = task.agent_view
         if turns:
-            user += "\n\nWhat the other learner said:\n" + "\n".join(f"- {t}" for _, t in turns)
+            who = "the other learner" if len(turns) == 1 else "the other learners"
+            user += f"\n\nWhat {who} said:\n" + "\n".join(f"- {t}" for _, t in turns)
         user += "\n\nSay in two sentences how you would start."
         msg = [{"role": "system", "content": PROMPTS["learner_base"].format(persona=persona["text"])},
                {"role": "user", "content": user}]

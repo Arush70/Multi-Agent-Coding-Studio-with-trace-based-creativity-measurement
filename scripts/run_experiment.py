@@ -141,6 +141,19 @@ def run_profile(profile, tasks, conditions, seeds, out, sandbox, dry_run) -> lis
             raise SystemExit(problem)
 
     client = LLMClient.from_config(profile=profile)
+    from macs.llm.client import server_context_length
+    need = client.profile.context_length
+    have = server_context_length(client.profile)
+    if have is None:
+        print(f"[note] could not read the server's context length; it must be at least {need} tokens.")
+    elif have < need:
+        raise SystemExit(
+            f"The model server gives {client.profile.model} a {have}-token context, but this study needs "
+            f"{need}: longer prompts would be cut short.\n"
+            f"  Ollama app (Windows/Mac): Settings > Context length > {need // 1024}k, then restart Ollama.\n"
+            f"  Ollama server: set OLLAMA_CONTEXT_LENGTH={need} and restart it.")
+    else:
+        print(f"server context {have} tokens (needs {need}): ok")
     failures = []
     consecutive = 0
     t0 = time.time()
