@@ -86,7 +86,7 @@ node). It runs the reduced design, so the study has 9B, 27B and 122B from one mo
 Download it during setup by running `MACS_MODELS="qwen3.5:9b qwen3.5:27b qwen3.5:122b" bash isca/setup.sh`
 (allow 3 hours for the srun job), then, after the 27B job has started:
 
-    PROFILE=qwen35_122b TASKS=main CONDITIONS=A,B,C,D,D_minus,E,E_minus SEEDS=1-3 sbatch --gres=gpu:2 --mem=128G isca/run_model.sbatch
+    PROFILE=qwen35_122b TASKS=main CONDITIONS=A,B,C,D,D_minus,E,E_minus SEEDS=1-3 sbatch --gres=gpu:2 -c 16 --mem=128G isca/run_model.sbatch
 
 ## Large models from other families (cross-model panel)
 
@@ -99,7 +99,7 @@ Then submit one job per model (reduced design):
 
     D="TASKS=main CONDITIONS=A,B,C,D,D_minus,E,E_minus SEEDS=1-3"
     env $D PROFILE=gpt_oss_120b sbatch isca/run_model.sbatch
-    env $D PROFILE=llama4_scout sbatch --gres=gpu:2 --mem=128G isca/run_model.sbatch
+    env $D PROFILE=llama4_scout sbatch --gres=gpu:2 -c 16 --mem=128G isca/run_model.sbatch
     env $D PROFILE=gemma4_31b   sbatch isca/run_model.sbatch
 
 DeepSeek is not in the panel: it is the independent AI judge in the rating study, and its full
