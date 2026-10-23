@@ -7,6 +7,21 @@ what changed, why, and which files. Pre-registration changes are also logged, da
 
 ---
 
+## 2026-10-23 (Week 5) - six learners, 8192-token context, 2-learner run archived
+
+- First 9B results (2 learners, 24 tasks x 6 seeds): studio beats tutor by about 2 families
+  (Holm p < 0.001), beats equal-budget sampling, matches a single diversity prompt. Kept as the
+  pilot in `data/archive/2026-10-23_two_learner_ctx4096/`.
+- Learner factor is now 1 vs 6 (C, D, D_minus, E, E_minus, S, P), with C4 and D4 at 4 learners
+  for a learner curve. Learners after the second see "the other learners" (plural). Secondary
+  statistics: D4 - C4 and the change per extra learner (`learner_slope_fit`).
+- Found that Ollama's 4096-token context cut some Critic prompts short (up to 4259 prompt tokens).
+  `ModelProfile.context_length` (default 8192) is stamped into each trace and the cache key, and
+  `run_experiment.py` asks the server (Ollama `/api/ps`) and refuses to run if it is lower. ISCA
+  jobs run with 16384.
+- `scripts/archive_traces.py` moves traces older than `COMPATIBLE_SINCE` (now 0.4.0) and their
+  results into `data/archive/<name>/`. Trace schema 0.3.0 (C4, D4, learner_3..6). 129 tests pass.
+
 ## 2026-10-22 (Week 5) - University GPU (ISCA): 27B becomes the main model
 
 - ISCA access arrived (A100 80 GB, account COMM514). By the 15 Oct decision rule the main model

@@ -48,6 +48,10 @@ class ModelProfile:
     temperature: float = 0.7
     max_tokens: int = 2048
     extra_body: dict[str, Any] = field(default_factory=dict)
+    # Context window the server must give the model (Ollama: OLLAMA_CONTEXT_LENGTH or the app's
+    # "Context length" setting). run_experiment checks it before a run; a smaller server context
+    # silently cuts long prompts short.
+    context_length: int = 8192
 
     @property
     def identity(self) -> dict[str, Any]:
@@ -62,6 +66,7 @@ class ModelProfile:
         }
         if self.extra_body:
             ident["extra_body"] = self.extra_body
+        ident["context_length"] = self.context_length
         return ident
 
 
@@ -106,6 +111,9 @@ class LLMClient:
             "temperature": temperature,
             "max_tokens": max_tokens,
             "seed": seed,
+            # The context window is part of the key: a response made with a smaller context
+            # (where a long prompt may have been cut) is never reused for a larger one.
+            "context_length": self.profile.context_length,
         }
         # Backend options (for example switching off a model's thinking mode) change the
         # output, so they are part of the key. They are added only when set, so caches built
@@ -257,3 +265,26 @@ def prompt_hash(text: str) -> str:
     # header, so a prompt change is visible in the traces and each session records exactly
     # which wording it used.
     return hashlib.sha256(text.encode()).hexdigest()[:16]
+
+
+def server_context_length(profile: "ModelProfile") -> int | None:
+    """Context window the server actually gives this model, or None if it cannot be read.
+
+    Works with Ollama: one tiny request loads the model, then /api/ps reports its context length.
+    Other OpenAI-compatible servers return None and the caller only prints a reminder."""
+    base = profile.base_url.rstrip("/")
+    root = base[:-3] if base.endswith("/v1") else base
+    headers = {"Authorization": f"Bearer {profile.api_key}", "Content-Type": "application/json"}
+    try:
+        requests.post(base + "/chat/completions", headers=headers, timeout=600, json={
+            "model": profile.model, "messages": [{"role": "user", "content": "Say OK."}],
+            "max_tokens": 1, **profile.extra_body})
+        r = requests.get(root + "/api/ps", timeout=30)
+        r.raise_for_status()
+        for m in r.json().get("models", []):
+            if m.get("name") == profile.model or m.get("model") == profile.model:
+                n = m.get("context_length")
+                return int(n) if n else None
+    except Exception:  # noqa: BLE001 - not Ollama, or not reachable: the caller reports it
+        return None
+    return None

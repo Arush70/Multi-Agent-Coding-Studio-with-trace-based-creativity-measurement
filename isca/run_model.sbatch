@@ -36,7 +36,7 @@ conda activate macs
 export PYTHONUNBUFFERED=1 HF_HOME="$PREFIX/hf" HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1
 export OLLAMA_MODELS="$PREFIX/models" OLLAMA_HOST="127.0.0.1:$((11500 + SLURM_JOB_ID % 400))"
 export OLLAMA_NUM_PARALLEL=$WORKERS OLLAMA_KEEP_ALIVE=-1 OLLAMA_MAX_LOADED_MODELS=1
-export OLLAMA_CONTEXT_LENGTH=4096              # same context length as the laptop runs
+export OLLAMA_CONTEXT_LENGTH=16384             # at least every profile's context_length (checked by run_experiment)
 OLLAMA="$PREFIX/ollama/bin/ollama"
 echo "== job $SLURM_JOB_ID on $(hostname) $(date) profile=$PROFILE tasks=$TASKS conditions=$CONDITIONS seeds=$SEEDS workers=$WORKERS"
 nvidia-smi --query-gpu=name,memory.total --format=csv,noheader

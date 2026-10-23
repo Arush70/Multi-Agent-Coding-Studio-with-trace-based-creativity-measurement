@@ -232,3 +232,8 @@ Thumbs.db
 .ipynb_checkpoints/
 .idea/
 .vscode/
+
+# per-model reference sets, archived runs, rating-study exports (local data, not code)
+data/reference/models/
+data/archive/
+data/rating/

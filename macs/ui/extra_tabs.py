@@ -39,7 +39,8 @@ def conclusion(summary: dict) -> list[str]:
     out = []
     n = sum(v.get("n_sessions", 0) for v in summary.values())
     tasks_note = f"Based on {n} sessions."
-    for studio, tutor, label in (("B", "A", "with one learner"), ("D", "C", "with two learners")):
+    for studio, tutor, label in (("B", "A", "with one learner"), ("D4", "C4", "with four learners"),
+                                 ("D", "C", "with six learners")):
         if fam(studio) is not None and fam(tutor) is not None:
             d = fam(studio) - fam(tutor)
             out.append(f"{label.capitalize()}, the studio found {abs(d):.2f} {'more' if d >= 0 else 'fewer'} "

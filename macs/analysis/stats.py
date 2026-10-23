@@ -1,11 +1,12 @@
 """S8: mixed-effects models, planned contrasts, Holm adjustment and minimum detectable effect.
 
 The proposal (3.8) analyses each outcome with a linear mixed-effects model: tutor-versus-studio
-configuration and number of simulated learners (one or two) as fixed effects with their
+configuration and number of simulated learners (one or six; two in the proposal, amended
+2026-10-23) as fixed effects with their
 interaction, and task as a random intercept. Planned contrasts:
 
   * B - A        studio vs tutor with one learner          (= the studio coefficient)
-  * D - C        studio vs tutor with two learners         (= studio + interaction)
+  * D - C        studio vs tutor with six learners         (= studio + interaction)
   * D - D_minus  Facilitator on vs off (separate model on D and D_minus)
 Extensions (pre-registered 2026-10-20): E - E_minus (Facilitator where ideas can converge),
 D_minus - E_minus (diversity scaffold), the studio 2 x 2 interaction, and the baselines D - S
@@ -29,7 +30,7 @@ from dataclasses import dataclass, field
 import numpy as np
 from scipy import optimize, stats
 
-CONDITION_CODES = {          # (studio, two_learners)
+CONDITION_CODES = {          # (studio, six_learners)
     "A": (0, 0), "B": (1, 0), "C": (0, 1), "D": (1, 1),
 }
 
@@ -166,7 +167,7 @@ def holm(pvalues: list[float]) -> list[float]:
 # ------------------------------------------------------------------ the planned analysis
 
 def factorial_fit(rows: list[dict], outcome: str) -> MixedFit | None:
-    """Fit outcome ~ studio * two_learners + (1 | task) on conditions A, B, C, D."""
+    """Fit outcome ~ studio * six_learners + (1 | task) on conditions A, B, C, D."""
     use = [r for r in rows if r.get("condition") in CONDITION_CODES and r.get(outcome) is not None]
     if len({r["condition"] for r in use}) < 4 or len({r["task_id"] for r in use}) < 2:
         return None
@@ -174,7 +175,7 @@ def factorial_fit(rows: list[dict], outcome: str) -> MixedFit | None:
                    CONDITION_CODES[r["condition"]][0] * CONDITION_CODES[r["condition"]][1]] for r in use])
     y = [float(r[outcome]) for r in use]
     return fit_random_intercept(y, X, [r["task_id"] for r in use],
-                                names=["intercept", "studio", "two_learners", "studio:two_learners"])
+                                names=["intercept", "studio", "six_learners", "studio:six_learners"])
 
 
 def facilitator_fit(rows: list[dict], outcome: str) -> MixedFit | None:
@@ -221,7 +222,20 @@ PAIRWISE = {
     "D_minus - E_minus": ("D_minus", "E_minus"),   # the diversity scaffold alone
     "D - S": ("D", "S"),                  # studio vs tutor sampled to the same token budget
     "D - P": ("D", "P"),                  # studio vs one prompt asking for K different approaches
+    "D4 - C4": ("D4", "C4"),              # studio vs tutor with four learners (learner curve)
 }
+
+
+def learner_slope_fit(rows: list[dict], outcome: str, conditions: list[str]) -> MixedFit | None:
+    """Fit outcome ~ n_learners + (1 | task) over a learner curve (e.g. A, C4, C = 1, 4, 6
+    learners): the change per extra learner. Secondary (amended 2026-10-23)."""
+    from macs import conditions as conds
+    use = [r for r in rows if r.get("condition") in conditions and r.get(outcome) is not None]
+    if len({r["condition"] for r in use}) < 2 or len({r["task_id"] for r in use}) < 2:
+        return None
+    X = np.array([[1.0, float(conds.get(r["condition"]).n_learners)] for r in use])
+    y = [float(r[outcome]) for r in use]
+    return fit_random_intercept(y, X, [r["task_id"] for r in use], names=["intercept", "per_learner"])
 
 
 def planned_contrasts(rows: list[dict], outcome: str) -> list[Contrast]:
@@ -229,12 +243,17 @@ def planned_contrasts(rows: list[dict], outcome: str) -> list[Contrast]:
     f = factorial_fit(rows, outcome)
     if f is not None:
         out.append(f.contrast({"studio": 1}, f"{outcome}: B - A"))
-        out.append(f.contrast({"studio": 1, "studio:two_learners": 1}, f"{outcome}: D - C"))
-        out.append(f.contrast({"studio:two_learners": 1}, f"{outcome}: interaction (D - C) - (B - A)"))
+        out.append(f.contrast({"studio": 1, "studio:six_learners": 1}, f"{outcome}: D - C"))
+        out.append(f.contrast({"studio:six_learners": 1}, f"{outcome}: interaction (D - C) - (B - A)"))
     for label, (a, b) in PAIRWISE.items():
         g = pairwise_fit(rows, outcome, a, b)
         if g is not None:
             out.append(g.contrast({"effect": 1}, f"{outcome}: {label}"))
+    from macs.conditions import LEARNER_CURVE
+    for solver, curve in LEARNER_CURVE.items():
+        k = learner_slope_fit(rows, outcome, curve)
+        if k is not None:
+            out.append(k.contrast({"per_learner": 1}, f"{outcome}: per extra learner ({solver}: {', '.join(curve)})"))
     h = studio_factorial_fit(rows, outcome)
     if h is not None:
         out.append(h.contrast({"scaffold:facilitator": 1},
