@@ -186,3 +186,22 @@ def test_learner_slope_is_estimated_from_the_learner_curve():
     got = {c.label: c for c in planned_contrasts(rows, "y")}
     slope = got["y: per extra learner (tutor: A, C4, C)"]
     assert abs(slope.estimate - 0.1) < 0.01 and slope.p < 0.001
+
+
+def test_parallel_reference_build_makes_the_same_seeds(tmp_path):
+    import json, sys
+    sys.path.insert(0, "scripts")
+    from build_reference import build_task_reference, REF_SEED_BASE
+    class Echo:
+        class profile:
+            model, revision = "fake", "0"
+        def chat(self, messages, *, seed=None, **kw):
+            return FakeCompletion(text=f"```python\ndef test_duplicate(a):\n    return {seed % 2 == 0}\n```")
+
+    task = load_task(TASK)
+    seq, par = tmp_path / "seq.jsonl", tmp_path / "par.jsonl"
+    assert build_task_reference(task, Echo(), n=12, path=seq, log=lambda *_: None) == 12
+    assert build_task_reference(task, Echo(), n=12, path=par, log=lambda *_: None, parallel=4) == 12
+    rows = lambda p: {r["seed"]: r["code"] for r in map(json.loads, p.read_text().splitlines())}
+    assert rows(seq) == rows(par) and set(rows(par)) == {REF_SEED_BASE + i for i in range(12)}
+    assert build_task_reference(task, Echo(), n=12, path=par, log=lambda *_: None, parallel=4) == 0

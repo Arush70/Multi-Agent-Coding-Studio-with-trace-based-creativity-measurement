@@ -3,7 +3,7 @@
 #SBATCH -p gpu
 #SBATCH --gres=gpu:1
 #SBATCH -N 1
-#SBATCH -c 8
+#SBATCH -c 12
 #SBATCH --mem=64G
 #SBATCH -t 23:50:00
 #SBATCH -J macs
@@ -12,7 +12,7 @@
 #SBATCH -D .
 #
 # Runs the experiment for one model on one full A100 (80 GB), submitted from the repository folder.
-# A GPU node has 2 A100s and 24 CPUs, so a job asks for 8 CPUs and two jobs fit on one node:
+# A GPU node has 2 A100s and 24 CPUs, so a job asks for 12 CPUs and two jobs fit on one node:
 #
 #   sbatch isca/run_model.sbatch                                   # main run, Qwen3.5-27B
 #   PROFILE=gpt_oss_20b CONDITIONS=A,B,C,D,D_minus,E,E_minus SEEDS=1-3 TASKS=main sbatch isca/run_model.sbatch
@@ -34,7 +34,7 @@ PREFIX=${MACS_PREFIX:-$HOME/macs-tools}
 
 source "$PREFIX/miniforge3/etc/profile.d/conda.sh"
 conda activate macs
-export PYTHONUNBUFFERED=1 HF_HOME="$PREFIX/hf" HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1
+export OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 PYTHONUNBUFFERED=1 HF_HOME="$PREFIX/hf" HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1
 export OLLAMA_MODELS="$PREFIX/models" OLLAMA_HOST="127.0.0.1:$((11500 + SLURM_JOB_ID % 400))"
 export OLLAMA_NUM_PARALLEL=$WORKERS OLLAMA_KEEP_ALIVE=-1 OLLAMA_MAX_LOADED_MODELS=1
 export OLLAMA_CONTEXT_LENGTH=16384             # at least every profile's context_length (checked by run_experiment)
@@ -54,7 +54,7 @@ fi
 if [ "$RESUBMIT" -gt 0 ]; then
   # the follow-up asks for the same GPUs, CPUs and memory as this job (e.g. --gres=gpu:2 for 122B)
   sbatch --dependency=afterany:"$SLURM_JOB_ID" --export=ALL,RESUBMIT=$((RESUBMIT - 1)) \
-    --gres=gpu:"${SLURM_GPUS_ON_NODE:-1}" -c "${SLURM_CPUS_PER_TASK:-8}" --mem="${SLURM_MEM_PER_NODE:-65536}M" \
+    --gres=gpu:"${SLURM_GPUS_ON_NODE:-1}" -c "${SLURM_CPUS_PER_TASK:-12}" --mem="${SLURM_MEM_PER_NODE:-65536}M" \
     isca/run_model.sbatch
 fi
 
@@ -116,7 +116,7 @@ worker() {
     for s in $SEED_LIST; do
       mkdir "$Q/$t-$s" 2>/dev/null || continue
       echo "[worker $w] $(date +%H:%M) $t seed $s"
-      flock "$Q/ref-$t.lock" python scripts/build_reference.py --tasks "$t" --n 100 --profile "$PROFILE" >> "$Q/worker$w.log" 2>&1
+      flock "$Q/ref-$t.lock" python scripts/build_reference.py --tasks "$t" --n 100 --profile "$PROFILE" --parallel "$WORKERS" >> "$Q/worker$w.log" 2>&1
       python scripts/run_experiment.py --tasks "$t" --conditions "$CONDITIONS" --seeds "$s" --profile "$PROFILE" >> "$Q/worker$w.log" 2>&1
     done
   done
