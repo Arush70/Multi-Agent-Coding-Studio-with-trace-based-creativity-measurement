@@ -39,6 +39,10 @@ what changed, why, and which files. Pre-registration changes are also logged, da
   3 of every 4 hours). `build_reference.py --parallel N` now makes N samples at once (same seeds,
   same samples; order in the file may differ), the jobs use it with N = workers, and each job
   asks for 12 CPUs (24 for two-GPU jobs) with OMP threads capped at 2 per process.
+- The GPU helper did not remove the discovery time-outs (about half of starts still failed). Jobs
+  now try only the CUDA 12 library (`OLLAMA_LLM_LIBRARY=cuda_v12`, one 30 s try instead of three)
+  and up to 10 times. Jobs are named `m-<profile>`; `isca/status.sh` prints jobs and sessions per
+  model.
 
 ## 2026-10-22 (Week 5) - University GPU (ISCA): 27B becomes the main model
 
