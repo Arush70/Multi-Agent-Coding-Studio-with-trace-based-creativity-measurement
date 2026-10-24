@@ -39,6 +39,7 @@ export OLLAMA_MODELS="$PREFIX/models" OLLAMA_HOST="127.0.0.1:$((11500 + SLURM_JO
 export OLLAMA_NUM_PARALLEL=$WORKERS OLLAMA_KEEP_ALIVE=-1 OLLAMA_MAX_LOADED_MODELS=1
 export OLLAMA_CONTEXT_LENGTH=16384             # at least every profile's context_length (checked by run_experiment)
 OLLAMA="$PREFIX/ollama/bin/ollama"     # replaced by a node-local copy below
+scontrol update JobId="$SLURM_JOB_ID" JobName="m-$PROFILE" 2>/dev/null || true
 echo "== job $SLURM_JOB_ID on $(hostname) $(date) profile=$PROFILE tasks=$TASKS conditions=$CONDITIONS seeds=$SEEDS workers=$WORKERS"
 nvidia-smi --query-gpu=name,memory.total --format=csv,noheader
 
@@ -53,7 +54,7 @@ if [ "$LEFT" = 0 ] && { [ "$SEARCH" != 1 ] || [ -f "$DONE_SEARCH" ]; }; then
 fi
 if [ "$RESUBMIT" -gt 0 ]; then
   # the follow-up asks for the same GPUs, CPUs and memory as this job (e.g. --gres=gpu:2 for 122B)
-  sbatch --dependency=afterany:"$SLURM_JOB_ID" --export=ALL,RESUBMIT=$((RESUBMIT - 1)) \
+  sbatch --dependency=afterany:"$SLURM_JOB_ID" --export=ALL,RESUBMIT=$((RESUBMIT - 1)) -J "m-$PROFILE" \
     --gres=gpu:"${SLURM_GPUS_ON_NODE:-1}" -c "${SLURM_CPUS_PER_TASK:-12}" --mem="${SLURM_MEM_PER_NODE:-65536}M" \
     isca/run_model.sbatch
 fi
@@ -79,9 +80,10 @@ KEEPER=$!
 for _ in $(seq 120); do grep -q "GPU awake" "data/jobs/gpu-keeper-$SLURM_JOB_ID.log" 2>/dev/null && break; sleep 2; done
 cat "data/jobs/gpu-keeper-$SLURM_JOB_ID.log"
 export OLLAMA_VULKAN=false                   # CUDA only: do not spend discovery time on Vulkan
+export OLLAMA_LLM_LIBRARY=cuda_v12           # one CUDA library (works with every A100 driver): one 30 s try, not three
 SERVER=""
 trap 'kill $SERVER $KEEPER 2>/dev/null || true; rm -rf "$LOCAL"' EXIT
-for attempt in 1 2 3; do
+for attempt in $(seq 10); do
   "$OLLAMA" serve > "data/jobs/ollama-$SLURM_JOB_ID.log" 2>&1 &
   SERVER=$!
   for _ in $(seq 90); do curl -sf "http://$OLLAMA_HOST/api/version" >/dev/null && break; sleep 2; done
@@ -90,10 +92,10 @@ for attempt in 1 2 3; do
     echo "GPU found by Ollama (attempt $attempt)"; break
   fi
   echo "Ollama did not find the GPU (attempt $attempt); restarting it"
-  kill $SERVER 2>/dev/null; wait $SERVER 2>/dev/null; SERVER=""; sleep 20
+  kill $SERVER 2>/dev/null; wait $SERVER 2>/dev/null; SERVER=""; sleep 30
 done
 if [ -z "$SERVER" ]; then
-  echo "Ollama could not use the GPU after 3 attempts; stopping instead of running on the CPU."
+  echo "Ollama could not use the GPU after 10 attempts; stopping instead of running on the CPU."
   nvidia-smi
   exit 1
 fi
