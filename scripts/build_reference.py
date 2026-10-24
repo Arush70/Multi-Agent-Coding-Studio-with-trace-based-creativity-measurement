@@ -99,7 +99,8 @@ def _other_model_rows(path: Path, model: str, revision: str) -> int:
 
 
 def build_task_reference(task, client, *, n: int, path: Path, sandbox: str = "subprocess",
-                         temperature: float = 0.7, overwrite: bool = False, log=print) -> int:
+                         temperature: float = 0.7, overwrite: bool = False, log=print,
+                         parallel: int = 1) -> int:
     """Make sure `path` holds reference samples for seeds REF_SEED_BASE + 0..n-1. Returns how
     many new samples were written. Never rewrites an existing sample unless overwrite=True."""
     from macs.metrics.represent import ast_features  # to record how many parse
@@ -129,33 +130,50 @@ def build_task_reference(task, client, *, n: int, path: Path, sandbox: str = "su
         if len(good) != len(lines):
             path.write_text("".join(g + "\n" for g in good), encoding="utf-8")
 
+    def make(i: int) -> tuple[dict, bool]:
+        """One reference sample: a model call, then the public tests. Independent of the others,
+        so several can run at once (the seed fixes each sample, whatever the order)."""
+        seed = REF_SEED_BASE + i
+        messages = [
+            {"role": "system", "content": REFERENCE_PROMPT},
+            {"role": "user", "content": task.agent_view},
+        ]
+        comp = client.chat(messages, temperature=temperature, seed=seed)
+        src = extract_code(comp.text)
+        # run on PUBLIC tests only (never held-out) so we can note which ones work
+        res = runner.run(src, task.public_tests, backend=sandbox, cpu_seconds=5)
+        try:
+            ast_features(src)
+            parsed = True
+        except Exception:  # noqa: BLE001
+            parsed = False
+        return {
+            "task_id": task.id, "seed": seed, "code": src,
+            "code_hash": res.code_hash,
+            "public_passed": res.tests_passed, "public_failed": res.tests_failed,
+            "temperature": temperature,
+            "model": client.profile.model, "revision": client.profile.revision,
+        }, parsed
+
     n_parse = 0
     with path.open("a", encoding="utf-8") as fh:
-        for j, i in enumerate(todo, start=1):
-            seed = REF_SEED_BASE + i
-            messages = [
-                {"role": "system", "content": REFERENCE_PROMPT},
-                {"role": "user", "content": task.agent_view},
-            ]
-            comp = client.chat(messages, temperature=temperature, seed=seed)
-            src = extract_code(comp.text)
-            # run on PUBLIC tests only (never held-out) so we can note which ones work
-            res = runner.run(src, task.public_tests, backend=sandbox, cpu_seconds=5)
-            try:
-                ast_features(src)
-                n_parse += 1
-            except Exception:  # noqa: BLE001
-                pass
-            fh.write(json.dumps({
-                "task_id": task.id, "seed": seed, "code": src,
-                "code_hash": res.code_hash,
-                "public_passed": res.tests_passed, "public_failed": res.tests_failed,
-                "temperature": temperature,
-                "model": client.profile.model, "revision": client.profile.revision,
-            }, ensure_ascii=False) + "\n")
-            fh.flush()
+        def write(row: dict, parsed: bool, j: int) -> None:
+            nonlocal n_parse
+            n_parse += parsed
+            fh.write(json.dumps(row, ensure_ascii=False) + "\n")
+            fh.flush()                            # written as soon as made: safe to stop
             if j % 10 == 0:
                 log(f"  {task.id}: {len(have) + j}/{n}")
+
+        if parallel <= 1:
+            for j, i in enumerate(todo, start=1):
+                write(*make(i), j)
+        else:
+            from concurrent.futures import ThreadPoolExecutor, as_completed
+            with ThreadPoolExecutor(max_workers=parallel) as pool:
+                futures = [pool.submit(make, i) for i in todo]
+                for j, fut in enumerate(as_completed(futures), start=1):
+                    write(*fut.result(), j)
     log(f"built {task.id}: +{len(todo)} samples ({n_parse} parse) -> {path} (now {len(have) + len(todo)})")
     return len(todo)
 
@@ -170,6 +188,8 @@ def main() -> None:
     ap.add_argument("--out", default="data/reference")
     ap.add_argument("--temperature", type=float, default=0.7)
     ap.add_argument("--overwrite", action="store_true", help="rebuild from scratch even if samples exist")
+    ap.add_argument("--parallel", type=int, default=1,
+                    help="samples made at the same time (a server with several slots, e.g. on ISCA)")
     args = ap.parse_args()
 
     from macs.metrics.reference import reference_path
@@ -179,7 +199,8 @@ def main() -> None:
         path = reference_path(task.id, client.profile.model, root=args.out)
         path.parent.mkdir(parents=True, exist_ok=True)
         build_task_reference(task, client, n=args.n, path=path,
-                             sandbox=args.sandbox, temperature=args.temperature, overwrite=args.overwrite)
+                             sandbox=args.sandbox, temperature=args.temperature, overwrite=args.overwrite,
+                             parallel=args.parallel)
 
 
 if __name__ == "__main__":

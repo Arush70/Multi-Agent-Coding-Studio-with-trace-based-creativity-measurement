@@ -34,6 +34,11 @@ what changed, why, and which files. Pre-registration changes are also logged, da
   run with persistence mode off, so waking an idle GPU can take longer than that. Jobs now start a
   small torch helper that initialises CUDA and holds a context for the job's lifetime before
   Ollama starts, and Vulkan discovery is off.
+- Small panel models ran at about 7 sessions an hour with the GPU 28% busy. Cause: each task's 100
+  references were made one call at a time while the other workers for that task waited (about
+  3 of every 4 hours). `build_reference.py --parallel N` now makes N samples at once (same seeds,
+  same samples; order in the file may differ), the jobs use it with N = workers, and each job
+  asks for 12 CPUs (24 for two-GPU jobs) with OMP threads capped at 2 per process.
 
 ## 2026-10-22 (Week 5) - University GPU (ISCA): 27B becomes the main model
 
