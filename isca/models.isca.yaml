@@ -96,6 +96,15 @@ profiles:
     temperature: 0.7
     max_tokens: 2048
 
+  deepseek:                   # the AI rater only (ethics Method 4): DeepSeek-Coder-V2 Lite, not one of the models studied
+    base_url: http://${OLLAMA_HOST}/v1
+    api_key: ollama
+    model: deepseek-coder-v2:16b
+    revision: ""
+    quantisation: q4_0
+    temperature: 0.7
+    max_tokens: 2048
+
   local:                      # same 9B model as the laptop (only if you want it on ISCA too)
     base_url: http://${OLLAMA_HOST}/v1
     api_key: ollama

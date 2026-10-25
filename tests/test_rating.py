@@ -111,3 +111,26 @@ def test_judge_asks_both_orders_and_drops_position_bias():
     resp, st = judge_pairs(pairs, {"t": "task"}, _Judge(), log=None)
     assert st["inconsistent"] == 2 and st["consistent"] == 2
     assert {r["pair_id"] for r in resp} == {"P01"} and all(r["choice"] == "A" for r in resp)
+
+
+def test_part_b_labels_majority_kappa_and_files(tmp_path):
+    from macs.rating import labelling as L
+    opts = ["set length: x", "sort adjacent: y", L.OTHER]
+    items = [{"item_id": f"L0{i}", "task_id": "t", "session": f"s{i}", "proposal_id": "p1", "options": opts}
+             for i in range(1, 4)]
+    resp = [{"rater": r, "item_id": "L01", "choice": opts[0]} for r in ("R1", "R2", "R3")]
+    resp += [{"rater": "R1", "item_id": "L02", "choice": opts[1]}, {"rater": "R2", "item_id": "L02", "choice": opts[1]},
+             {"rater": "R3", "item_id": "L02", "choice": opts[2]}]
+    resp += [{"rater": "R1", "item_id": "L03", "choice": opts[0]}, {"rater": "R2", "item_id": "L03", "choice": opts[1]},
+             {"rater": "R3", "item_id": "L03", "choice": opts[2]}]
+    res = L.analyse_labels(items, resp, calib_dir=tmp_path)
+    assert res["majority_items"] == 2 and res["ties"] == 1 and res["raters"] == ["R1", "R2", "R3"]
+    rows = [json.loads(l) for l in (tmp_path / "labels.jsonl").read_text().splitlines()]
+    assert {r["family"] for r in rows} == {"set_length", "sort_adjacent"}
+    assert (tmp_path / "labels_R1.jsonl").exists()
+
+
+def test_label_columns_are_read_from_the_form_export():
+    from macs.rating.labelling import read_label_responses
+    rows = [{"Your rater code (for example R01)": "R07", "Item L03: Which approach does this solution use?": "x: y"}]
+    assert read_label_responses(rows) == [{"rater": "R07", "item_id": "L03", "choice": "x: y"}]

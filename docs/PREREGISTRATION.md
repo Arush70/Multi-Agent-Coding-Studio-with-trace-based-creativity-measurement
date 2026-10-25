@@ -299,5 +299,23 @@ and never edited to match results.
   `data/archive/2026-10-23_two_learner_ctx4096/` and reported only as a pilot. Every model,
   9B included, is run again under this design. Orchestrator 0.4.0 (comparable only with
   itself), trace schema 0.3.0.
+- _2026-10-25_ — **Who rates, SC3 by independent raters, AI rater, degenerate novelty (amendment,
+  before any human rating or labelling and before the family results were used to set the
+  threshold).** (i) Neither the researcher nor the supervisor rates or labels anything. Raters are
+  postgraduate students (MSc or PhD) and other acquaintances of the researcher, invited directly
+  (no advertising; supervisor's guidance); each reads an information text, confirms consent and
+  answers under a rater code, with no personal data. (ii) SC3 blind labelling becomes Part B of
+  the same form: for 48 solutions (8 from each of six tasks fixed by rule: the main-bank Tier 1
+  and Tier 2 tasks with four known families, three per tier, in id order; distinct
+  implementations from the 27B main run, all conditions, seeded order, blind view) raters choose
+  the pre-registered known family or "something else". The majority label (ties left out) is the
+  human reference; agreement is Fleiss' kappa; `CLUSTER_THRESHOLD` is then set by the existing
+  ARI sweep (SC3 target ARI >= 0.60). This happens after the main run was generated, which is a
+  deviation from "before the main run": the threshold is chosen only from the labels, and the
+  family results are recomputed with the frozen value. (iii) An AI rater (DeepSeek-Coder-V2 Lite,
+  not one of the studied models) answers Part A and Part B, each item asked in two orders and
+  counted only when both agree; it is reported separately and never combined with the humans.
+  (iv) Mean novelty z is undefined (left out) for a task whose reference kNN distances have no
+  spread (27B: t1_mbpp19); the correct-and-novel rate (percentile-based) is unaffected.
 - _…_ — **[fill after SC3]** `CLUSTER_THRESHOLD` frozen at __ (mean ARI __; N labelled proposals
   over __ tasks). Table:

@@ -18,13 +18,13 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from macs.rating import analysis, forms, pairs as P  # noqa: E402
+from macs.rating import analysis, forms, labelling as L, pairs as P  # noqa: E402
 
 DIR = P.RATING_DIR
 
 
-def _prompts(pairs):
-    return {t: P.task_prompt(t) for t in {p["task_id"] for p in pairs}}
+def _prompts(pairs, items=()):
+    return {t: P.task_prompt(t) for t in {p["task_id"] for p in pairs} | {i["task_id"] for i in items}}
 
 
 def cmd_build(a):
@@ -38,21 +38,28 @@ def cmd_build(a):
     print(f"{len(pairs)} pairs from {len(tasks)} task(s); solutions from conditions {', '.join(conds)} -> {path}")
     if len(pairs) < a.n:
         print(f"[warn] only {len(pairs)} pairs could be formed; run more sessions (more seeds or tasks) first")
+    from macs.analysis.aggregate import resolve_model
+    items = L.build_items(a.traces, model=resolve_model(a.traces, a.model))
+    print(f"{len(items)} Part B labelling items from {len({i['task_id'] for i in items})} task(s) -> {L.save_items(items, DIR)}")
 
 
 def cmd_export(a):
     pairs = P.load_pairs(DIR)
     if not pairs:
         raise SystemExit("no pairs yet: run `build` first")
-    b = forms.export_booklet(pairs, _prompts(pairs), DIR / "rating_booklet.html")
-    f = forms.export_form(pairs, DIR / "form_quick_import.docx")
+    items = L.load_items(DIR)
+    b = forms.export_booklet(pairs, _prompts(pairs, items), DIR / "rating_booklet.html", items)
+    f = forms.export_form(pairs, DIR / "form_quick_import.docx", items)
     print(f"booklet: {b}  (open in a browser, print to PDF for the raters)\nform:    {f}  "
           "(Microsoft Forms > New > Quick import; add the consent page from the ethics consent form first)")
 
 
 def cmd_import(a):
     long, exp = forms.read_responses(Path(a.file))
-    (DIR / "responses.json").write_text(json.dumps({"responses": long, "experience": exp}, indent=1), encoding="utf-8")
+    labels = L.read_label_responses(forms._rows(Path(a.file)))
+    (DIR / "responses.json").write_text(json.dumps({"responses": long, "experience": exp, "labels": labels},
+                                                   indent=1), encoding="utf-8")
+    print(f"Part B: {len(labels)} labels")
     raters = sorted({r["rater"] for r in long})
     print(f"{len(long)} answers from {len(raters)} rater(s): {', '.join(raters)} -> {DIR / 'responses.json'}")
 
@@ -64,29 +71,42 @@ def cmd_judge(a):
         raise SystemExit("no pairs yet: run `build` first")
     from macs.rating.judge import judge_pairs
     client = LLMClient.from_config(profile=a.profile)
-    resp, st = judge_pairs(pairs, _prompts(pairs), client)
-    (DIR / "judge.json").write_text(json.dumps({"model": client.profile.model, "responses": resp, "stats": st},
-                                               indent=1), encoding="utf-8")
-    print(f"judge {client.profile.model}: {st}")
+    from macs.rating.judge import judge_labels
+    items = L.load_items(DIR)
+    resp, st = judge_pairs(pairs, _prompts(pairs, items), client)
+    labels, lst = judge_labels(items, _prompts(pairs, items), client) if items else ([], {})
+    (DIR / "judge.json").write_text(json.dumps({"model": client.profile.model, "responses": resp, "stats": st,
+                                               "labels": labels, "label_stats": lst}, indent=1), encoding="utf-8")
+    print(f"judge {client.profile.model}: pairs {st}; Part B labels {lst}")
 
 
 def cmd_analyse(a):
     pairs = P.load_pairs(DIR)
     res = {}
     if (DIR / "responses.json").exists():
-        human = json.loads((DIR / "responses.json").read_text(encoding="utf-8"))["responses"]
+        data = json.loads((DIR / "responses.json").read_text(encoding="utf-8"))
+        human = data["responses"]
         res["humans"] = analysis.analyse(pairs, human)
+        if data.get("labels"):
+            res["sc3_labels"] = L.analyse_labels(L.load_items(DIR), data["labels"])
+            print(f"\nSC3 Part B: {res['sc3_labels']}\n  -> data/calibration/labels.jsonl (majority); "
+                  "now run: python scripts/calibrate_clustering.py")
     if (DIR / "judge.json").exists():
         judge = json.loads((DIR / "judge.json").read_text(encoding="utf-8"))
         res["judge"] = analysis.analyse(pairs, judge["responses"])
         res["judge"]["stats"] = judge["stats"]
+        if judge.get("labels"):
+            # the AI rater's labels go to their own folder, never into the human labels file
+            res["sc3_labels_judge"] = L.analyse_labels(L.load_items(DIR), judge["labels"],
+                                                       calib_dir=Path("data/calibration/judge"))
         if "humans" in res:
             res["judge_vs_humans"] = analysis.judge_agreement(human, judge["responses"])
     if not res:
         raise SystemExit("nothing to analyse: import responses or run the judge first")
     for who, r in res.items():
-        if who == "judge_vs_humans":
-            print(f"\njudge vs human majority: {r}")
+        if who in ("judge_vs_humans", "sc3_labels", "sc3_labels_judge"):
+            if who == "judge_vs_humans":
+                print(f"\njudge vs human majority: {r}")
             continue
         print(f"\n== {who} ({', '.join(r['raters'])})")
         for q, v in r["questions"].items():
