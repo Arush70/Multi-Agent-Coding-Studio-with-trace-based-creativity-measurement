@@ -22,11 +22,20 @@ EXPERIENCE_Q = "How many years of Python programming experience do you have?"
 CODE_Q = "Your rater code (for example R01)"
 
 
+INFO = ("This short study is part of an MSc project on how creative AI-generated code is. You will see "
+        "pairs of short Python solutions and say which one takes the more original approach (Part A), "
+        "then say which approach some single solutions use (Part B). It takes about 40 minutes. Taking "
+        "part is voluntary and you can stop at any time. No personal details are asked; you use a rater "
+        "code (for example R01) that the researcher gives you, so your answers cannot be linked to you. "
+        "Answers are stored on the University's Microsoft account and used only for this project.")
+CONSENT_Q = "I have read the information above, I am 18 or over, and I agree to take part."
+
+
 def _short(task_prompt: str, n: int = 900) -> str:
     return task_prompt if len(task_prompt) <= n else task_prompt[:n].rstrip() + " ..."
 
 
-def export_booklet(pairs: list[dict], prompts: dict[str, str], path: Path) -> Path:
+def export_booklet(pairs: list[dict], prompts: dict[str, str], path: Path, items: list[dict] | None = None) -> Path:
     e = html.escape
     parts = ["""<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Rating booklet</title>
 <style>
@@ -48,6 +57,15 @@ questions for that pair in the online form: <b>""" + e(Q_ORIGINAL) + "</b> and <
 <div class="two"><div><div class="lab">Solution A</div><pre>{e(p['A']['display'])}</pre></div>
 <div><div class="lab">Solution B</div><pre>{e(p['B']['display'])}</pre></div></div>
 <div class="q">Answer in the form: Pair {p['pair_id'][1:]} - original? (A or B) &middot; creative? (A or B)</div></div>""")
+    if items:
+        parts.append("""<div class="pair"><h1>Part B: which approach?</h1><p>Each item shows one solution. In the form,
+choose the approach it uses from the list for that item, or "Something else" if none fits. There are no
+right or wrong answers.</p></div>""")
+        for it in items:
+            opts = "".join(f"<li>{e(o)}</li>" for o in it["options"])
+            parts.append(f"""<div class="pair"><h2>Item {it['item_id']}</h2>
+<div class="task">{e(_short(prompts.get(it['task_id'], it['task_id']), 500))}</div>
+<pre>{e(it['display'])}</pre><div class="q">Answer in the form, choosing one of:</div><ul>{opts}</ul></div>""")
     parts.append("</body></html>")
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -59,14 +77,18 @@ def question_text(pair_id: str, kind: str) -> str:
     return f"Pair {pair_id[1:]}: {QUESTIONS[kind]}"
 
 
-def export_form(pairs: list[dict], path: Path) -> Path:
+def export_form(pairs: list[dict], path: Path, items: list[dict] | None = None) -> Path:
     """Word document for Microsoft Forms Quick import: numbered questions, each followed by its
     options on their own lines. Every question is a single choice between A and B."""
     from docx import Document
     doc = Document()
     doc.add_heading("Code originality rating", level=1)
-    doc.add_paragraph("Please use the rating booklet to see each pair. Answer A or B for every question.")
+    doc.add_paragraph(INFO)
+    doc.add_paragraph("Please use the rating booklet to see each pair and item.")
     n = 1
+    doc.add_paragraph(f"{n}. {CONSENT_Q}"); n += 1
+    doc.add_paragraph("Yes")
+    doc.add_paragraph("No")
     doc.add_paragraph(f"{n}. {CODE_Q}"); n += 1
     doc.add_paragraph(f"{n}. {EXPERIENCE_Q}"); n += 1
     for opt in ("Less than 1", "1 to 2", "3 to 5", "More than 5"):
@@ -76,6 +98,11 @@ def export_form(pairs: list[dict], path: Path) -> Path:
             doc.add_paragraph(f"{n}. {question_text(p['pair_id'], kind)}"); n += 1
             doc.add_paragraph("A")
             doc.add_paragraph("B")
+    from macs.rating.labelling import question_text as label_q
+    for it in items or []:
+        doc.add_paragraph(f"{n}. {label_q(it['item_id'])}"); n += 1
+        for o in it["options"]:
+            doc.add_paragraph(o)
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
     doc.save(str(path))

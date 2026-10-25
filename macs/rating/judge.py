@@ -48,3 +48,44 @@ def judge_pairs(pairs: list[dict], prompts: dict[str, str], client, *, log=print
     n = 2 * len(pairs)
     return out, {"asked": n, "consistent": len(out), "inconsistent": inconsistent, "unparsed": unparsed,
                  "position_consistency": len(out) / n if n else None}
+
+
+LABEL_PROMPT = (
+    "You are an experienced Python programmer. Read the solution and decide which listed approach it "
+    "uses. Reply with the number of one option on the first line, then at most one sentence.")
+_NUM = re.compile(r"\b(\d+)\b")
+
+
+def _ask_label(client, task: str, code: str, options: list[str], seed: int) -> int | None:
+    listed = "\n".join(f"{k}. {o}" for k, o in enumerate(options, start=1))
+    user = f"Task:\n{task}\n\nSolution:\n```python\n{code}\n```\n\nOptions:\n{listed}\n\nReply with one number."
+    r = client.chat([{"role": "system", "content": LABEL_PROMPT}, {"role": "user", "content": user}],
+                    seed=seed, temperature=0.0, max_tokens=60)
+    m = _NUM.search(r.text.strip().splitlines()[0] if r.text.strip() else "")
+    k = int(m.group(1)) if m else 0
+    return k - 1 if 1 <= k <= len(options) else None
+
+
+def judge_labels(items: list[dict], prompts: dict[str, str], client, *, log=print) -> tuple[list[dict], dict]:
+    """The AI rater for Part B (SC3), reported separately and labelled as AI. Each item is asked with
+    the approaches in the listed order and in reverse ("Something else" stays last); the label counts
+    only when both orders give the same approach."""
+    out, inconsistent, unparsed = [], 0, 0
+    for i, it in enumerate(items, start=1):
+        task = prompts.get(it["task_id"], it["task_id"])
+        opts = it["options"]
+        fams, other = opts[:-1], opts[-1:]
+        rev_opts = fams[::-1] + other
+        a = _ask_label(client, task, it["display"], opts, seed=3000 + i)
+        b = _ask_label(client, task, it["display"], rev_opts, seed=4000 + i)
+        if a is None or b is None:
+            unparsed += 1
+            continue
+        if opts[a] != rev_opts[b]:
+            inconsistent += 1
+            continue
+        out.append({"rater": "judge", "item_id": it["item_id"], "choice": opts[a]})
+        if log and i % 10 == 0:
+            log(f"[{i}/{len(items)}] labelled")
+    n = len(items)
+    return out, {"asked": n, "consistent": len(out), "inconsistent": inconsistent, "unparsed": unparsed}

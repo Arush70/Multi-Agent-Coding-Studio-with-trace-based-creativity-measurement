@@ -75,10 +75,13 @@ def collect_solutions(traces_dir="data/traces", *, model: str | None = None, tas
             X, keep = _embed([code])
             if not keep:
                 continue
+            z = float(ref.novelty(X)[0])
+            if z != z:                                    # NaN: the task's reference has no spread
+                continue
             seen.add(key)
             out.append(Solution(sid=f"{task.id}|{p.stem}|{pid}", task_id=task.id, session=p.stem, proposal_id=pid,
                                 condition=start["condition"], code=code, display=blind_view(code),
-                                novelty=float(ref.novelty(X)[0])))
+                                novelty=z))
     if log:
         log(f"{len(out)} distinct correct solutions from {len({s.task_id for s in out})} task(s), model {model}")
     return out

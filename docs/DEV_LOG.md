@@ -54,6 +54,12 @@ what changed, why, and which files. Pre-registration changes are also logged, da
   z has no scale (Llama 3.1 has two such tasks). `ReferenceStats.degenerate` (spread < 1e-6) now
   makes z undefined (None) for that task; the percentile-based correct-and-novel rate, the
   primary novelty outcome, is unaffected (anything unlike the repeated reference counts as rare).
+- Rater form: Part A (60 pairs, SC4) and Part B (48 labelling items, SC3, `macs/rating/labelling.py`)
+  in one Microsoft Form with an information text and a consent question; raters are classmates and
+  acquaintances, never the researcher or supervisor. `rating_study.py` builds, exports, imports and
+  analyses both parts; Part B majority labels go to `data/calibration/labels.jsonl` for the ARI
+  sweep. The AI rater (`judge`) now also labels Part B (two option orders, must agree), written to
+  `data/calibration/judge/`. `isca/rating.sbatch` builds the materials and runs the AI rater on ISCA.
 
 ## 2026-10-22 (Week 5) - University GPU (ISCA): 27B becomes the main model
 
