@@ -70,12 +70,17 @@ limit is reached, and continues where it stopped.
 
 You can log out at any time; the job keeps running.
 
-## 6. Bring the results back
+## 6. Analyse (on ISCA, CPU node)
+
+    sbatch isca/analyze_all.sbatch       # every model; run again when more sessions have finished
+    tail -f data/jobs/analysis-*.log
+
+## 7. Bring the results back
 
 When the log says `all done`, on the laptop in PowerShell, inside the project folder:
 
-    scp uid123@login.isca.ex.ac.uk:~/macs/data/jobs/results-qwen35_27b.tgz .
-    tar -xzf results-qwen35_27b.tgz
+    scp uid123@login.isca.ex.ac.uk:macs/data/jobs/analysis_results.tgz .
+    tar -xzf analysis_results.tgz
 
 The traces carry the model name, so the dashboard and the analysis keep 27B and 9B apart.
 
