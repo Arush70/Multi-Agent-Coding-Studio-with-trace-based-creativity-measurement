@@ -43,6 +43,12 @@ what changed, why, and which files. Pre-registration changes are also logged, da
   now try only the CUDA 12 library (`OLLAMA_LLM_LIBRARY=cuda_v12`, one 30 s try instead of three)
   and up to 10 times. Jobs are named `m-<profile>`; `isca/status.sh` prints jobs and sessions per
   model.
+- Bug: open-problem search logs were named by task, strategy and seed but not model, so on ISCA
+  the 27B search would resume the 9B's finished logs and skip itself. Logs now live in
+  `data/search/<model>/`, a resume refuses another model's log, `search_open.py migrate` moves
+  older flat logs, and the report covers every model (`main_model` = 27B). The search runs on
+  27B and 9B only (pre-registered on the main model). The laptop's 9B search at 4096 context is
+  archived with the 2-learner pilot.
 
 ## 2026-10-22 (Week 5) - University GPU (ISCA): 27B becomes the main model
 

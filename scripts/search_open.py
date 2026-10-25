@@ -2,6 +2,7 @@
 
     python scripts/search_open.py run --tasks t3_circle_packing,t3_bin_packing --budget 40 --seeds 1-3
     python scripts/search_open.py report
+    python scripts/search_open.py migrate        # once: move older flat logs into per-model folders
 
 `run` runs every strategy (random, single, studio) with the same budget of scored programs, for
 each task and seed; it can be stopped and restarted (it continues where it stopped). `report`
@@ -41,19 +42,36 @@ def cmd_run(a):
                 run_search(t, client, strategy=s, budget=a.budget, seed=seed, backend=a.sandbox, out_dir=OUT)
 
 
+def search_logs() -> list[Path]:
+    """Every search log: data/search/<model>/*.jsonl (and any older flat data/search/*.jsonl)."""
+    return sorted(OUT.glob("*/*.jsonl")) + sorted(OUT.glob("*.jsonl"))
+
+
+def cmd_migrate(a):
+    """Move flat data/search/*.jsonl logs (before per-model folders) into data/search/<model>/."""
+    from macs.metrics.reference import model_slug
+    moved = 0
+    for p in sorted(OUT.glob("*.jsonl")):
+        model = read_curve(p)["model"] or "unknown_model"
+        dest = OUT / model_slug(model) / p.name
+        if dest.exists():
+            print(f"  kept {p.name}: {dest} already exists")
+            continue
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        p.rename(dest)
+        moved += 1
+    print(f"moved {moved} log(s) into per-model folders under {OUT}")
+
+
 def _auc(curve: list[float]) -> float | None:
     return float(sum(curve) / len(curve)) if curve else None
 
 
-def cmd_report(a):
+def _report_tasks(runs: list[dict]) -> dict:
     import numpy as np
     from scipy import stats
     from macs.analysis.score import task_by_id
-    runs = [read_curve(p) for p in sorted(OUT.glob("*.jsonl"))]
-    runs = [r for r in runs if r["n"]]
-    if not runs:
-        raise SystemExit(f"no search logs in {OUT}; run first")
-    report = {"tasks": {}}
+    out = {}
     for tid in sorted({r["task_id"] for r in runs}):
         task = task_by_id(tid)
         best_known = (task.heuristic or {}).get("best_known")
@@ -90,11 +108,27 @@ def cmd_report(a):
                 print(f"   studio vs {other}: AUC difference {c['mean_auc_diff']:+.3f}, studio better on "
                       f"{c['studio_better_seeds']}/{c['n_seeds']} seeds"
                       + (f", Wilcoxon p={c['wilcoxon_p']:.3f}" if c["wilcoxon_p"] is not None else ""))
-        report["tasks"][tid] = {"best_known": best_known, "strategies": rows, "comparisons": comps}
+        out[tid] = {"best_known": best_known, "strategies": rows, "comparisons": comps}
+    return out
+
+
+def cmd_report(a):
+    runs = [read_curve(p) for p in search_logs()]
+    runs = [r for r in runs if r["n"]]
+    if not runs:
+        raise SystemExit(f"no search logs in {OUT}; run first")
+    models = sorted({r["model"] or "unknown_model" for r in runs})
+    report = {"models": {}}
+    for m in models:
+        print(f"\n######## model {m}")
+        report["models"][m] = {"tasks": _report_tasks([r for r in runs if (r["model"] or "unknown_model") == m])}
+    main = a.model if a.model in report["models"] else ("qwen3.5:27b" if "qwen3.5:27b" in models else models[0])
+    report["main_model"] = main
+    report["tasks"] = report["models"][main]["tasks"]       # the main model's results, as before
     out = Path("data/results/search_report.json")
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(report, indent=1), encoding="utf-8")
-    print(f"\nwritten: {out}")
+    print(f"\nwritten: {out} (main model {main}; models: {', '.join(models)})")
 
 
 def main() -> None:
@@ -107,9 +141,11 @@ def main() -> None:
     r.add_argument("--seeds", default="1-3")
     r.add_argument("--profile", default="local")
     r.add_argument("--sandbox", default="subprocess", choices=["subprocess", "docker"])
-    sub.add_parser("report")
+    rp = sub.add_parser("report")
+    rp.add_argument("--model", default=None, help="model whose results go under 'tasks' (default qwen3.5:27b)")
+    sub.add_parser("migrate", help="move older flat logs into per-model folders")
     a = ap.parse_args()
-    {"run": cmd_run, "report": cmd_report}[a.cmd](a)
+    {"run": cmd_run, "report": cmd_report, "migrate": cmd_migrate}[a.cmd](a)
 
 
 if __name__ == "__main__":

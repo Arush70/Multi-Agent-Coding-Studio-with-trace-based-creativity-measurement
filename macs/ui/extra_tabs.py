@@ -219,7 +219,11 @@ def open_problems(st, c) -> None:
     c["live"]("search_report", lambda: c["job_panel"]("search_report", "Search report"))
     rep = _read(ROOT / "data" / "results" / "search_report.json")
     if rep:
-        for tid, t in rep["tasks"].items():
+        models = list(rep.get("models", {})) or [None]
+        mpick = st.selectbox("Model", models, index=models.index(rep["main_model"]) if rep.get("main_model") in models else 0,
+                             key="op_model") if models != [None] else None
+        tasks = rep["models"][mpick]["tasks"] if mpick else rep["tasks"]
+        for tid, t in tasks.items():
             st.markdown(f"**{tid}**" + (f" · best known raw value {t['best_known']}" if t.get("best_known") else ""))
             st.dataframe(pd.DataFrame([{"strategy": s, "best score (mean over seeds)": round(v["best_mean"], 4),
                                         "best raw value": v["best_raw"], "gap to best known": v["gap_to_best_known"],
@@ -230,7 +234,10 @@ def open_problems(st, c) -> None:
                 st.write(t["comparisons"])
     # best-so-far curves
     from macs.search.loop import read_curve
-    logs = sorted((ROOT / "data" / "search").glob("*.jsonl")) if (ROOT / "data" / "search").exists() else []
+    sroot = ROOT / "data" / "search"
+    logs = (sorted(sroot.glob("*/*.jsonl")) + sorted(sroot.glob("*.jsonl"))) if sroot.exists() else []
+    if logs and rep and rep.get("models") and mpick:
+        logs = [p for p in logs if read_curve(p)["model"] == mpick]
     if logs:
         task_pick = st.selectbox("Curves for", sorted({p.name.split("-")[0] for p in logs}), key="op_curve")
         curves = {}

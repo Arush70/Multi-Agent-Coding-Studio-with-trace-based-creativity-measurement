@@ -14,7 +14,8 @@ better and 1.0 is the standard baseline heuristic; an invalid program scores 0.
 
 The comparison that answers the research question: best score reached vs number of programs
 scored, per strategy, averaged over seeds; tokens are logged as the cost. Every program, score
-and prompt hash goes to a JSONL log (data/search/<task>-<strategy>-<seed>.jsonl).
+and prompt hash goes to a JSONL log (data/search/<model>/<task>-<strategy>-<seed>.jsonl; one folder
+per model, so runs of different models never mix).
 """
 from __future__ import annotations
 
@@ -64,9 +65,14 @@ def run_search(task, client, *, strategy: str, budget: int = 40, seed: int = 1, 
                out_dir: str | Path = "data/search", log=print) -> Path:
     if strategy not in STRATEGIES:
         raise ValueError(f"strategy must be one of {STRATEGIES}")
-    out_dir = Path(out_dir)
+    from macs.metrics.reference import model_slug
+    model = getattr(client.profile, "model", None)
+    out_dir = Path(out_dir) / model_slug(model or "unknown_model")
     out_dir.mkdir(parents=True, exist_ok=True)
     path = out_dir / f"{task.id}-{strategy}-{seed}.jsonl"
+    logged = read_curve(path)["model"] if path.exists() else None
+    if logged is not None and model is not None and logged != model:
+        raise RuntimeError(f"{path} is a search by {logged}, not {model}; move it aside before resuming")
     done = _resume(path)
     programs: list[Program] = [Program(**{k: v for k, v in d.items() if k in Program.__annotations__}) for d in done]
     tokens = sum(d.get("tokens", 0) for d in done)
@@ -154,6 +160,8 @@ def _resume(path: Path) -> list[dict]:
 
 def read_curve(path: Path) -> dict:
     """Best-so-far curve and summary of one search log."""
+    if not Path(path).exists():
+        return {"model": None, "n": 0}
     rows = _resume(Path(path))
     head = {}
     for line in Path(path).read_text(encoding="utf-8").splitlines():
