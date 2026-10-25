@@ -28,7 +28,9 @@ TASKS=${TASKS:-all}
 CONDITIONS=${CONDITIONS:-all}
 SEEDS=${SEEDS:-1-6}
 WORKERS=${WORKERS:-6}
-SEARCH=${SEARCH:-1}
+SEARCH=${SEARCH:-auto}
+# the open-problem search is pre-registered on the main model; it also runs on 9B for comparison
+if [ "$SEARCH" = auto ]; then case $PROFILE in qwen35_27b|local) SEARCH=1 ;; *) SEARCH=0 ;; esac; fi
 RESUBMIT=${RESUBMIT:-3}
 PREFIX=${MACS_PREFIX:-$HOME/macs-tools}
 
