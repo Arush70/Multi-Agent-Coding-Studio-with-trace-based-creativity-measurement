@@ -205,3 +205,13 @@ def test_parallel_reference_build_makes_the_same_seeds(tmp_path):
     rows = lambda p: {r["seed"]: r["code"] for r in map(json.loads, p.read_text().splitlines())}
     assert rows(seq) == rows(par) and set(rows(par)) == {REF_SEED_BASE + i for i in range(12)}
     assert build_task_reference(task, Echo(), n=12, path=par, log=lambda *_: None, parallel=4) == 0
+
+
+def test_degenerate_reference_gives_no_z_but_keeps_percentile():
+    import numpy as np
+    from macs.metrics.novelty import ReferenceStats
+    X_ref = np.tile([1.0, 2.0, 3.0], (20, 1))                  # the same solution 20 times
+    r = ReferenceStats.fit(X_ref)
+    assert r.degenerate
+    assert np.all(np.isnan(r.novelty(np.array([[1.0, 2.0, 3.0], [3.0, 1.0, 0.0]]))))
+    assert list(r.percentile(np.array([[1.0, 2.0, 3.0], [3.0, 1.0, 0.0]]))) == [0.0, 1.0]

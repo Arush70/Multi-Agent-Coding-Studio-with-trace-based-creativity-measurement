@@ -49,6 +49,11 @@ what changed, why, and which files. Pre-registration changes are also logged, da
   older flat logs, and the report covers every model (`main_model` = 27B). The search runs on
   27B and 9B only (pre-registered on the main model). The laptop's 9B search at 4096 context is
   archived with the 2-learner pilot.
+- First full analysis (ISCA CPU job `isca/analyze_all.sbatch`). Mean novelty z came out near 1e10
+  for 27B: on t1_mbpp19 its 100 references are near-identical, so the reference kNN spread is 0 and
+  z has no scale (Llama 3.1 has two such tasks). `ReferenceStats.degenerate` (spread < 1e-6) now
+  makes z undefined (None) for that task; the percentile-based correct-and-novel rate, the
+  primary novelty outcome, is unaffected (anything unlike the repeated reference counts as rare).
 
 ## 2026-10-22 (Week 5) - University GPU (ISCA): 27B becomes the main model
 

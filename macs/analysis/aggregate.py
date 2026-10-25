@@ -131,7 +131,8 @@ def session_metrics(path, *, backend="subprocess", reference=None, cluster_thres
     z = None
     if reference is not None and len(X) >= 1:
         z = reference.novelty(X)
-        mean_novelty = float(np.mean(z))
+        # None when the task's reference has no spread (z undefined); see ReferenceStats.degenerate
+        mean_novelty = None if np.all(np.isnan(z)) else float(np.nanmean(z))
         pct = reference.percentile(X)
         is_novel = pct >= NOVELTY_PERCENTILE
         # align correctness to the kept (parseable) rows
@@ -139,7 +140,7 @@ def session_metrics(path, *, backend="subprocess", reference=None, cluster_thres
         cn_rate = correct_and_novel_rate(corr_kept, is_novel)
 
     # per-proposal record (for the quality-diversity frontier and "does creativity pay off")
-    zmap = {i: float(z[j]) for j, i in enumerate(keep)} if z is not None else {}
+    zmap = {i: (None if np.isnan(z[j]) else float(z[j])) for j, i in enumerate(keep)} if z is not None else {}
     proposals = [{"correct": bool(correct_flags[i]) if i < len(correct_flags) else None,
                   "novelty": zmap.get(i),
                   "heuristic_score": heur_scores[i] if i < len(heur_scores) else None}
