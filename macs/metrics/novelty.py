@@ -18,6 +18,7 @@ from sklearn.metrics.pairwise import cosine_distances
 from sklearn.preprocessing import StandardScaler
 
 K_DEFAULT = 5
+DEGENERATE_STD = 1e-6     # below this the reference LOO kNN distances have no usable spread
 
 
 @dataclass
@@ -46,8 +47,17 @@ class ReferenceStats:
         D = cosine_distances(X, self.X_ref)
         return np.sort(D, axis=1)[:, :self.k].mean(axis=1)
 
+    @property
+    def degenerate(self) -> bool:
+        """True when the reference's own kNN distances have no spread (e.g. the model wrote the
+        same solution almost every time), so a z-score has no scale. Amended 2026-10-25."""
+        return self.ref_knn_std < DEGENERATE_STD
+
     def novelty(self, X: np.ndarray) -> np.ndarray:
-        """z-scored kNN distance: 0 = as typical as the reference; 2 = two SDs further out."""
+        """z-scored kNN distance: 0 = as typical as the reference; 2 = two SDs further out.
+        NaN for a degenerate reference (no spread): the percentile outcome still applies."""
+        if self.degenerate:
+            return np.full(len(X), np.nan)
         return (self.raw_knn(X) - self.ref_knn_mean) / self.ref_knn_std
 
     def percentile(self, X: np.ndarray) -> np.ndarray:
