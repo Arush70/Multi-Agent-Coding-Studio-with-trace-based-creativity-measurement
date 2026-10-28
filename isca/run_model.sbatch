@@ -39,7 +39,7 @@ conda activate macs
 export OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 PYTHONUNBUFFERED=1 HF_HOME="$PREFIX/hf" HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1
 export OLLAMA_MODELS="$PREFIX/models" OLLAMA_HOST="127.0.0.1:$((11500 + SLURM_JOB_ID % 400))"
 export OLLAMA_NUM_PARALLEL=$WORKERS OLLAMA_KEEP_ALIVE=-1 OLLAMA_MAX_LOADED_MODELS=1
-export OLLAMA_CONTEXT_LENGTH=16384             # at least every profile's context_length (checked by run_experiment)
+export OLLAMA_CONTEXT_LENGTH=${CONTEXT:-16384}  # at least the profile's context_length (checked by run_experiment); CONTEXT=8192 saves GPU memory
 OLLAMA="$PREFIX/ollama/bin/ollama"     # replaced by a node-local copy below
 scontrol update JobId="$SLURM_JOB_ID" JobName="m-$PROFILE" 2>/dev/null || true
 echo "== job $SLURM_JOB_ID on $(hostname) $(date) profile=$PROFILE tasks=$TASKS conditions=$CONDITIONS seeds=$SEEDS workers=$WORKERS"
