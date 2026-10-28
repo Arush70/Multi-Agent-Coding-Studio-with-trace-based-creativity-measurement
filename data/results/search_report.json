@@ -1,0 +1,969 @@
+{
+ "models": {
+  "qwen3.5:27b": {
+   "tasks": {
+    "t3_bin_packing": {
+     "best_known": null,
+     "strategies": {
+      "random": {
+       "seeds": [
+        1,
+        2,
+        3
+       ],
+       "best_mean": 1.0,
+       "best_max": 1.0,
+       "best_raw": 31.0,
+       "auc_mean": 0.9996774193548387,
+       "valid_share": 0.9166666666666666,
+       "tokens_mean": 37689.666666666664,
+       "interventions": 0,
+       "by_seed": {
+        "1": {
+         "best": 1.0,
+         "auc": 0.9990322580645161
+        },
+        "2": {
+         "best": 1.0,
+         "auc": 1.0
+        },
+        "3": {
+         "best": 1.0,
+         "auc": 1.0
+        }
+       },
+       "gap_to_best_known": null
+      },
+      "single": {
+       "seeds": [
+        1,
+        2,
+        3
+       ],
+       "best_mean": 1.0,
+       "best_max": 1.0,
+       "best_raw": 31.0,
+       "auc_mean": 0.9997792494481237,
+       "valid_share": 0.7000000000000001,
+       "tokens_mean": 112383.33333333333,
+       "interventions": 0,
+       "by_seed": {
+        "1": {
+         "best": 1.0,
+         "auc": 0.9993377483443708
+        },
+        "2": {
+         "best": 1.0,
+         "auc": 1.0
+        },
+        "3": {
+         "best": 1.0,
+         "auc": 1.0
+        }
+       },
+       "gap_to_best_known": null
+      },
+      "studio": {
+       "seeds": [
+        1,
+        2,
+        3
+       ],
+       "best_mean": 1.0,
+       "best_max": 1.0,
+       "best_raw": 31.0,
+       "auc_mean": 0.9910215053763441,
+       "valid_share": 0.8000000000000002,
+       "tokens_mean": 169227.66666666666,
+       "interventions": 89,
+       "by_seed": {
+        "1": {
+         "best": 1.0,
+         "auc": 0.975
+        },
+        "2": {
+         "best": 1.0,
+         "auc": 0.9990322580645161
+        },
+        "3": {
+         "best": 1.0,
+         "auc": 0.9990322580645161
+        }
+       },
+       "gap_to_best_known": null
+      }
+     },
+     "comparisons": {
+      "studio - single": {
+       "n_seeds": 3,
+       "mean_auc_diff": -0.008757744071779539,
+       "studio_better_seeds": 0,
+       "wilcoxon_p": null
+      },
+      "studio - random": {
+       "n_seeds": 3,
+       "mean_auc_diff": -0.008655913978494634,
+       "studio_better_seeds": 0,
+       "wilcoxon_p": null
+      }
+     }
+    },
+    "t3_cap_set": {
+     "best_known": null,
+     "strategies": {
+      "random": {
+       "seeds": [
+        1,
+        2,
+        3
+       ],
+       "best_mean": 1.1666666666666667,
+       "best_max": 1.1785714285714286,
+       "best_raw": 22.0,
+       "auc_mean": 1.151488095238095,
+       "valid_share": 0.4583333333333333,
+       "tokens_mean": 74147.33333333333,
+       "interventions": 0,
+       "by_seed": {
+        "1": {
+         "best": 1.1785714285714286,
+         "auc": 1.1750000000000003
+        },
+        "2": {
+         "best": 1.1607142857142858,
+         "auc": 1.1607142857142851
+        },
+        "3": {
+         "best": 1.1607142857142858,
+         "auc": 1.1187499999999995
+        }
+       },
+       "gap_to_best_known": null
+      },
+      "single": {
+       "seeds": [
+        1,
+        2,
+        3
+       ],
+       "best_mean": 1.226190476190476,
+       "best_max": 1.2499999999999998,
+       "best_raw": 23.333333333333332,
+       "auc_mean": 1.1534226190476191,
+       "valid_share": 0.5833333333333334,
+       "tokens_mean": 154292.66666666666,
+       "interventions": 0,
+       "by_seed": {
+        "1": {
+         "best": 1.2499999999999998,
+         "auc": 1.1124999999999994
+        },
+        "2": {
+         "best": 1.2142857142857142,
+         "auc": 1.1825892857142861
+        },
+        "3": {
+         "best": 1.2142857142857142,
+         "auc": 1.1651785714285716
+        }
+       },
+       "gap_to_best_known": null
+      },
+      "studio": {
+       "seeds": [
+        1,
+        2,
+        3
+       ],
+       "best_mean": 1.1190476190476188,
+       "best_max": 1.1964285714285714,
+       "best_raw": 22.333333333333332,
+       "auc_mean": 1.0888392857142855,
+       "valid_share": 0.46666666666666673,
+       "tokens_mean": 218853.66666666666,
+       "interventions": 84,
+       "by_seed": {
+        "1": {
+         "best": 1.1964285714285714,
+         "auc": 1.1839285714285714
+        },
+        "2": {
+         "best": 1.0,
+         "auc": 1.0
+        },
+        "3": {
+         "best": 1.1607142857142858,
+         "auc": 1.0825892857142851
+        }
+       },
+       "gap_to_best_known": null
+      }
+     },
+     "comparisons": {
+      "studio - single": {
+       "n_seeds": 3,
+       "mean_auc_diff": -0.0645833333333335,
+       "studio_better_seeds": 1,
+       "wilcoxon_p": null
+      },
+      "studio - random": {
+       "n_seeds": 3,
+       "mean_auc_diff": -0.06264880952380943,
+       "studio_better_seeds": 1,
+       "wilcoxon_p": null
+      }
+     }
+    },
+    "t3_circle_packing": {
+     "best_known": 2.635983,
+     "strategies": {
+      "random": {
+       "seeds": [
+        1,
+        2,
+        3
+       ],
+       "best_mean": 1.0412212087924477,
+       "best_max": 1.1570728519033302,
+       "best_raw": 2.506991179123882,
+       "auc_mean": 0.7175214186380466,
+       "valid_share": 0.15833333333333333,
+       "tokens_mean": 85205.33333333333,
+       "interventions": 0,
+       "by_seed": {
+        "1": {
+         "best": 0.8393978511085988,
+         "auc": 0.6276935839223307
+        },
+        "2": {
+         "best": 1.1271929233654145,
+         "auc": 0.8263575505541404
+        },
+        "3": {
+         "best": 1.1570728519033302,
+         "auc": 0.6985131214376691
+        }
+       },
+       "gap_to_best_known": 0.12899182087611782
+      },
+      "single": {
+       "seeds": [
+        1,
+        2,
+        3
+       ],
+       "best_mean": 0.7397730676025703,
+       "best_max": 0.9946011227980116,
+       "best_raw": 2.1549690993956916,
+       "auc_mean": 0.48761712645852767,
+       "valid_share": 0.09999999999999999,
+       "tokens_mean": 169044.66666666666,
+       "interventions": 0,
+       "by_seed": {
+        "1": {
+         "best": 0.7949929270832505,
+         "auc": 0.39749646354162516
+        },
+        "2": {
+         "best": 0.42972515292644897,
+         "auc": 0.3194422031259942
+        },
+        "3": {
+         "best": 0.9946011227980116,
+         "auc": 0.7459127127079638
+        }
+       },
+       "gap_to_best_known": 0.4810139006043084
+      },
+      "studio": {
+       "seeds": [
+        1,
+        2,
+        3
+       ],
+       "best_mean": 0.9251244177378926,
+       "best_max": 1.1256767387906006,
+       "best_raw": 2.4389662673796346,
+       "auc_mean": 0.7405359289248832,
+       "valid_share": 0.27499999999999997,
+       "tokens_mean": 236079.66666666666,
+       "interventions": 73,
+       "by_seed": {
+        "1": {
+         "best": 1.1256767387906006,
+         "auc": 0.9650226416289541
+        },
+        "2": {
+         "best": 1.0,
+         "auc": 0.775
+        },
+        "3": {
+         "best": 0.6496965144230773,
+         "auc": 0.4815851451456955
+        }
+       },
+       "gap_to_best_known": 0.19701673262036534
+      }
+     },
+     "comparisons": {
+      "studio - single": {
+       "n_seeds": 3,
+       "mean_auc_diff": 0.2529188024663555,
+       "studio_better_seeds": 2,
+       "wilcoxon_p": null
+      },
+      "studio - random": {
+       "n_seeds": 3,
+       "mean_auc_diff": 0.023014510286836504,
+       "studio_better_seeds": 1,
+       "wilcoxon_p": null
+      }
+     }
+    }
+   }
+  },
+  "qwen3.5:9b": {
+   "tasks": {
+    "t3_bin_packing": {
+     "best_known": null,
+     "strategies": {
+      "random": {
+       "seeds": [
+        1,
+        2,
+        3
+       ],
+       "best_mean": 0.3333333333333333,
+       "best_max": 1.0,
+       "best_raw": 31.0,
+       "auc_mean": 0.27499999999999997,
+       "valid_share": 0.06666666666666667,
+       "tokens_mean": 80987.0,
+       "interventions": 0,
+       "by_seed": {
+        "1": {
+         "best": 0.0,
+         "auc": 0.0
+        },
+        "2": {
+         "best": 0.0,
+         "auc": 0.0
+        },
+        "3": {
+         "best": 1.0,
+         "auc": 0.825
+        }
+       },
+       "gap_to_best_known": null
+      },
+      "single": {
+       "seeds": [
+        1,
+        2,
+        3
+       ],
+       "best_mean": 0.3333333333333333,
+       "best_max": 1.0,
+       "best_raw": 29.8,
+       "auc_mean": 0.325,
+       "valid_share": 0.041666666666666664,
+       "tokens_mean": 148804.66666666666,
+       "interventions": 0,
+       "by_seed": {
+        "1": {
+         "best": 0.0,
+         "auc": 0.0
+        },
+        "2": {
+         "best": 0.0,
+         "auc": 0.0
+        },
+        "3": {
+         "best": 1.0,
+         "auc": 0.975
+        }
+       },
+       "gap_to_best_known": null
+      },
+      "studio": {
+       "seeds": [
+        1,
+        2,
+        3
+       ],
+       "best_mean": 0.3333333333333333,
+       "best_max": 1.0,
+       "best_raw": 31.0,
+       "auc_mean": 0.325,
+       "valid_share": 0.20833333333333334,
+       "tokens_mean": 218783.33333333334,
+       "interventions": 51,
+       "by_seed": {
+        "1": {
+         "best": 0.0,
+         "auc": 0.0
+        },
+        "2": {
+         "best": 0.0,
+         "auc": 0.0
+        },
+        "3": {
+         "best": 1.0,
+         "auc": 0.975
+        }
+       },
+       "gap_to_best_known": null
+      }
+     },
+     "comparisons": {
+      "studio - single": {
+       "n_seeds": 3,
+       "mean_auc_diff": 0.0,
+       "studio_better_seeds": 0,
+       "wilcoxon_p": null
+      },
+      "studio - random": {
+       "n_seeds": 3,
+       "mean_auc_diff": 0.05000000000000001,
+       "studio_better_seeds": 1,
+       "wilcoxon_p": null
+      }
+     }
+    },
+    "t3_cap_set": {
+     "best_known": null,
+     "strategies": {
+      "random": {
+       "seeds": [
+        1,
+        2,
+        3
+       ],
+       "best_mean": 0.017857142857142856,
+       "best_max": 0.05357142857142857,
+       "best_raw": 1.0,
+       "auc_mean": 0.005803571428571429,
+       "valid_share": 0.008333333333333333,
+       "tokens_mean": 87844.0,
+       "interventions": 0,
+       "by_seed": {
+        "1": {
+         "best": 0.0,
+         "auc": 0.0
+        },
+        "2": {
+         "best": 0.0,
+         "auc": 0.0
+        },
+        "3": {
+         "best": 0.05357142857142857,
+         "auc": 0.017410714285714286
+        }
+       },
+       "gap_to_best_known": null
+      },
+      "single": {
+       "seeds": [
+        1,
+        2,
+        3
+       ],
+       "best_mean": 0.3988095238095238,
+       "best_max": 1.1964285714285714,
+       "best_raw": 22.333333333333332,
+       "auc_mean": 0.34806547619047623,
+       "valid_share": 0.049999999999999996,
+       "tokens_mean": 166399.33333333334,
+       "interventions": 0,
+       "by_seed": {
+        "1": {
+         "best": 0.0,
+         "auc": 0.0
+        },
+        "2": {
+         "best": 0.0,
+         "auc": 0.0
+        },
+        "3": {
+         "best": 1.1964285714285714,
+         "auc": 1.0441964285714287
+        }
+       },
+       "gap_to_best_known": null
+      },
+      "studio": {
+       "seeds": [
+        1,
+        2,
+        3
+       ],
+       "best_mean": 0.3333333333333333,
+       "best_max": 1.0,
+       "best_raw": 18.666666666666668,
+       "auc_mean": 0.075,
+       "valid_share": 0.016666666666666666,
+       "tokens_mean": 234994.66666666666,
+       "interventions": 39,
+       "by_seed": {
+        "1": {
+         "best": 0.0,
+         "auc": 0.0
+        },
+        "2": {
+         "best": 0.0,
+         "auc": 0.0
+        },
+        "3": {
+         "best": 1.0,
+         "auc": 0.225
+        }
+       },
+       "gap_to_best_known": null
+      }
+     },
+     "comparisons": {
+      "studio - single": {
+       "n_seeds": 3,
+       "mean_auc_diff": -0.2730654761904762,
+       "studio_better_seeds": 0,
+       "wilcoxon_p": null
+      },
+      "studio - random": {
+       "n_seeds": 3,
+       "mean_auc_diff": 0.06919642857142858,
+       "studio_better_seeds": 1,
+       "wilcoxon_p": null
+      }
+     }
+    },
+    "t3_circle_packing": {
+     "best_known": 2.635983,
+     "strategies": {
+      "random": {
+       "seeds": [
+        1,
+        2,
+        3
+       ],
+       "best_mean": 0.0,
+       "best_max": 0.0,
+       "best_raw": null,
+       "auc_mean": 0.0,
+       "valid_share": 0.0,
+       "tokens_mean": 90600.66666666667,
+       "interventions": 0,
+       "by_seed": {
+        "1": {
+         "best": 0.0,
+         "auc": 0.0
+        },
+        "2": {
+         "best": 0.0,
+         "auc": 0.0
+        },
+        "3": {
+         "best": 0.0,
+         "auc": 0.0
+        }
+       },
+       "gap_to_best_known": null
+      },
+      "single": {
+       "seeds": [
+        1,
+        2,
+        3
+       ],
+       "best_mean": 0.0,
+       "best_max": 0.0,
+       "best_raw": null,
+       "auc_mean": 0.0,
+       "valid_share": 0.0,
+       "tokens_mean": 167378.0,
+       "interventions": 0,
+       "by_seed": {
+        "1": {
+         "best": 0.0,
+         "auc": 0.0
+        },
+        "2": {
+         "best": 0.0,
+         "auc": 0.0
+        },
+        "3": {
+         "best": 0.0,
+         "auc": 0.0
+        }
+       },
+       "gap_to_best_known": null
+      },
+      "studio": {
+       "seeds": [
+        1,
+        2,
+        3
+       ],
+       "best_mean": 0.0,
+       "best_max": 0.0,
+       "best_raw": null,
+       "auc_mean": 0.0,
+       "valid_share": 0.0,
+       "tokens_mean": 242338.33333333334,
+       "interventions": 72,
+       "by_seed": {
+        "1": {
+         "best": 0.0,
+         "auc": 0.0
+        },
+        "2": {
+         "best": 0.0,
+         "auc": 0.0
+        },
+        "3": {
+         "best": 0.0,
+         "auc": 0.0
+        }
+       },
+       "gap_to_best_known": null
+      }
+     },
+     "comparisons": {
+      "studio - single": {
+       "n_seeds": 3,
+       "mean_auc_diff": 0.0,
+       "studio_better_seeds": 0,
+       "wilcoxon_p": null
+      },
+      "studio - random": {
+       "n_seeds": 3,
+       "mean_auc_diff": 0.0,
+       "studio_better_seeds": 0,
+       "wilcoxon_p": null
+      }
+     }
+    }
+   }
+  }
+ },
+ "main_model": "qwen3.5:27b",
+ "tasks": {
+  "t3_bin_packing": {
+   "best_known": null,
+   "strategies": {
+    "random": {
+     "seeds": [
+      1,
+      2,
+      3
+     ],
+     "best_mean": 1.0,
+     "best_max": 1.0,
+     "best_raw": 31.0,
+     "auc_mean": 0.9996774193548387,
+     "valid_share": 0.9166666666666666,
+     "tokens_mean": 37689.666666666664,
+     "interventions": 0,
+     "by_seed": {
+      "1": {
+       "best": 1.0,
+       "auc": 0.9990322580645161
+      },
+      "2": {
+       "best": 1.0,
+       "auc": 1.0
+      },
+      "3": {
+       "best": 1.0,
+       "auc": 1.0
+      }
+     },
+     "gap_to_best_known": null
+    },
+    "single": {
+     "seeds": [
+      1,
+      2,
+      3
+     ],
+     "best_mean": 1.0,
+     "best_max": 1.0,
+     "best_raw": 31.0,
+     "auc_mean": 0.9997792494481237,
+     "valid_share": 0.7000000000000001,
+     "tokens_mean": 112383.33333333333,
+     "interventions": 0,
+     "by_seed": {
+      "1": {
+       "best": 1.0,
+       "auc": 0.9993377483443708
+      },
+      "2": {
+       "best": 1.0,
+       "auc": 1.0
+      },
+      "3": {
+       "best": 1.0,
+       "auc": 1.0
+      }
+     },
+     "gap_to_best_known": null
+    },
+    "studio": {
+     "seeds": [
+      1,
+      2,
+      3
+     ],
+     "best_mean": 1.0,
+     "best_max": 1.0,
+     "best_raw": 31.0,
+     "auc_mean": 0.9910215053763441,
+     "valid_share": 0.8000000000000002,
+     "tokens_mean": 169227.66666666666,
+     "interventions": 89,
+     "by_seed": {
+      "1": {
+       "best": 1.0,
+       "auc": 0.975
+      },
+      "2": {
+       "best": 1.0,
+       "auc": 0.9990322580645161
+      },
+      "3": {
+       "best": 1.0,
+       "auc": 0.9990322580645161
+      }
+     },
+     "gap_to_best_known": null
+    }
+   },
+   "comparisons": {
+    "studio - single": {
+     "n_seeds": 3,
+     "mean_auc_diff": -0.008757744071779539,
+     "studio_better_seeds": 0,
+     "wilcoxon_p": null
+    },
+    "studio - random": {
+     "n_seeds": 3,
+     "mean_auc_diff": -0.008655913978494634,
+     "studio_better_seeds": 0,
+     "wilcoxon_p": null
+    }
+   }
+  },
+  "t3_cap_set": {
+   "best_known": null,
+   "strategies": {
+    "random": {
+     "seeds": [
+      1,
+      2,
+      3
+     ],
+     "best_mean": 1.1666666666666667,
+     "best_max": 1.1785714285714286,
+     "best_raw": 22.0,
+     "auc_mean": 1.151488095238095,
+     "valid_share": 0.4583333333333333,
+     "tokens_mean": 74147.33333333333,
+     "interventions": 0,
+     "by_seed": {
+      "1": {
+       "best": 1.1785714285714286,
+       "auc": 1.1750000000000003
+      },
+      "2": {
+       "best": 1.1607142857142858,
+       "auc": 1.1607142857142851
+      },
+      "3": {
+       "best": 1.1607142857142858,
+       "auc": 1.1187499999999995
+      }
+     },
+     "gap_to_best_known": null
+    },
+    "single": {
+     "seeds": [
+      1,
+      2,
+      3
+     ],
+     "best_mean": 1.226190476190476,
+     "best_max": 1.2499999999999998,
+     "best_raw": 23.333333333333332,
+     "auc_mean": 1.1534226190476191,
+     "valid_share": 0.5833333333333334,
+     "tokens_mean": 154292.66666666666,
+     "interventions": 0,
+     "by_seed": {
+      "1": {
+       "best": 1.2499999999999998,
+       "auc": 1.1124999999999994
+      },
+      "2": {
+       "best": 1.2142857142857142,
+       "auc": 1.1825892857142861
+      },
+      "3": {
+       "best": 1.2142857142857142,
+       "auc": 1.1651785714285716
+      }
+     },
+     "gap_to_best_known": null
+    },
+    "studio": {
+     "seeds": [
+      1,
+      2,
+      3
+     ],
+     "best_mean": 1.1190476190476188,
+     "best_max": 1.1964285714285714,
+     "best_raw": 22.333333333333332,
+     "auc_mean": 1.0888392857142855,
+     "valid_share": 0.46666666666666673,
+     "tokens_mean": 218853.66666666666,
+     "interventions": 84,
+     "by_seed": {
+      "1": {
+       "best": 1.1964285714285714,
+       "auc": 1.1839285714285714
+      },
+      "2": {
+       "best": 1.0,
+       "auc": 1.0
+      },
+      "3": {
+       "best": 1.1607142857142858,
+       "auc": 1.0825892857142851
+      }
+     },
+     "gap_to_best_known": null
+    }
+   },
+   "comparisons": {
+    "studio - single": {
+     "n_seeds": 3,
+     "mean_auc_diff": -0.0645833333333335,
+     "studio_better_seeds": 1,
+     "wilcoxon_p": null
+    },
+    "studio - random": {
+     "n_seeds": 3,
+     "mean_auc_diff": -0.06264880952380943,
+     "studio_better_seeds": 1,
+     "wilcoxon_p": null
+    }
+   }
+  },
+  "t3_circle_packing": {
+   "best_known": 2.635983,
+   "strategies": {
+    "random": {
+     "seeds": [
+      1,
+      2,
+      3
+     ],
+     "best_mean": 1.0412212087924477,
+     "best_max": 1.1570728519033302,
+     "best_raw": 2.506991179123882,
+     "auc_mean": 0.7175214186380466,
+     "valid_share": 0.15833333333333333,
+     "tokens_mean": 85205.33333333333,
+     "interventions": 0,
+     "by_seed": {
+      "1": {
+       "best": 0.8393978511085988,
+       "auc": 0.6276935839223307
+      },
+      "2": {
+       "best": 1.1271929233654145,
+       "auc": 0.8263575505541404
+      },
+      "3": {
+       "best": 1.1570728519033302,
+       "auc": 0.6985131214376691
+      }
+     },
+     "gap_to_best_known": 0.12899182087611782
+    },
+    "single": {
+     "seeds": [
+      1,
+      2,
+      3
+     ],
+     "best_mean": 0.7397730676025703,
+     "best_max": 0.9946011227980116,
+     "best_raw": 2.1549690993956916,
+     "auc_mean": 0.48761712645852767,
+     "valid_share": 0.09999999999999999,
+     "tokens_mean": 169044.66666666666,
+     "interventions": 0,
+     "by_seed": {
+      "1": {
+       "best": 0.7949929270832505,
+       "auc": 0.39749646354162516
+      },
+      "2": {
+       "best": 0.42972515292644897,
+       "auc": 0.3194422031259942
+      },
+      "3": {
+       "best": 0.9946011227980116,
+       "auc": 0.7459127127079638
+      }
+     },
+     "gap_to_best_known": 0.4810139006043084
+    },
+    "studio": {
+     "seeds": [
+      1,
+      2,
+      3
+     ],
+     "best_mean": 0.9251244177378926,
+     "best_max": 1.1256767387906006,
+     "best_raw": 2.4389662673796346,
+     "auc_mean": 0.7405359289248832,
+     "valid_share": 0.27499999999999997,
+     "tokens_mean": 236079.66666666666,
+     "interventions": 73,
+     "by_seed": {
+      "1": {
+       "best": 1.1256767387906006,
+       "auc": 0.9650226416289541
+      },
+      "2": {
+       "best": 1.0,
+       "auc": 0.775
+      },
+      "3": {
+       "best": 0.6496965144230773,
+       "auc": 0.4815851451456955
+      }
+     },
+     "gap_to_best_known": 0.19701673262036534
+    }
+   },
+   "comparisons": {
+    "studio - single": {
+     "n_seeds": 3,
+     "mean_auc_diff": 0.2529188024663555,
+     "studio_better_seeds": 2,
+     "wilcoxon_p": null
+    },
+    "studio - random": {
+     "n_seeds": 3,
+     "mean_auc_diff": 0.023014510286836504,
+     "studio_better_seeds": 1,
+     "wilcoxon_p": null
+    }
+   }
+  }
+ }
+}

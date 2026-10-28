@@ -317,5 +317,13 @@ and never edited to match results.
   counted only when both agree; it is reported separately and never combined with the humans.
   (iv) Mean novelty z is undefined (left out) for a task whose reference kNN distances have no
   spread (27B: t1_mbpp19); the correct-and-novel rate (percentile-based) is unaffected.
+- _2026-10-28_ — **Reference sensitivity tasks and the Llama 4 cut-off (before the sensitivity
+  check was run).** The 50/100/200 check uses the main model on six tasks fixed now: the first two
+  task ids per tier (t1_mbpp119_search, t1_mbpp130_max_occurrences, t2_humaneval0_has_close_elements,
+  t2_humaneval20_find_closest_elements, t3_bin_packing, t3_cap_set); it compares kNN-distance
+  rankings (Spearman) and top-decile agreement against the 100-sample sets used in the analysis.
+  Llama 4 Scout is excluded from the panel if its run has not completed by 30 October 2026 12:00;
+  the panel is then eight models. Docker is not available on ISCA: all reported numbers use the
+  subprocess sandbox (resource-limited), stated as a deviation.
 - _…_ — **[fill after SC3]** `CLUSTER_THRESHOLD` frozen at __ (mean ARI __; N labelled proposals
   over __ tasks). Table:

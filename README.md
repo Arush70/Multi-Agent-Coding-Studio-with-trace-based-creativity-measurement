@@ -7,6 +7,12 @@ trace for novelty, diversity and correctness. Builds on
 [ASTRA](https://github.com/solex2006/ASTRA-social-multi-agent-tutor) (Oyelere, 2026; MIT)
 and its [synthetic benchmark](https://doi.org/10.5281/zenodo.18114909) (CC-BY).
 
+## Status (28 October 2026)
+
+Main run complete on Qwen3.5-27B (University GPU, `isca/`), with Qwen3.5-9B and six further open
+models; results in `data/results/` and summarised in `docs/PROJECT_MASTER.md` sections 15-16.
+Human rating (SC4) and labelling (SC3) are in progress (`data/rating/`).
+
 ## Layout
 
 | Directory | Purpose | Status |
