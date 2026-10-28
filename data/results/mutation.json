@@ -1,0 +1,355 @@
+{
+ "t1_mbpp19_test_duplicate": {
+  "solutions": 3,
+  "mutants": 8,
+  "killed": 6,
+  "score": 0.75,
+  "runs": [
+   {
+    "total": 2,
+    "killed": 2,
+    "score": 1.0,
+    "by_operator": {
+     "return": {
+      "killed": 1,
+      "total": 1
+     },
+     "comparison": {
+      "killed": 1,
+      "total": 1
+     }
+    }
+   },
+   {
+    "total": 4,
+    "killed": 2,
+    "score": 0.5,
+    "by_operator": {
+     "return": {
+      "killed": 1,
+      "total": 2
+     },
+     "boolean": {
+      "killed": 1,
+      "total": 2
+     }
+    }
+   },
+   {
+    "total": 2,
+    "killed": 2,
+    "score": 1.0,
+    "by_operator": {
+     "return": {
+      "killed": 1,
+      "total": 1
+     },
+     "comparison": {
+      "killed": 1,
+      "total": 1
+     }
+    }
+   }
+  ]
+ },
+ "t1_mbpp140_extract_singly": {
+  "solutions": 3,
+  "mutants": 3,
+  "killed": 3,
+  "score": 1.0,
+  "runs": [
+   {
+    "total": 1,
+    "killed": 1,
+    "score": 1.0,
+    "by_operator": {
+     "return": {
+      "killed": 1,
+      "total": 1
+     }
+    }
+   },
+   {
+    "total": 1,
+    "killed": 1,
+    "score": 1.0,
+    "by_operator": {
+     "return": {
+      "killed": 1,
+      "total": 1
+     }
+    }
+   },
+   {
+    "total": 1,
+    "killed": 1,
+    "score": 1.0,
+    "by_operator": {
+     "return": {
+      "killed": 1,
+      "total": 1
+     }
+    }
+   }
+  ]
+ },
+ "t1_mbpp245_max_sum": {
+  "solutions": 3,
+  "mutants": 66,
+  "killed": 38,
+  "score": 0.5757575757575758,
+  "runs": [
+   {
+    "total": 19,
+    "killed": 11,
+    "score": 0.5789473684210527,
+    "by_operator": {
+     "return": {
+      "killed": 1,
+      "total": 2
+     },
+     "boolean": {
+      "killed": 1,
+      "total": 1
+     },
+     "constant": {
+      "killed": 5,
+      "total": 7
+     },
+     "arithmetic": {
+      "killed": 4,
+      "total": 6
+     },
+     "comparison": {
+      "killed": 0,
+      "total": 3
+     }
+    }
+   },
+   {
+    "total": 24,
+    "killed": 12,
+    "score": 0.5,
+    "by_operator": {
+     "return": {
+      "killed": 1,
+      "total": 3
+     },
+     "comparison": {
+      "killed": 2,
+      "total": 5
+     },
+     "constant": {
+      "killed": 5,
+      "total": 10
+     },
+     "arithmetic": {
+      "killed": 4,
+      "total": 6
+     }
+    }
+   },
+   {
+    "total": 23,
+    "killed": 15,
+    "score": 0.6521739130434783,
+    "by_operator": {
+     "return": {
+      "killed": 1,
+      "total": 2
+     },
+     "comparison": {
+      "killed": 1,
+      "total": 3
+     },
+     "arithmetic": {
+      "killed": 8,
+      "total": 8
+     },
+     "constant": {
+      "killed": 5,
+      "total": 10
+     }
+    }
+   }
+  ]
+ },
+ "t2_humaneval0_has_close_elements": {
+  "solutions": 3,
+  "mutants": 42,
+  "killed": 27,
+  "score": 0.6428571428571429,
+  "runs": [
+   {
+    "total": 14,
+    "killed": 9,
+    "score": 0.6428571428571429,
+    "by_operator": {
+     "return": {
+      "killed": 2,
+      "total": 3
+     },
+     "comparison": {
+      "killed": 0,
+      "total": 2
+     },
+     "boolean": {
+      "killed": 2,
+      "total": 3
+     },
+     "constant": {
+      "killed": 2,
+      "total": 3
+     },
+     "arithmetic": {
+      "killed": 3,
+      "total": 3
+     }
+    }
+   },
+   {
+    "total": 14,
+    "killed": 9,
+    "score": 0.6428571428571429,
+    "by_operator": {
+     "return": {
+      "killed": 2,
+      "total": 3
+     },
+     "comparison": {
+      "killed": 0,
+      "total": 2
+     },
+     "boolean": {
+      "killed": 2,
+      "total": 3
+     },
+     "constant": {
+      "killed": 2,
+      "total": 3
+     },
+     "arithmetic": {
+      "killed": 3,
+      "total": 3
+     }
+    }
+   },
+   {
+    "total": 14,
+    "killed": 9,
+    "score": 0.6428571428571429,
+    "by_operator": {
+     "return": {
+      "killed": 2,
+      "total": 3
+     },
+     "comparison": {
+      "killed": 0,
+      "total": 2
+     },
+     "boolean": {
+      "killed": 2,
+      "total": 3
+     },
+     "constant": {
+      "killed": 2,
+      "total": 3
+     },
+     "arithmetic": {
+      "killed": 3,
+      "total": 3
+     }
+    }
+   }
+  ]
+ },
+ "t2_humaneval40_triples_sum_to_zero": {
+  "solutions": 3,
+  "mutants": 84,
+  "killed": 38,
+  "score": 0.4523809523809524,
+  "runs": [
+   {
+    "total": 29,
+    "killed": 13,
+    "score": 0.4482758620689655,
+    "by_operator": {
+     "return": {
+      "killed": 3,
+      "total": 3
+     },
+     "comparison": {
+      "killed": 1,
+      "total": 6
+     },
+     "boolean": {
+      "killed": 3,
+      "total": 4
+     },
+     "constant": {
+      "killed": 3,
+      "total": 10
+     },
+     "arithmetic": {
+      "killed": 3,
+      "total": 6
+     }
+    }
+   },
+   {
+    "total": 29,
+    "killed": 13,
+    "score": 0.4482758620689655,
+    "by_operator": {
+     "return": {
+      "killed": 3,
+      "total": 3
+     },
+     "comparison": {
+      "killed": 1,
+      "total": 6
+     },
+     "boolean": {
+      "killed": 3,
+      "total": 4
+     },
+     "constant": {
+      "killed": 3,
+      "total": 10
+     },
+     "arithmetic": {
+      "killed": 3,
+      "total": 6
+     }
+    }
+   },
+   {
+    "total": 26,
+    "killed": 12,
+    "score": 0.46153846153846156,
+    "by_operator": {
+     "return": {
+      "killed": 3,
+      "total": 3
+     },
+     "comparison": {
+      "killed": 1,
+      "total": 6
+     },
+     "boolean": {
+      "killed": 3,
+      "total": 4
+     },
+     "constant": {
+      "killed": 2,
+      "total": 8
+     },
+     "arithmetic": {
+      "killed": 3,
+      "total": 5
+     }
+    }
+   }
+  ]
+ }
+}

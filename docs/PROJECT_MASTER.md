@@ -109,6 +109,13 @@ Stated openly so examiners see considered decisions, not drift. Each is also in 
 | UniXcoder as a parallel primary analysis | Implemented for families and novelty (`analyze.py --representation unixcoder`), calibrated on the SC3 labels in its own space | Run after the main run. |
 | Mutation testing with mutmut on five tasks; learner-contribution metric | AST mutator (mutmut does not run on Windows); learner metric from constructs the learners mention vs those in the solutions | Built 20 Oct (`scripts/mutation_test.py`, `macs/metrics/learners.py`). |
 | 6 repetitions x 5 cells x 24 tasks = 720 sessions | 9 conditions (core 5 + E, E_minus, S, P) x 24 tasks x 6 seeds on the main model; reduced design on 3-5 further models | Extended design pre-registered 20 Oct 2026 (RQ2 test, compute-matched baselines, cross-model consistency). |
+| Learner factor 1 vs 2 | 1 vs 6 learners, plus 4 (C4, D4) for a learner curve: 11 conditions | A real group size; amended 23 Oct 2026 before any run under that design. The complete 2-learner 9B run is kept as a pilot in `data/archive/`. |
+| Main model as decided by the 15 Oct rule | Qwen3.5-27B on the University GPU (ISCA, A100 80 GB), with Qwen3.5-9B as a second full-design model | The GPU became available on 22 Oct, before the 26 Oct cut-off. |
+| Ollama defaults | Server context of at least 8192 tokens, checked before every run and stamped in each trace | The 4096 default cut some Critic prompts short (found 23 Oct). |
+| Reported numbers from the Docker sandbox | Subprocess sandbox with resource limits (`macs/sandbox/runner.py`) | Docker is not available on ISCA compute nodes. Generated code runs as an unprivileged user on a batch node with CPU and memory limits; no network use was observed. Stated as a limitation. |
+| Human raters recruited by advert (ethics application) | Classmates and acquaintances invited directly; never the researcher or supervisor; information text, consent question, rater codes, no personal data | Supervisor's guidance (25 Oct): direct invitation does not need the advert approval. |
+| SC3 labels by the researcher and supervisor | Part B of the rater form: independent raters assign the pre-registered approach families; AI rater reported separately | Researcher and supervisor take no part in rating or labelling (25 Oct). |
+| Cross-model panel of 3-5 models | 8 completed: Qwen3.5 9B/27B/122B, gpt-oss-120b, Gemma 4 31B, Gemma 3 12B, Llama 3.1 8B, Granite 4.2 8B; Llama 4 Scout could not start (GPU discovery failure on ISCA) | See DEV_LOG 28 Oct. |
 
 ---
 
@@ -165,7 +172,7 @@ seed (`start = seed % 6`, learner j gets `(start + j) % 6`), so runs are reprodu
 
 ---
 
-## 6. The five experimental conditions
+## 6. The experimental conditions (five core; eleven in the extended design, see `macs/conditions.py`)
 
 | Condition | Learners | Solver | Facilitator |
 |-----------|----------|--------|-------------|
@@ -363,40 +370,48 @@ and Run.
 
 ---
 
-## 15. What we have done (status)
+## 15. What we have done (status, 28 October 2026)
 
-**Built and tested (62 automated tests):**
-- Trace schema, validating writer, git-tagged freeze.
-- Task bank of 21 sourced tasks with blind labels and held-out tests; provenance in `docs/TASK_SOURCES.md`.
-- Orchestrator for all five conditions, with learners feeding the solver, Critic selection, 1 to 3
-  revision rounds, enforced token ceiling, and the Facilitator (window of three proposals, tau rule
-  with degenerate fallback, specific interventions).
-- Sandbox (subprocess and Docker).
-- Metrics: representation, novelty, diversity (per session and matched), correctness, creativity,
-  Tier 3 heuristic scoring.
-- Reference builder (100 per task, top-up, resumable) and sensitivity script.
-- Batch runner `scripts/run_experiment.py` (tasks x conditions x seeds, resumable).
-- Analysis `scripts/analyze.py` (results table with tokens and interventions; matched diversity).
-- Calibration tooling, pre-registration, development log, dashboard.
-- Ethics application submitted (10 October 2026).
+**System:** 11 conditions (A, B, C, D, D_minus, E, E_minus, S, P, C4, D4), orchestrator 0.4.0,
+trace schema 0.3.0, 133 automated tests. Runs on the laptop (Ollama) and on ISCA (`isca/`: setup,
+one job per model with parallel workers, GPU checks, automatic follow-up jobs, analysis job,
+rating job, reference-sensitivity job; `isca/status.sh` for an overview).
 
-**Week 3 code review (7 and 9 October):** found that learner turns never reached the solver, the
-Facilitator's tau was 0 on the pilot task, the Critic and revision never saw the code, and the
-"1 vs 6 families" comparison was true by construction. All fixed; six further changes brought the
-session procedure in line with the proposal. Details in `docs/DEV_LOG.md`.
+**Runs complete:** Qwen3.5-27B (main) and Qwen3.5-9B, full design (27 tasks x 11 conditions x 6
+seeds = 1,782 sessions each); Qwen3.5-122B, gpt-oss-120b, Gemma 4 31B, Gemma 3 12B, Llama 3.1 8B
+and Granite 4.2 8B, reduced design (24 tasks x 7 conditions x 3 seeds = 504 each). Every model has
+its own 100-sample reference sets. Open-problem search (circle packing, bin packing, cap set; random,
+single, studio; 3 seeds; budget 40) on 27B and 9B.
+
+**Analysis complete:** per-model mixed models with Holm-corrected planned contrasts, learner curve,
+contamination check, mutation testing, UniXcoder representation, frontier chart, cross-model
+random-effects meta-analysis, open-problem report (`data/results/`).
+
+**Human part (in progress):** rater form built (Part A: 60 pairs, SC4; Part B: 48 labelling items,
+SC3) with booklet and Microsoft Forms file (`data/rating/`); the AI rater has answered both parts.
+Waiting for human responses; then `CLUSTER_THRESHOLD` is frozen from the labels and the family
+analysis is rerun.
 
 ---
 
-## 16. Results so far
+## 16. Results (main model Qwen3.5-27B unless stated; 24 main tasks)
 
-**The Week 2 pilot result ("tutors 1 family, studios 6") is withdrawn.** The traces showed that A
-and C produced byte-identical code, and B, D and D_minus produced byte-identical code, because the
-learners' turns were never passed to the solver; the Facilitator could not fire on that task; and a
-tutor session can only ever have one family. Those traces are kept but are excluded from the
-analysis (older orchestrator version).
+| Question | Result |
+|---|---|
+| Studio vs tutor, distinct approaches (matched) | +2.76 (1 learner), +2.63 (6 learners), Holm p < 0.001; pooled over 8 models +1.04, same direction in 8/8 |
+| Studio vs tutor, correct-and-novel rate | +0.35 / +0.28, Holm p < 0.001; pooled +0.12 (strong for Qwen and gpt-oss, near zero for Gemma, Llama, Granite; I2 about 90%) |
+| Equal token budget (D vs S) | +2.63 approaches, +0.30 correct-and-novel, Holm p < 0.001 |
+| Facilitator where ideas can converge (E vs E_minus) | +0.25 approaches, Holm p = 0.003; pooled +0.12, same direction in 8/8 |
+| Facilitator when the Innovator is told to differ (D vs D_minus) | about 0 in every model |
+| Diversity instruction (D_minus vs E_minus) | +2.16 approaches; pooled +0.78 |
+| Single diversity prompt (D vs P) | +0.23 approaches (Holm p = 0.67), correct-and-novel +0.00; the studio costs about 16,000 more tokens |
+| Number of learners (1, 4, 6) | no effect on diversity or quality in any model; about 1,000 tokens per extra learner |
+| Cost | studio about +20,000 tokens per task; pass rate 10-14 points lower |
+| Open problems (27B) | studio above single prompting on circle packing (area under curve, 2 of 3 seeds), not on bin packing or cap set; best circle packing 2.44 vs best known 2.636 |
+| AI judge | position-consistent on 23% of pairs; not a substitute for human raters |
 
-**Next result:** a pilot on three tasks (one per tier) x five conditions x three seeds with the fixed
-code and 100-sample references.
+Earlier pilot results (2 learners, 4096 context) are in `data/archive/2026-10-23_two_learner_ctx4096/`
+and are not part of the main analysis.
 
 ---
 

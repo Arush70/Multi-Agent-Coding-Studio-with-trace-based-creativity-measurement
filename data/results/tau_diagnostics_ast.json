@@ -1,0 +1,99 @@
+{
+ "representation": "ast",
+ "k": 5,
+ "window": 3,
+ "conditions": "D_minus",
+ "fire_band": [
+  0.1,
+  0.9
+ ],
+ "tasks": [
+  {
+   "task_id": "t1_mbpp140_extract_singly",
+   "n_reference": 100,
+   "share_with_identical_twin": 0.9,
+   "tau_old_rule": 0.0,
+   "tau_matched_rule": 0.01731,
+   "studio_sessions": 6,
+   "studio_checks": 12,
+   "studio_fire_rate": 0.0,
+   "studio_median_percentile_rank": 0.623,
+   "non_degenerate": false,
+   "by_percentile": {
+    "25": {
+     "tau": 0.01731,
+     "fire_rate": 0.0,
+     "non_degenerate": false
+    },
+    "50": {
+     "tau": 0.04729,
+     "fire_rate": 0.167,
+     "non_degenerate": true
+    },
+    "75": {
+     "tau": 0.06592,
+     "fire_rate": 0.833,
+     "non_degenerate": true
+    }
+   }
+  },
+  {
+   "task_id": "t1_mbpp19_test_duplicate",
+   "n_reference": 100,
+   "share_with_identical_twin": 0.95,
+   "tau_old_rule": 0.0,
+   "tau_matched_rule": 0.04001,
+   "studio_sessions": 6,
+   "studio_checks": 12,
+   "studio_fire_rate": 0.833,
+   "studio_median_percentile_rank": 0.205,
+   "non_degenerate": true,
+   "by_percentile": {
+    "25": {
+     "tau": 0.04001,
+     "fire_rate": 0.833,
+     "non_degenerate": true
+    },
+    "50": {
+     "tau": 0.04861,
+     "fire_rate": 1.0,
+     "non_degenerate": false
+    },
+    "75": {
+     "tau": 0.07292,
+     "fire_rate": 1.0,
+     "non_degenerate": false
+    }
+   }
+  },
+  {
+   "task_id": "t2_humaneval0_has_close_elements",
+   "n_reference": 100,
+   "share_with_identical_twin": 0.93,
+   "tau_old_rule": 0.0,
+   "tau_matched_rule": 0.00235,
+   "studio_sessions": 6,
+   "studio_checks": 10,
+   "studio_fire_rate": 0.0,
+   "studio_median_percentile_rank": 0.989,
+   "non_degenerate": false,
+   "by_percentile": {
+    "25": {
+     "tau": 0.00235,
+     "fire_rate": 0.0,
+     "non_degenerate": false
+    },
+    "50": {
+     "tau": 0.00358,
+     "fire_rate": 0.0,
+     "non_degenerate": false
+    },
+    "75": {
+     "tau": 0.00545,
+     "fire_rate": 0.0,
+     "non_degenerate": false
+    }
+   }
+  }
+ ]
+}

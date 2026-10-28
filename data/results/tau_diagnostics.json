@@ -1,0 +1,37 @@
+{
+ "representation": "ast",
+ "k": 5,
+ "window": 3,
+ "tasks": [
+  {
+   "task_id": "t1_mbpp140_extract_singly",
+   "n_reference": 100,
+   "share_with_identical_twin": 0.9,
+   "tau_old_rule": 0.0,
+   "tau_matched_rule": 0.01731,
+   "studio_sessions": 0,
+   "studio_checks": 0,
+   "studio_fire_rate": null
+  },
+  {
+   "task_id": "t1_mbpp19_test_duplicate",
+   "n_reference": 100,
+   "share_with_identical_twin": 0.95,
+   "tau_old_rule": 0.0,
+   "tau_matched_rule": 0.04001,
+   "studio_sessions": 1,
+   "studio_checks": 2,
+   "studio_fire_rate": 0.5
+  },
+  {
+   "task_id": "t2_humaneval0_has_close_elements",
+   "n_reference": 100,
+   "share_with_identical_twin": 0.93,
+   "tau_old_rule": 0.0,
+   "tau_matched_rule": 0.00235,
+   "studio_sessions": 0,
+   "studio_checks": 0,
+   "studio_fire_rate": null
+  }
+ ]
+}

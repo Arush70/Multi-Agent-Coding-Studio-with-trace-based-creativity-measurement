@@ -1,0 +1,99 @@
+{
+ "representation": "unixcoder",
+ "k": 5,
+ "window": 3,
+ "conditions": "D_minus",
+ "fire_band": [
+  0.1,
+  0.9
+ ],
+ "tasks": [
+  {
+   "task_id": "t1_mbpp140_extract_singly",
+   "n_reference": 100,
+   "share_with_identical_twin": 0.7,
+   "tau_old_rule": 0.0,
+   "tau_matched_rule": 0.03527,
+   "studio_sessions": 6,
+   "studio_checks": 12,
+   "studio_fire_rate": 0.0,
+   "studio_median_percentile_rank": 0.999,
+   "non_degenerate": false,
+   "by_percentile": {
+    "25": {
+     "tau": 0.03527,
+     "fire_rate": 0.0,
+     "non_degenerate": false
+    },
+    "50": {
+     "tau": 0.05683,
+     "fire_rate": 0.0,
+     "non_degenerate": false
+    },
+    "75": {
+     "tau": 0.09008,
+     "fire_rate": 0.0,
+     "non_degenerate": false
+    }
+   }
+  },
+  {
+   "task_id": "t1_mbpp19_test_duplicate",
+   "n_reference": 100,
+   "share_with_identical_twin": 0.88,
+   "tau_old_rule": 0.0,
+   "tau_matched_rule": 0.06927,
+   "studio_sessions": 6,
+   "studio_checks": 12,
+   "studio_fire_rate": 0.167,
+   "studio_median_percentile_rank": 0.964,
+   "non_degenerate": true,
+   "by_percentile": {
+    "25": {
+     "tau": 0.06927,
+     "fire_rate": 0.167,
+     "non_degenerate": true
+    },
+    "50": {
+     "tau": 0.09477,
+     "fire_rate": 0.333,
+     "non_degenerate": true
+    },
+    "75": {
+     "tau": 0.10391,
+     "fire_rate": 0.333,
+     "non_degenerate": true
+    }
+   }
+  },
+  {
+   "task_id": "t2_humaneval0_has_close_elements",
+   "n_reference": 100,
+   "share_with_identical_twin": 0.68,
+   "tau_old_rule": 0.0,
+   "tau_matched_rule": 0.01842,
+   "studio_sessions": 6,
+   "studio_checks": 10,
+   "studio_fire_rate": 0.0,
+   "studio_median_percentile_rank": 1.0,
+   "non_degenerate": false,
+   "by_percentile": {
+    "25": {
+     "tau": 0.01842,
+     "fire_rate": 0.0,
+     "non_degenerate": false
+    },
+    "50": {
+     "tau": 0.02512,
+     "fire_rate": 0.0,
+     "non_degenerate": false
+    },
+    "75": {
+     "tau": 0.03278,
+     "fire_rate": 0.0,
+     "non_degenerate": false
+    }
+   }
+  }
+ ]
+}

@@ -1,0 +1,724 @@
+{
+ "primary": [
+  {
+   "label": "families_matched: B - A",
+   "estimate": 0.296667,
+   "se": 0.141257,
+   "ci_low": 0.014866,
+   "ci_high": 0.578468,
+   "t": 2.100184,
+   "df": 69,
+   "p": 0.03937,
+   "p_holm": 0.236221
+  },
+  {
+   "label": "families_matched: D - C",
+   "estimate": 0.248958,
+   "se": 0.141257,
+   "ci_low": -0.032843,
+   "ci_high": 0.530759,
+   "t": 1.762444,
+   "df": 69,
+   "p": 0.082423,
+   "p_holm": 0.412115
+  },
+  {
+   "label": "correct_and_novel_rate: B - A",
+   "estimate": -0.046179,
+   "se": 0.05206,
+   "ci_low": -0.148706,
+   "ci_high": 0.056348,
+   "t": -0.887046,
+   "df": 252,
+   "p": 0.3759,
+   "p_holm": 1.0
+  },
+  {
+   "label": "correct_and_novel_rate: D - C",
+   "estimate": -0.006944,
+   "se": 0.050078,
+   "ci_low": -0.10557,
+   "ci_high": 0.091681,
+   "t": -0.138672,
+   "df": 252,
+   "p": 0.88982,
+   "p_holm": 1.0
+  },
+  {
+   "label": "families_matched: D - D_minus",
+   "estimate": 0.013958,
+   "se": 0.025243,
+   "ci_low": -0.038262,
+   "ci_high": 0.066178,
+   "t": 0.552951,
+   "df": 23,
+   "p": 0.585632,
+   "p_holm": 1.0
+  },
+  {
+   "label": "families_matched: E - E_minus",
+   "estimate": 0.059792,
+   "se": 0.033709,
+   "ci_low": -0.00994,
+   "ci_high": 0.129523,
+   "t": 1.773777,
+   "df": 23,
+   "p": 0.089342,
+   "p_holm": 0.412115
+  }
+ ],
+ "secondary": [
+  {
+   "label": "families_matched: interaction (D - C) - (B - A)",
+   "estimate": -0.047708,
+   "se": 0.199768,
+   "ci_low": -0.446235,
+   "ci_high": 0.350818,
+   "t": -0.238818,
+   "df": 69,
+   "p": 0.811954,
+   "p_holm": null
+  },
+  {
+   "label": "families_matched: D_minus - E_minus",
+   "estimate": 0.102083,
+   "se": 0.116771,
+   "ci_low": -0.139476,
+   "ci_high": 0.343643,
+   "t": 0.874217,
+   "df": 23,
+   "p": 0.391037,
+   "p_holm": null
+  },
+  {
+   "label": "families_matched: per extra learner (tutor: A, C4, C)",
+   "estimate": 0.002542,
+   "se": 0.032586,
+   "ci_low": -0.064867,
+   "ci_high": 0.06995,
+   "t": 0.078,
+   "df": 23,
+   "p": 0.938503,
+   "p_holm": null
+  },
+  {
+   "label": "families_matched: per extra learner (studio: B, D4, D)",
+   "estimate": -0.007,
+   "se": 0.010879,
+   "ci_low": -0.029504,
+   "ci_high": 0.015504,
+   "t": -0.643464,
+   "df": 23,
+   "p": 0.526287,
+   "p_holm": null
+  },
+  {
+   "label": "families_matched: interaction (D - D_minus) - (E - E_minus)",
+   "estimate": -0.045833,
+   "se": 0.125831,
+   "ci_low": -0.29686,
+   "ci_high": 0.205193,
+   "t": -0.364245,
+   "df": 69,
+   "p": 0.716789,
+   "p_holm": null
+  },
+  {
+   "label": "correct_and_novel_rate: interaction (D - C) - (B - A)",
+   "estimate": 0.039235,
+   "se": 0.072236,
+   "ci_low": -0.103028,
+   "ci_high": 0.181498,
+   "t": 0.543147,
+   "df": 252,
+   "p": 0.587509,
+   "p_holm": null
+  },
+  {
+   "label": "correct_and_novel_rate: D - D_minus",
+   "estimate": -0.010417,
+   "se": 0.025053,
+   "ci_low": -0.060024,
+   "ci_high": 0.03919,
+   "t": -0.41579,
+   "df": 119,
+   "p": 0.678312,
+   "p_holm": null
+  },
+  {
+   "label": "correct_and_novel_rate: E - E_minus",
+   "estimate": 0.017361,
+   "se": 0.026712,
+   "ci_low": -0.035532,
+   "ci_high": 0.070254,
+   "t": 0.649927,
+   "df": 119,
+   "p": 0.516992,
+   "p_holm": null
+  },
+  {
+   "label": "correct_and_novel_rate: D_minus - E_minus",
+   "estimate": 0.001736,
+   "se": 0.032995,
+   "ci_low": -0.063598,
+   "ci_high": 0.06707,
+   "t": 0.052617,
+   "df": 119,
+   "p": 0.958125,
+   "p_holm": null
+  },
+  {
+   "label": "correct_and_novel_rate: per extra learner (tutor: A, C4, C)",
+   "estimate": -0.00464,
+   "se": 0.012769,
+   "ci_low": -0.029945,
+   "ci_high": 0.020666,
+   "t": -0.363335,
+   "df": 110,
+   "p": 0.717052,
+   "p_holm": null
+  },
+  {
+   "label": "correct_and_novel_rate: per extra learner (studio: B, D4, D)",
+   "estimate": 0.004167,
+   "se": 0.005302,
+   "ci_low": -0.006331,
+   "ci_high": 0.014665,
+   "t": 0.785905,
+   "df": 119,
+   "p": 0.433485,
+   "p_holm": null
+  },
+  {
+   "label": "correct_and_novel_rate: interaction (D - D_minus) - (E - E_minus)",
+   "estimate": -0.027778,
+   "se": 0.04351,
+   "ci_low": -0.113453,
+   "ci_high": 0.057898,
+   "t": -0.638423,
+   "df": 261,
+   "p": 0.523758,
+   "p_holm": null
+  },
+  {
+   "label": "mean_novelty: B - A",
+   "estimate": 0.48149,
+   "se": 0.399558,
+   "ci_low": -0.309163,
+   "ci_high": 1.272144,
+   "t": 1.205058,
+   "df": 127,
+   "p": 0.230422,
+   "p_holm": null
+  },
+  {
+   "label": "mean_novelty: D - C",
+   "estimate": 1.284698,
+   "se": 0.393486,
+   "ci_low": 0.506059,
+   "ci_high": 2.063336,
+   "t": 3.264911,
+   "df": 127,
+   "p": 0.001408,
+   "p_holm": null
+  },
+  {
+   "label": "mean_novelty: interaction (D - C) - (B - A)",
+   "estimate": 0.803207,
+   "se": 0.560783,
+   "ci_low": -0.306482,
+   "ci_high": 1.912897,
+   "t": 1.432295,
+   "df": 127,
+   "p": 0.154516,
+   "p_holm": null
+  },
+  {
+   "label": "mean_novelty: D - D_minus",
+   "estimate": -0.073693,
+   "se": 0.192125,
+   "ci_low": -0.458134,
+   "ci_high": 0.310749,
+   "t": -0.383567,
+   "df": 59,
+   "p": 0.702678,
+   "p_holm": null
+  },
+  {
+   "label": "mean_novelty: E - E_minus",
+   "estimate": 0.178995,
+   "se": 0.205085,
+   "ci_low": -0.231379,
+   "ci_high": 0.589369,
+   "t": 0.872786,
+   "df": 59,
+   "p": 0.386318,
+   "p_holm": null
+  },
+  {
+   "label": "mean_novelty: D_minus - E_minus",
+   "estimate": 0.315896,
+   "se": 0.257672,
+   "ci_low": -0.199705,
+   "ci_high": 0.831497,
+   "t": 1.225959,
+   "df": 59,
+   "p": 0.225085,
+   "p_holm": null
+  },
+  {
+   "label": "mean_novelty: per extra learner (tutor: A, C4, C)",
+   "estimate": -0.112618,
+   "se": 0.065604,
+   "ci_low": -0.243988,
+   "ci_high": 0.018752,
+   "t": -1.716634,
+   "df": 57,
+   "p": 0.091476,
+   "p_holm": null
+  },
+  {
+   "label": "mean_novelty: per extra learner (studio: B, D4, D)",
+   "estimate": 0.038977,
+   "se": 0.048702,
+   "ci_low": -0.058475,
+   "ci_high": 0.13643,
+   "t": 0.800324,
+   "df": 59,
+   "p": 0.426734,
+   "p_holm": null
+  },
+  {
+   "label": "mean_novelty: interaction (D - D_minus) - (E - E_minus)",
+   "estimate": -0.252688,
+   "se": 0.334267,
+   "ci_low": -0.914044,
+   "ci_high": 0.408668,
+   "t": -0.755947,
+   "df": 129,
+   "p": 0.451059,
+   "p_holm": null
+  },
+  {
+   "label": "pass_rate: B - A",
+   "estimate": 0.076389,
+   "se": 0.035599,
+   "ci_low": 0.006292,
+   "ci_high": 0.146486,
+   "t": 2.145845,
+   "df": 261,
+   "p": 0.032808,
+   "p_holm": null
+  },
+  {
+   "label": "pass_rate: D - C",
+   "estimate": -0.055556,
+   "se": 0.035599,
+   "ci_low": -0.125652,
+   "ci_high": 0.014541,
+   "t": -1.560615,
+   "df": 261,
+   "p": 0.119826,
+   "p_holm": null
+  },
+  {
+   "label": "pass_rate: interaction (D - C) - (B - A)",
+   "estimate": -0.131944,
+   "se": 0.050344,
+   "ci_low": -0.231076,
+   "ci_high": -0.032813,
+   "t": -2.620863,
+   "df": 261,
+   "p": 0.009285,
+   "p_holm": null
+  },
+  {
+   "label": "pass_rate: D - D_minus",
+   "estimate": -0.001736,
+   "se": 0.019429,
+   "ci_low": -0.040207,
+   "ci_high": 0.036734,
+   "t": -0.089359,
+   "df": 119,
+   "p": 0.928947,
+   "p_holm": null
+  },
+  {
+   "label": "pass_rate: E - E_minus",
+   "estimate": 0.005208,
+   "se": 0.012779,
+   "ci_low": -0.020095,
+   "ci_high": 0.030511,
+   "t": 0.407583,
+   "df": 119,
+   "p": 0.684312,
+   "p_holm": null
+  },
+  {
+   "label": "pass_rate: D_minus - E_minus",
+   "estimate": -0.057292,
+   "se": 0.019345,
+   "ci_low": -0.095597,
+   "ci_high": -0.018987,
+   "t": -2.961582,
+   "df": 119,
+   "p": 0.003696,
+   "p_holm": null
+  },
+  {
+   "label": "pass_rate: per extra learner (tutor: A, C4, C)",
+   "estimate": 0.022222,
+   "se": 0.00911,
+   "ci_low": 0.004183,
+   "ci_high": 0.040261,
+   "t": 2.439262,
+   "df": 119,
+   "p": 0.016193,
+   "p_holm": null
+  },
+  {
+   "label": "pass_rate: per extra learner (studio: B, D4, D)",
+   "estimate": -0.004167,
+   "se": 0.003813,
+   "ci_low": -0.011717,
+   "ci_high": 0.003384,
+   "t": -1.092694,
+   "df": 119,
+   "p": 0.276735,
+   "p_holm": null
+  },
+  {
+   "label": "pass_rate: interaction (D - D_minus) - (E - E_minus)",
+   "estimate": -0.006944,
+   "se": 0.025925,
+   "ci_low": -0.057993,
+   "ci_high": 0.044104,
+   "t": -0.267867,
+   "df": 261,
+   "p": 0.789013,
+   "p_holm": null
+  },
+  {
+   "label": "tokens: B - A",
+   "estimate": 14978.861111,
+   "se": 266.946012,
+   "ci_low": 14453.219127,
+   "ci_high": 15504.503095,
+   "t": 56.111949,
+   "df": 261,
+   "p": 0.0,
+   "p_holm": null
+  },
+  {
+   "label": "tokens: D - C",
+   "estimate": 17229.833333,
+   "se": 266.946012,
+   "ci_low": 16704.191349,
+   "ci_high": 17755.475318,
+   "t": 64.544262,
+   "df": 261,
+   "p": 0.0,
+   "p_holm": null
+  },
+  {
+   "label": "tokens: interaction (D - C) - (B - A)",
+   "estimate": 2250.972222,
+   "se": 377.518671,
+   "ci_low": 1507.602199,
+   "ci_high": 2994.342245,
+   "t": 5.962545,
+   "df": 261,
+   "p": 0.0,
+   "p_holm": null
+  },
+  {
+   "label": "tokens: D - D_minus",
+   "estimate": 79.819444,
+   "se": 258.61548,
+   "ci_low": -432.265035,
+   "ci_high": 591.903924,
+   "t": 0.308641,
+   "df": 119,
+   "p": 0.758134,
+   "p_holm": null
+  },
+  {
+   "label": "tokens: E - E_minus",
+   "estimate": 29.263889,
+   "se": 259.725405,
+   "ci_low": -485.018354,
+   "ci_high": 543.546132,
+   "t": 0.112672,
+   "df": 119,
+   "p": 0.91048,
+   "p_holm": null
+  },
+  {
+   "label": "tokens: D_minus - E_minus",
+   "estimate": 1966.805556,
+   "se": 260.78517,
+   "ci_low": 1450.424872,
+   "ci_high": 2483.186239,
+   "t": 7.541861,
+   "df": 119,
+   "p": 0.0,
+   "p_holm": null
+  },
+  {
+   "label": "tokens: per extra learner (tutor: A, C4, C)",
+   "estimate": 936.011111,
+   "se": 26.770912,
+   "ci_low": 883.002032,
+   "ci_high": 989.020191,
+   "t": 34.963736,
+   "df": 119,
+   "p": 0.0,
+   "p_holm": null
+  },
+  {
+   "label": "tokens: per extra learner (studio: B, D4, D)",
+   "estimate": 1386.205556,
+   "se": 46.741166,
+   "ci_low": 1293.653379,
+   "ci_high": 1478.757732,
+   "t": 29.65706,
+   "df": 119,
+   "p": 0.0,
+   "p_holm": null
+  },
+  {
+   "label": "tokens: interaction (D - D_minus) - (E - E_minus)",
+   "estimate": 50.555556,
+   "se": 355.187167,
+   "ci_low": -648.841622,
+   "ci_high": 749.952733,
+   "t": 0.142335,
+   "df": 261,
+   "p": 0.886925,
+   "p_holm": null
+  },
+  {
+   "label": "learner_uptake_final: B - A",
+   "estimate": 0.04,
+   "se": 0.05916,
+   "ci_low": -0.076647,
+   "ci_high": 0.156647,
+   "t": 0.676133,
+   "df": 203,
+   "p": 0.499726,
+   "p_holm": null
+  },
+  {
+   "label": "learner_uptake_final: D - C",
+   "estimate": -0.079487,
+   "se": 0.051887,
+   "ci_low": -0.181793,
+   "ci_high": 0.022819,
+   "t": -1.531936,
+   "df": 203,
+   "p": 0.127095,
+   "p_holm": null
+  },
+  {
+   "label": "learner_uptake_final: interaction (D - C) - (B - A)",
+   "estimate": -0.119487,
+   "se": 0.07869,
+   "ci_low": -0.274642,
+   "ci_high": 0.035668,
+   "t": -1.518452,
+   "df": 203,
+   "p": 0.130456,
+   "p_holm": null
+  },
+  {
+   "label": "learner_uptake_final: D - D_minus",
+   "estimate": -0.007692,
+   "se": 0.034306,
+   "ci_low": -0.075716,
+   "ci_high": 0.060331,
+   "t": -0.224223,
+   "df": 105,
+   "p": 0.823019,
+   "p_holm": null
+  },
+  {
+   "label": "learner_uptake_final: E - E_minus",
+   "estimate": -0.046154,
+   "se": 0.046069,
+   "ci_low": -0.137501,
+   "ci_high": 0.045193,
+   "t": -1.001835,
+   "df": 105,
+   "p": 0.318726,
+   "p_holm": null
+  },
+  {
+   "label": "learner_uptake_final: D_minus - E_minus",
+   "estimate": -0.061538,
+   "se": 0.043639,
+   "ci_low": -0.148066,
+   "ci_high": 0.024989,
+   "t": -1.410179,
+   "df": 105,
+   "p": 0.161442,
+   "p_holm": null
+  },
+  {
+   "label": "learner_uptake_final: per extra learner (tutor: A, C4, C)",
+   "estimate": -0.013105,
+   "se": 0.012566,
+   "ci_low": -0.038071,
+   "ci_high": 0.01186,
+   "t": -1.0429,
+   "df": 90,
+   "p": 0.299788,
+   "p_holm": null
+  },
+  {
+   "label": "learner_uptake_final: per extra learner (studio: B, D4, D)",
+   "estimate": -0.03671,
+   "se": 0.010295,
+   "ci_low": -0.057164,
+   "ci_high": -0.016257,
+   "t": -3.565761,
+   "df": 90,
+   "p": 0.000583,
+   "p_holm": null
+  },
+  {
+   "label": "learner_uptake_final: interaction (D - D_minus) - (E - E_minus)",
+   "estimate": 0.038462,
+   "se": 0.05775,
+   "ci_low": -0.075318,
+   "ci_high": 0.152241,
+   "t": 0.665995,
+   "df": 233,
+   "p": 0.506073,
+   "p_holm": null
+  },
+  {
+   "label": "learner_led_share: B - A",
+   "estimate": 0.0,
+   "se": 0.057305,
+   "ci_low": -0.11299,
+   "ci_high": 0.11299,
+   "t": 0.0,
+   "df": 203,
+   "p": 1.0,
+   "p_holm": null
+  },
+  {
+   "label": "learner_led_share: D - C",
+   "estimate": -0.109615,
+   "se": 0.05026,
+   "ci_low": -0.208714,
+   "ci_high": -0.010517,
+   "t": -2.180972,
+   "df": 203,
+   "p": 0.030335,
+   "p_holm": null
+  },
+  {
+   "label": "learner_led_share: interaction (D - C) - (B - A)",
+   "estimate": -0.109615,
+   "se": 0.076223,
+   "ci_low": -0.259905,
+   "ci_high": 0.040675,
+   "t": -1.43809,
+   "df": 203,
+   "p": 0.151948,
+   "p_holm": null
+  },
+  {
+   "label": "learner_led_share: D - D_minus",
+   "estimate": -0.001923,
+   "se": 0.026825,
+   "ci_low": -0.055112,
+   "ci_high": 0.051265,
+   "t": -0.07169,
+   "df": 105,
+   "p": 0.942985,
+   "p_holm": null
+  },
+  {
+   "label": "learner_led_share: E - E_minus",
+   "estimate": -0.011538,
+   "se": 0.034227,
+   "ci_low": -0.079405,
+   "ci_high": 0.056328,
+   "t": -0.337114,
+   "df": 105,
+   "p": 0.736704,
+   "p_holm": null
+  },
+  {
+   "label": "learner_led_share: D_minus - E_minus",
+   "estimate": -0.101923,
+   "se": 0.036208,
+   "ci_low": -0.173717,
+   "ci_high": -0.030129,
+   "t": -2.814917,
+   "df": 105,
+   "p": 0.005827,
+   "p_holm": null
+  },
+  {
+   "label": "learner_led_share: per extra learner (tutor: A, C4, C)",
+   "estimate": 0.019811,
+   "se": 0.013982,
+   "ci_low": -0.007967,
+   "ci_high": 0.047588,
+   "t": 1.416859,
+   "df": 90,
+   "p": 0.159976,
+   "p_holm": null
+  },
+  {
+   "label": "learner_led_share: per extra learner (studio: B, D4, D)",
+   "estimate": -0.001202,
+   "se": 0.007451,
+   "ci_low": -0.016006,
+   "ci_high": 0.013601,
+   "t": -0.161358,
+   "df": 90,
+   "p": 0.872173,
+   "p_holm": null
+  },
+  {
+   "label": "learner_led_share: interaction (D - D_minus) - (E - E_minus)",
+   "estimate": 0.009615,
+   "se": 0.047927,
+   "ci_low": -0.08481,
+   "ci_high": 0.104041,
+   "t": 0.200626,
+   "df": 233,
+   "p": 0.841166,
+   "p_holm": null
+  }
+ ],
+ "mde": {
+  "correct_and_novel_rate": {
+   "sigma2_residual": 0.09028201973594102,
+   "sigma2_task": 0.08606446777881258,
+   "mde": 0.18271835784027593
+  },
+  "families_matched": {
+   "sigma2_residual": 0.23944407017702463,
+   "sigma2_task": 0.13866860074773385,
+   "mde": 0.5153997703918594
+  },
+  "families_matched (D - D_minus)": {
+   "sigma2_residual": 0.007646716814007045,
+   "mde": 0.09210425225689753
+  },
+  "families_matched (E - E_minus)": {
+   "sigma2_residual": 0.013635299869937747,
+   "mde": 0.1229913374940105
+  }
+ },
+ "design": {
+  "tasks": 24,
+  "seeds": 3
+ },
+ "task_set": "main"
+}

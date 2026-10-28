@@ -40,20 +40,22 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--traces", default="data/traces")
     ap.add_argument("--out", default="data/results/reference_sensitivity.json")
+    ap.add_argument("--model", default="qwen3.5:27b", help="whose traces and reference sets (never pooled)")
     args = ap.parse_args()
+    from macs.metrics.reference import reference_path
 
     codes_by_task: dict[str, list[str]] = defaultdict(list)
     for p in sorted(Path(args.traces).glob("*.jsonl")):
         events = list(read_trace(p))
         start = next((e for e in events if e["event"] == "session_start"), None)
-        if start:
+        if start and start.get("header", {}).get("model") == args.model:
             codes_by_task[start["task_id"]].extend(c for _, c in implementations(events))
 
     report = {}
     for task_id, codes in sorted(codes_by_task.items()):
-        if not (Path(REFERENCE_ROOT) / f"{task_id}.jsonl").exists():
+        if not reference_path(task_id, args.model).exists():
             continue
-        available = len(load_reference_solutions(task_id, n=None))
+        available = len(load_reference_solutions(task_id, n=None, model=args.model))
         X = []
         for c in codes:
             try:
@@ -67,10 +69,10 @@ def main() -> None:
         for n in SIZES:
             if available < n:
                 continue
-            rs = build_reference_stats(task_id, n=n)
-            nov[n] = rs.novelty(X)
+            rs = build_reference_stats(task_id, n=n, model=args.model)
+            nov[n] = rs.raw_knn(X)        # kNN distance: same ranking as z, and defined when z is not
             flag[n] = rs.percentile(X) >= NOVELTY_PERCENTILE
-        row = {"reference_available": available, "n_solutions": int(len(X)), "sizes_checked": sorted(nov)}
+        row = {"model": args.model, "reference_available": available, "n_solutions": int(len(X)), "sizes_checked": sorted(nov)}
         if REFERENCE_N in nov:
             for n in SIZES:
                 if n != REFERENCE_N and n in nov:
