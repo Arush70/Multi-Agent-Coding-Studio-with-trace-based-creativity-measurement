@@ -60,6 +60,12 @@ what changed, why, and which files. Pre-registration changes are also logged, da
   analyses both parts; Part B majority labels go to `data/calibration/labels.jsonl` for the ARI
   sweep. The AI rater (`judge`) now also labels Part B (two option orders, must agree), written to
   `data/calibration/judge/`. `isca/rating.sbatch` builds the materials and runs the AI rater on ISCA.
+- 2026-10-28: eight of nine models complete (27B, 9B full design; 122B, gpt-oss-120b, Gemma 4,
+  Llama 3.1, Gemma 3, Granite reduced design). Llama 4 Scout never started: Ollama's GPU discovery
+  timed out on every two-GPU start (gpu11, gpu13), and three earlier Llama 4 jobs had received
+  `CONDITIONS=A` only because `sbatch --export=...,CONDITIONS=A,B,...` splits on commas (fixed by
+  passing variables through the environment). Llama 4 is retried on one A100 with
+  `CONTEXT=8192` and 3 workers (`OLLAMA_CONTEXT_LENGTH` is now set from `CONTEXT`).
 
 ## 2026-10-22 (Week 5) - University GPU (ISCA): 27B becomes the main model
 
