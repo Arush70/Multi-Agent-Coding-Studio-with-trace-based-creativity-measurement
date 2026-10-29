@@ -325,5 +325,15 @@ and never edited to match results.
   Llama 4 Scout is excluded from the panel if its run has not completed by 30 October 2026 12:00;
   the panel is then eight models. Docker is not available on ISCA: all reported numbers use the
   subprocess sandbox (resource-limited), stated as a deviation.
+- _2026-10-29_ — **Identical design for every model, and DeepSeek-Coder-V2 236B (amendment made
+  after the reduced-design panel results were seen; reported as such).** Every model now runs the
+  full design (27 tasks x 11 conditions x 6 seeds = 1,782 sessions), so all models can be compared
+  on every contrast. The pre-registered panel analysis (core conditions plus D_minus, E, E_minus;
+  24 tasks; seeds 1-3) is still reported first and unchanged; the extended panel contrasts
+  (S, P, C4, D4, seeds 4-6, contamination tasks) are reported as additional. DeepSeek-Coder-V2
+  236B joins the panel (the largest DeepSeek that fits one ISCA node). The AI rater stays
+  DeepSeek-Coder-V2 Lite: it rates only Qwen3.5-27B solutions, so a DeepSeek panel member does not
+  make it rate its own family's code. The open-problem search stays on 27B and 9B. Anything not
+  finished by Monday 2 November 2026 12:00 is reported with the sessions completed by then.
 - _…_ — **[fill after SC3]** `CLUSTER_THRESHOLD` frozen at __ (mean ARI __; N labelled proposals
   over __ tasks). Table:
