@@ -57,7 +57,8 @@ fi
 if [ "$RESUBMIT" -gt 0 ]; then
   # the follow-up asks for the same GPUs, CPUs and memory as this job (e.g. --gres=gpu:2 for 122B)
   sbatch --dependency=afterany:"$SLURM_JOB_ID" --export=ALL,RESUBMIT=$((RESUBMIT - 1)) -J "m-$PROFILE" \
-    --gres=gpu:"${SLURM_GPUS_ON_NODE:-1}" -c "${SLURM_CPUS_PER_TASK:-12}" --mem="${SLURM_MEM_PER_NODE:-65536}M" \
+    -p "${SLURM_JOB_PARTITION:-gpu}" --gres="${GRES:-gpu:${SLURM_GPUS_ON_NODE:-1}}" \
+    -c "${SLURM_CPUS_PER_TASK:-12}" --mem="${SLURM_MEM_PER_NODE:-65536}M" \
     isca/run_model.sbatch
 fi
 
