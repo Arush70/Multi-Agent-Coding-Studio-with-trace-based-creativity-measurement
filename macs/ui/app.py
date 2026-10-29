@@ -62,6 +62,22 @@ def list_traces() -> list[Path]:
     return sorted(TRACES_DIR.glob("*.jsonl"))
 
 
+def trace_index(paths: list[Path]) -> list[dict]:
+    """Model, task, condition and seed of each trace, from its first line only (fast even for
+    thousands of traces)."""
+    out = []
+    for p in paths:
+        try:
+            with open(p, encoding="utf-8") as fh:
+                first = json.loads(fh.readline())
+        except (OSError, ValueError):
+            continue
+        h = first.get("header", {})
+        out.append({"path": p, "model": h.get("model", "?"), "task_id": first.get("task_id", "?"),
+                    "condition": first.get("condition", "?"), "seed": h.get("seed", "?")})
+    return out
+
+
 def archive_traces(traces_dir: Path = TRACES_DIR, archive_root: Path = ARCHIVE_DIR,
                    stamp: str | None = None) -> tuple[Path | None, int]:
     """Move every trace in traces_dir into archive_root/<stamp>/ and return (folder, count).
@@ -480,7 +496,25 @@ def main() -> None:  # pragma: no cover - layout isn't unit-tested
         if not traces:
             st.info("No traces in data/traces/ yet.")
         else:
-            pick = st.selectbox("Session", traces, format_func=lambda p: p.name)
+            @st.cache_data(show_spinner="indexing traces by model...")
+            def _index(names: tuple[str, ...]) -> list[dict]:
+                return [{**r, "path": str(r["path"])} for r in trace_index([TRACES_DIR / n for n in names])]
+            idx = _index(tuple(p.name for p in traces))
+            models = sorted({r["model"] for r in idx})
+            f1, f2, f3 = st.columns(3)
+            tm = f1.selectbox("Model", models, key="tr_model",
+                              index=models.index("qwen3.5:27b") if "qwen3.5:27b" in models else 0,
+                              format_func=lambda m: m + ("  (main)" if m == "qwen3.5:27b" else ""))
+            mine = [r for r in idx if r["model"] == tm]
+            tt = f2.selectbox("Task", ["all"] + sorted({r["task_id"] for r in mine}), key="tr_task")
+            tc = f3.selectbox("Condition", ["all"] + sorted({r["condition"] for r in mine}), key="tr_cond")
+            mine = [r for r in mine if (tt == "all" or r["task_id"] == tt) and (tc == "all" or r["condition"] == tc)]
+            st.caption(f"{len(mine)} session(s) of {tm} match; each model's sessions are separate.")
+            if not mine:                                   # never st.stop(): later tabs must still render
+                st.info("No session matches these filters; showing all of this model's sessions.")
+                mine = [r for r in idx if r["model"] == tm]
+            pick = Path(st.selectbox("Session", [r["path"] for r in mine], key="tr_pick",
+                                     format_func=lambda p: Path(p).name))
             events = read_events(pick)
             h = trace_header(events)
             c1, c2, c3, c4 = st.columns(4)
