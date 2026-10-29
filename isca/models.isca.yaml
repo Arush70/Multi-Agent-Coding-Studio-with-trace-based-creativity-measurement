@@ -57,6 +57,15 @@ profiles:
     temperature: 0.7
     max_tokens: 2048
 
+  deepseek_v2_236b:           # DeepSeek-Coder-V2 236B (MoE, 21B active; DeepSeek licence): about 133 GB, both A100s
+    base_url: http://${OLLAMA_HOST}/v1
+    api_key: ollama
+    model: deepseek-coder-v2:236b
+    revision: ""
+    quantisation: q4_0
+    temperature: 0.7
+    max_tokens: 2048
+
   gpt_oss_20b:                # optional cross-model panel member
     base_url: http://${OLLAMA_HOST}/v1
     api_key: ollama
