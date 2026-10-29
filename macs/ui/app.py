@@ -358,18 +358,35 @@ def main() -> None:  # pragma: no cover - layout isn't unit-tested
                 st.success(" ".join(notes))
             st.markdown("##### Per condition")
             present = [c for c in CONDITIONS if c in summary]
-            per_row = 5
-            cells = []
-            for i in range(0, len(present), per_row):
-                cells.extend(zip(st.columns(per_row), present[i:i + per_row]))
-            for col, cond in cells:
-                m = summary[cond]
-                tag = "🎓 Tutor" if cond in TUTOR else ("🧪 Studio" if cond in STUDIO else "⚖ Baseline")
-                col.markdown(f"**{cond}** · {tag}")
-                col.caption(COND_DESC[cond])
-                col.metric("Families (matched)", m.get("avg_families_matched", m.get("avg_families")))
-                col.metric("Novelty (z)", m.get("avg_mean_novelty"))
-                col.metric("Correct & novel", m.get("avg_correct_and_novel"))
+            groups = [("🎓 Tutor (one agent)", ["A", "C4", "C"]),
+                      ("🧪 Studio (team of agents)", ["B", "D4", "D", "D_minus", "E", "E_minus"]),
+                      ("⚖ Baselines (same budget / one prompt)", ["S", "P"])]
+            missing = [c for c in CONDITIONS if c not in summary]
+            if missing:
+                st.caption("Not run for this model: " + ", ".join(missing))
+            per_row = 3
+            for title, conds in groups:
+                conds = [c for c in conds if c in summary]
+                if not conds:
+                    continue
+                st.markdown(f"**{title}**")
+                for i in range(0, len(conds), per_row):
+                    cols = st.columns(per_row)
+                    for col, cond in zip(cols, conds[i:i + per_row]):
+                        m = summary[cond]
+                        with col.container(border=True):
+                            st.markdown(f"#### {cond}")
+                            st.caption(COND_DESC[cond] + f" · {m.get('n_sessions', '?')} sessions")
+                            def _f(v):
+                                return "-" if v is None else f"{v:.2f}"
+                            vals = [("Families", _f(m.get("avg_families_matched", m.get("avg_families")))),
+                                    ("Novelty z", _f(m.get("avg_mean_novelty"))),
+                                    ("Correct & novel", _f(m.get("avg_correct_and_novel")))]
+                            st.markdown(
+                                "<div style='display:flex;gap:6px;justify-content:space-between'>" + "".join(
+                                    f"<div style='flex:1;min-width:0'><div style='font-size:0.72rem;opacity:0.7'>{k}</div>"
+                                    f"<div style='font-size:1.35rem;font-weight:600'>{v}</div></div>" for k, v in vals)
+                                + "</div>", unsafe_allow_html=True)
             rows = [{"Condition": c, "Families": summary[c].get("avg_families_matched", summary[c].get("avg_families")),
                      "Correct&Novel": summary[c].get("avg_correct_and_novel")} for c in present]
             df = pd.DataFrame(rows).set_index("Condition")
