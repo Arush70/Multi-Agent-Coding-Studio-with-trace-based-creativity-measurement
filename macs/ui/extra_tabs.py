@@ -152,7 +152,7 @@ def rating_study(st, c) -> None:
     if st.button("Build pairs", key="rs_build"):
         _start(st, jobs, "rating", "rating_study.py", ["build", "--n", str(int(n)), "--sandbox", c["sandbox"]])
     st.markdown("**2. Export the rater materials**: a booklet to print to PDF, and a Word file for Microsoft "
-                "Forms → Quick import (put the consent page from the ethics consent form first).")
+                "Forms → Quick import. The file already holds the information text, the consent question, Part A (pairs) and Part B (labelling).")
     if st.button("Export booklet and form", key="rs_export"):
         _start(st, jobs, "rating", "rating_study.py", ["export"])
     c["live"]("rating", lambda: c["job_panel"]("rating", "Rating study step"))

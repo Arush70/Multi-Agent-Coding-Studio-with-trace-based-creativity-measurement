@@ -668,22 +668,36 @@ def main() -> None:  # pragma: no cover - layout isn't unit-tested
 
     # ============================================================ LABELLING (SC3)
     with tab_lab:
-        st.subheader("SC3: blind hand-labelling of solution families")
-        st.caption("Label each solution with the approach it uses, without looking at the automatic clustering. "
-                   "The labels calibrate the clustering threshold (target ARI >= 0.60). The condition, strategy "
-                   "text and automatic family are hidden; order is shuffled.")
+        st.subheader("SC3: blind labelling of solution families")
+        st.info("Since 25 Oct 2026 the labels come from independent raters in Part B of the rater form "
+                "(48 solutions, pre-registered approach lists); the researcher and the supervisor do not "
+                "label. Their majority labels go to data/calibration/labels.jsonl, then "
+                "`python scripts/calibrate_clustering.py` sets the threshold (target ARI >= 0.60).")
+        _items = json.loads((ROOT / "data" / "rating" / "label_items.json").read_text(encoding="utf-8")) \
+            if (ROOT / "data" / "rating" / "label_items.json").exists() else []
+        _res = json.loads((ROOT / "data" / "rating" / "results.json").read_text(encoding="utf-8")) \
+            if (ROOT / "data" / "rating" / "results.json").exists() else {}
+        c1, c2, c3 = st.columns(3)
+        c1.metric("Part B items", len(_items))
+        c2.metric("Human raters", len((_res.get("sc3_labels") or {}).get("raters", [])))
+        c3.metric("Fleiss' kappa (humans)", (_res.get("sc3_labels") or {}).get("fleiss_kappa") or "-")
+        if _res.get("sc3_labels_judge"):
+            st.caption(f"AI rater (reported separately): {_res['sc3_labels_judge']}")
+        st.markdown("##### Older in-dashboard labelling tool")
+        st.caption("Builds its pool only when asked: it reads every trace, which takes minutes with thousands of sessions.")
         c1, c2 = st.columns(2)
         rater = c1.radio("Rater", ["rater1", "rater2"], horizontal=True,
                          help="rater1's labels calibrate the threshold; rater2 is the second rater for agreement.")
         per_task = c2.number_input("Solutions per task", 5, 500, 40)
-        if st.button("Build / refresh the labelling pool") or "lab_pool" not in st.session_state:
-            st.session_state["lab_pool"] = pipeline.label_pool(per_task=int(per_task))
+        if st.button("Build / refresh the labelling pool"):
+            with st.spinner("reading every trace..."):
+                st.session_state["lab_pool"] = pipeline.label_pool(per_task=int(per_task))
             st.session_state["lab_i"] = 0
-        pool = st.session_state["lab_pool"]
+        pool = st.session_state.get("lab_pool", [])
         path = pipeline.labels_path(rater)
         labels = pipeline.load_labels(path)
         if not pool:
-            st.info("No current traces to label yet. Run sessions first (Multi-run).")
+            st.info("No pool built (press the button above), or no current traces yet.")
         else:
             tasks_in_pool = sorted({r["task_id"] for r in pool})
             prog = pd.DataFrame([{"task": t, "labelled": sum(1 for r in pool if r["task_id"] == t and r["key"] in labels),
