@@ -66,6 +66,14 @@ what changed, why, and which files. Pre-registration changes are also logged, da
   `CONDITIONS=A` only because `sbatch --export=...,CONDITIONS=A,B,...` splits on commas (fixed by
   passing variables through the environment). Llama 4 is retried on one A100 with
   `CONTEXT=8192` and 3 workers (`OLLAMA_CONTEXT_LENGTH` is now set from `CONTEXT`).
+- 2026-10-29: the A100 partition was full for hours while V100 (`volta`) and A100 MIG slices
+  (`gpu-mig`, 10 GB) were idle. Models that fit were moved there (Llama 3.1 8B and Granite 4.2 8B on
+  MIG slices; Gemma 3 12B, Gemma 4 31B and the 27B reference-sensitivity job on V100s, context 8192).
+  Follow-up jobs now keep their partition and GPU type (`GRES`). Consequence for the write-up: within
+  one model, the sessions added for the identical design ran on different GPU hardware from the
+  first 504 (same model file and quantisation; floating-point differences between GPUs can change
+  sampled tokens, which adds noise but not a systematic effect). Each job's node and partition are
+  in its log (`data/jobs/isca-<job>.log`).
 
 ## 2026-10-22 (Week 5) - University GPU (ISCA): 27B becomes the main model
 
