@@ -286,15 +286,32 @@ def main() -> None:  # pragma: no cover - layout isn't unit-tested
     # ============================================================ OVERVIEW
     with tab_over:
         st.subheader("Studio vs Tutor - the comparison")
-        st.caption("Scores every current trace (this orchestrator version, newest model) and saves the results "
-                   "to data/results/summary.json. Runs in the background.")
+        st.caption("Every number here is for ONE model; results from different models are never pooled "
+                   "(the Statistics tab compares models). The main model is Qwen3.5-27B.")
+        # one summary per model: the main file (27B) plus data/results/models/<model>/summary.json
+        _shown = {}
+        for _f in [RESULTS_FILE, *sorted((RESULTS_FILE.parent / "models").glob("*/summary.json"))]:
+            try:
+                _m = json.loads(_f.read_text(encoding="utf-8")).get("model") if _f.exists() else None
+            except (OSError, ValueError):
+                _m = None
+            if _m and _m not in _shown:
+                _shown[_m] = _f
+        view_model = st.selectbox("Model shown", list(_shown) or ["(no results yet)"], key="ov_model",
+                                  format_func=lambda m: m + ("  (main model)" if m == "qwen3.5:27b" else ""))
         rep_view = st.radio("Representation", ["AST (main analysis)", "UniXcoder (parallel, needs torch)"],
                             horizontal=True, key="ov_rep")
         rep_arg = "unixcoder" if rep_view.startswith("UniXcoder") else "ast"
-        results_file = RESULTS_FILE if rep_arg == "ast" else RESULTS_FILE.with_name("summary_unixcoder.json")
-        if st.button("Analyse all traces", type="primary", key="analyze_btn"):
+        results_file = _shown.get(view_model, RESULTS_FILE) if rep_arg == "ast" else \
+            RESULTS_FILE.with_name("summary_unixcoder.json")
+        if rep_arg != "ast":
+            st.caption("The UniXcoder view exists for the main model only.")
+        if st.button(f"Re-analyse {view_model}'s traces", type="primary", key="analyze_btn",
+                     help="Rescores this model's traces on this computer and rewrites its summary (slow with "
+                          "thousands of sessions; the ISCA analysis job does all models at once)."):
             try:
-                args = ["--sandbox", sandbox, "--representation", rep_arg] + (["--model", model] if model else [])
+                out = str(results_file)
+                args = ["--sandbox", sandbox, "--representation", rep_arg, "--model", view_model, "--out", out]
                 jobs.start("analyze", "analyze.py", args)
                 st.rerun()
             except RuntimeError as ex:
@@ -304,6 +321,7 @@ def main() -> None:  # pragma: no cover - layout isn't unit-tested
         if results_file.exists():
             data = json.loads(results_file.read_text(encoding="utf-8"))
             scored = (data.get("sessions", []), data.get("summary", {}))
+            st.markdown(f"**Model: `{data.get('model', '?')}`** · {len(scored[0])} sessions")
         if not scored or not scored[1]:
             st.info("No results yet. Run sessions in **Multi-run**, then **Analyse all traces**.")
         else:
