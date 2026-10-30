@@ -84,6 +84,10 @@ what changed, why, and which files. Pre-registration changes are also logged, da
   jobs now read the CUDA libraries into memory before each attempt, keep the CUDA kernel cache in
   `~/macs-tools/cuda-cache`, and try up to 20 times. The A100 split uses a 16384 context, which
   every profile accepts (gpt-oss needs 16384).
+- Granite 4.2 8B made no progress on MIG slices: the 10 GB slice ran out of memory (model, three
+  workers' UniXcoder copies and the wake-up helper), so every request timed out. Granite moved to
+  A100s (four task-group jobs); Llama 3.1 still fits its slices. The reference-sensitivity and rating
+  jobs now share the same server start-up block as the run jobs (warm-up, 20 attempts).
 
 ## 2026-10-22 (Week 5) - University GPU (ISCA): 27B becomes the main model
 

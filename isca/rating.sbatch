@@ -62,7 +62,13 @@ export OLLAMA_VULKAN=false                   # CUDA only: do not spend discovery
 export OLLAMA_LLM_LIBRARY=cuda_v12           # one CUDA library (works with every A100 driver): one 30 s try, not three
 SERVER=""
 trap 'kill $SERVER $KEEPER 2>/dev/null || true; rm -rf "$LOCAL"' EXIT
-for attempt in $(seq 10); do
+# Ollama's GPU check has a fixed 30 s limit. On a busy node most of that goes on reading its large
+# CUDA libraries, so they are read into memory right before each attempt, and the CUDA kernel cache
+# is kept in a permanent folder instead of being rebuilt for every job.
+export CUDA_CACHE_PATH="$PREFIX/cuda-cache" CUDA_CACHE_MAXSIZE=4294967296
+mkdir -p "$CUDA_CACHE_PATH"
+for attempt in $(seq 20); do
+  cat "$LOCAL"/lib/ollama/*.so* "$LOCAL"/lib/ollama/cuda_v12/* > /dev/null 2>&1
   "$OLLAMA" serve > "data/jobs/ollama-$SLURM_JOB_ID.log" 2>&1 &
   SERVER=$!
   for _ in $(seq 90); do curl -sf "http://$OLLAMA_HOST/api/version" >/dev/null && break; sleep 2; done
@@ -71,10 +77,10 @@ for attempt in $(seq 10); do
     echo "GPU found by Ollama (attempt $attempt)"; break
   fi
   echo "Ollama did not find the GPU (attempt $attempt); restarting it"
-  kill $SERVER 2>/dev/null; wait $SERVER 2>/dev/null; SERVER=""; sleep 30
+  kill $SERVER 2>/dev/null; wait $SERVER 2>/dev/null; SERVER=""; sleep 15
 done
 if [ -z "$SERVER" ]; then
-  echo "Ollama could not use the GPU after 10 attempts; stopping instead of running on the CPU."
+  echo "Ollama could not use the GPU after 20 attempts; stopping instead of running on the CPU."
   nvidia-smi
   exit 1
 fi
