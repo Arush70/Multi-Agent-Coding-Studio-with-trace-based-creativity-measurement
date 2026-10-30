@@ -74,6 +74,11 @@ what changed, why, and which files. Pre-registration changes are also logged, da
   first 504 (same model file and quantisation; floating-point differences between GPUs can change
   sampled tokens, which adds noise but not a systematic effect). Each job's node and partition are
   in its log (`data/jobs/isca-<job>.log`).
+- 2026-10-30: `isca/submit_split.sh` named its array `GROUPS`, a reserved Bash variable (the
+  user's group ids), so it submitted one job per group (about 230) with a group id as the task
+  list. They could not run any session and were cancelled. The array is now `TASK_GROUPS` (tested
+  with a stub `sbatch`: exactly four jobs per model), and every job now checks its task,
+  condition and profile settings before doing anything or queuing a follow-up.
 
 ## 2026-10-22 (Week 5) - University GPU (ISCA): 27B becomes the main model
 
