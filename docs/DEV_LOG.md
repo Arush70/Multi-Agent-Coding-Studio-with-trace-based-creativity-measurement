@@ -79,6 +79,11 @@ what changed, why, and which files. Pre-registration changes are also logged, da
   list. They could not run any session and were cancelled. The array is now `TASK_GROUPS` (tested
   with a stub `sbatch`: exactly four jobs per model), and every job now checks its task,
   condition and profile settings before doing anything or queuing a follow-up.
+- 2026-10-30: gpt-oss, 122B and DeepSeek jobs failed Ollama's GPU check 10 times on full A100 nodes,
+  while every MIG-slice job passed first time. Ollama's 30 s start-up check is fixed in its code, so
+  jobs now read the CUDA libraries into memory before each attempt, keep the CUDA kernel cache in
+  `~/macs-tools/cuda-cache`, and try up to 20 times. The A100 split uses a 16384 context, which
+  every profile accepts (gpt-oss needs 16384).
 
 ## 2026-10-22 (Week 5) - University GPU (ISCA): 27B becomes the main model
 

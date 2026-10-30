@@ -4,7 +4,8 @@
 # slice is slow but many slices are free.
 #
 #   bash isca/submit_split.sh llama31_8b mig        # 4 jobs on 10 GB MIG slices
-#   bash isca/submit_split.sh gemma3_12b gpu        # 4 jobs on full A100s
+#   bash isca/submit_split.sh gemma3_12b gpu        # 4 jobs on full A100s (context 16384, enough for every profile)
+#   EXTRA="--gres=gpu:2 -c 24 --mem=128G" bash isca/submit_split.sh qwen35_122b gpu   # two-GPU models
 set -u
 PROFILE=$1
 WHERE=${2:-mig}
@@ -21,8 +22,8 @@ for i in "${!TASK_GROUPS[@]}"; do
       GRES=gpu:1g.10gb:1 SEARCH=0 \
       sbatch -J "m-$PROFILE-g$((i + 1))" -p gpu-mig --gres=gpu:1g.10gb:1 -c 4 --mem=24G isca/run_model.sbatch
   else
-    env TASKS="${TASK_GROUPS[$i]}" CONDITIONS=all SEEDS=1-6 PROFILE="$PROFILE" CONTEXT=8192 WORKERS=4 SEARCH=0 \
-      sbatch -J "m-$PROFILE-g$((i + 1))" --exclude=gpu11 isca/run_model.sbatch
+    env TASKS="${TASK_GROUPS[$i]}" CONDITIONS=all SEEDS=1-6 PROFILE="$PROFILE" CONTEXT=16384 WORKERS=4 SEARCH=0 \
+      sbatch -J "m-$PROFILE-g$((i + 1))" --exclude=gpu11 ${EXTRA:-} isca/run_model.sbatch
   fi
   sleep 20
 done
