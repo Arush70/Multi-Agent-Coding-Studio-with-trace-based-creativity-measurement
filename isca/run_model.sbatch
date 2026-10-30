@@ -49,6 +49,12 @@ remaining() {
   python scripts/run_experiment.py --tasks "$TASKS" --conditions "$CONDITIONS" --seeds "$SEEDS" \
     --profile "$PROFILE" --dry-run 2>/dev/null | grep -oE "[0-9]+ to run" | grep -oE "[0-9]+"
 }
+# refuse a bad task, condition or profile list before anything else (and before queuing a follow-up)
+if ! python scripts/run_experiment.py --tasks "$TASKS" --conditions "$CONDITIONS" --seeds "$SEEDS" \
+     --profile "$PROFILE" --dry-run > /dev/null 2> "data/jobs/check-$SLURM_JOB_ID.err"; then
+  echo "invalid job settings (TASKS=$TASKS CONDITIONS=$CONDITIONS SEEDS=$SEEDS PROFILE=$PROFILE):"
+  cat "data/jobs/check-$SLURM_JOB_ID.err"; exit 1
+fi
 LEFT=$(remaining); LEFT=${LEFT:-1}
 DONE_SEARCH=data/jobs/search-done-$PROFILE
 if [ "$LEFT" = 0 ] && { [ "$SEARCH" != 1 ] || [ -f "$DONE_SEARCH" ]; }; then
