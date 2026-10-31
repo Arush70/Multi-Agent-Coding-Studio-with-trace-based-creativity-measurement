@@ -96,6 +96,9 @@ what changed, why, and which files. Pre-registration changes are also logged, da
   hour and some cells may have two traces. The newer jobs were cancelled, and the analysis now
   keeps one trace per (model, task, condition, seed), the earliest completed one, and reports how
   many duplicates it skipped.
+- Granite on MIG still timed out: Ollama put 39 of its 41 layers on the slice and 2 on the CPU (three
+  parallel 8192-token slots do not fit in 10 GB). Granite now runs one session per slice
+  (`WORKERS=1`), which fits entirely.
 
 ## 2026-10-22 (Week 5) - University GPU (ISCA): 27B becomes the main model
 
