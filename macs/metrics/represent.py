@@ -174,7 +174,9 @@ def embed(sources: list[str], model_name: str = "microsoft/unixcoder-base", batc
 
         tok = AutoTokenizer.from_pretrained(model_name)
         mdl = AutoModel.from_pretrained(model_name).eval()
-        dev = "cuda" if torch.cuda.is_available() else "cpu"
+        import os
+        # MACS_EMBED_DEVICE=cpu keeps UniXcoder off a small GPU (e.g. a 10 GB MIG slice shared with the LLM)
+        dev = os.environ.get("MACS_EMBED_DEVICE") or ("cuda" if torch.cuda.is_available() else "cpu")
         mdl.to(dev)
         _embedder = (tok, mdl, dev, torch)
     tok, mdl, dev, torch = _embedder

@@ -76,7 +76,13 @@ mkdir -p "$LOCAL" && cp -r "$PREFIX/ollama/." "$LOCAL/" && OLLAMA="$LOCAL/bin/ol
 # can take longer than Ollama's 30-second GPU discovery watchdog; Ollama then falls back to the
 # CPU. A small helper wakes the GPU first and keeps a CUDA context open for the whole job
 # (about 0.5 GB of GPU memory), so discovery always finds a GPU that is already awake.
-python - > "data/jobs/gpu-keeper-$SLURM_JOB_ID.log" 2>&1 <<'PY' &
+KEEPER=""
+if [[ "${GRES:-}" == *1g.* ]]; then
+  # MIG slice (10 GB): the slice needs no wake-up and has no room for extras, so UniXcoder runs on the CPU
+  export MACS_EMBED_DEVICE=cpu
+  echo "MIG slice: no GPU helper; UniXcoder on CPU"
+else
+  python - > "data/jobs/gpu-keeper-$SLURM_JOB_ID.log" 2>&1 <<'PY' &
 import time, torch
 t = time.time()
 for i in range(torch.cuda.device_count()):
@@ -85,9 +91,10 @@ print(f"GPU awake: {torch.cuda.device_count()} device(s) in {time.time() - t:.1f
 while True:
     time.sleep(3600)
 PY
-KEEPER=$!
-for _ in $(seq 120); do grep -q "GPU awake" "data/jobs/gpu-keeper-$SLURM_JOB_ID.log" 2>/dev/null && break; sleep 2; done
-cat "data/jobs/gpu-keeper-$SLURM_JOB_ID.log"
+  KEEPER=$!
+  for _ in $(seq 120); do grep -q "GPU awake" "data/jobs/gpu-keeper-$SLURM_JOB_ID.log" 2>/dev/null && break; sleep 2; done
+  cat "data/jobs/gpu-keeper-$SLURM_JOB_ID.log"
+fi
 export OLLAMA_VULKAN=false                   # CUDA only: do not spend discovery time on Vulkan
 export OLLAMA_LLM_LIBRARY=cuda_v12           # one CUDA library (works with every A100 driver): one 30 s try, not three
 SERVER=""

@@ -88,6 +88,10 @@ what changed, why, and which files. Pre-registration changes are also logged, da
   workers' UniXcoder copies and the wake-up helper), so every request timed out. Granite moved to
   A100s (four task-group jobs); Llama 3.1 still fits its slices. The reference-sensitivity and rating
   jobs now share the same server start-up block as the run jobs (warm-up, 20 attempts).
+- 2026-10-31: Llama 3.1 on MIG slices also stalled (14 sessions in 14 hours) once longer sessions
+  arrived. On MIG slices jobs now skip the GPU wake-up helper and run UniXcoder on the CPU
+  (`MACS_EMBED_DEVICE=cpu`), freeing about 2 GB per slice; Llama 3.1 and Granite run there again.
+  UniXcoder on CPU instead of GPU gives the same embeddings up to floating-point rounding.
 
 ## 2026-10-22 (Week 5) - University GPU (ISCA): 27B becomes the main model
 
