@@ -339,7 +339,24 @@ def analyse_dir(traces_dir="data/traces", *, backend="subprocess", references=No
     else:
         target = models
     other_model = [p.name for p, _, st in loaded if _model_id(st) not in target]
+    # One session per (model, task, condition, seed): if a cell was run twice (two jobs on the same
+    # tasks at once), only the earliest completed trace counts.
+    first: dict[tuple, str] = {}
+    for p, events, start in sorted(loaded, key=lambda x: str(x[2].get("ts", ""))):
+        end = events[-1] if events and events[-1].get("event") == "session_end" else {}
+        if not str(end.get("content", "")).startswith(("completed", "stopped")):
+            continue
+        key = (_model_id(start), start.get("task_id"), start.get("condition"), start.get("header", {}).get("seed"))
+        first.setdefault(key, p.name)
+    duplicates = []
     for p, events, start in loaded:
+        key = (_model_id(start), start.get("task_id"), start.get("condition"), start.get("header", {}).get("seed"))
+        if key in first and first[key] != p.name:
+            duplicates.append(p.name)
+    dup_set = set(duplicates)
+    for p, events, start in loaded:
+        if p.name in dup_set:
+            continue
         if _model_id(start) not in target:
             continue
         # traces from an older orchestrator version are not comparable with current ones
@@ -368,6 +385,8 @@ def analyse_dir(traces_dir="data/traces", *, backend="subprocess", references=No
         print(f"[analyse] analysing model {', '.join(sorted(target)) or model}; skipped "
               f"{len(other_model)} trace(s) from other models (results from different models are "
               f"never pooled; choose one with --model)")
+    if duplicates:
+        print(f"[analyse] skipped {len(duplicates)} duplicate trace(s) of a cell already analysed (earliest kept)")
     if legacy:
         print(f"[analyse] skipped {len(legacy)} trace(s) from an older orchestrator "
               f"(< {COMPATIBLE_SINCE}); use --include-old to keep them")

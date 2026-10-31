@@ -215,3 +215,16 @@ def test_degenerate_reference_gives_no_z_but_keeps_percentile():
     assert r.degenerate
     assert np.all(np.isnan(r.novelty(np.array([[1.0, 2.0, 3.0], [3.0, 1.0, 0.0]]))))
     assert list(r.percentile(np.array([[1.0, 2.0, 3.0], [3.0, 1.0, 0.0]]))) == [0.0, 1.0]
+
+
+@posix_only
+def test_analysis_counts_a_cell_run_twice_only_once(tmp_path):
+    from macs.analysis.aggregate import analyse_dir
+    task = load_task(TASK)
+    for _ in range(2):                       # the same (task, condition, seed) twice, as two jobs would
+        run_session(task, SessionConfig(condition="A", seed=1, sandbox_backend="subprocess"), VariedClient(),
+                    out_dir=tmp_path)
+    run_session(task, SessionConfig(condition="A", seed=2, sandbox_backend="subprocess"), VariedClient(),
+                out_dir=tmp_path)
+    sessions, summary = analyse_dir(tmp_path, references={})
+    assert len(sessions) == 2 and summary["A"]["n_sessions"] == 2

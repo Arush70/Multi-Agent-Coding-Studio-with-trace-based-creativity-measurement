@@ -92,6 +92,10 @@ what changed, why, and which files. Pre-registration changes are also logged, da
   arrived. On MIG slices jobs now skip the GPU wake-up helper and run UniXcoder on the CPU
   (`MACS_EMBED_DEVICE=cpu`), freeing about 2 GB per slice; Llama 3.1 and Granite run there again.
   UniXcoder on CPU instead of GPU gives the same embeddings up to floating-point rounding.
+- Llama 3.1's split jobs had been submitted twice, so each task group ran in two jobs for about an
+  hour and some cells may have two traces. The newer jobs were cancelled, and the analysis now
+  keeps one trace per (model, task, condition, seed), the earliest completed one, and reports how
+  many duplicates it skipped.
 
 ## 2026-10-22 (Week 5) - University GPU (ISCA): 27B becomes the main model
 
