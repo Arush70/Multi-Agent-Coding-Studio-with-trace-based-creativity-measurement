@@ -99,6 +99,10 @@ what changed, why, and which files. Pre-registration changes are also logged, da
 - Granite on MIG still timed out: Ollama put 39 of its 41 layers on the slice and 2 on the CPU (three
   parallel 8192-token slots do not fit in 10 GB). Granite now runs one session per slice
   (`WORKERS=1`), which fits entirely.
+- 2026-11-01: every full-A100 job overnight failed Ollama's GPU check 20 times (gpt-oss, Gemma 3,
+  Gemma 4, DeepSeek); MIG slices kept working. Gemma 3 moved to slices (one session per slice) as
+  eight jobs: the four task groups times seeds 1-3 and 4-6 (no two jobs share a task and seed).
+  DeepSeek-Coder-V2 236B never started on a two-GPU node and is reported as not run.
 
 ## 2026-10-22 (Week 5) - University GPU (ISCA): 27B becomes the main model
 
