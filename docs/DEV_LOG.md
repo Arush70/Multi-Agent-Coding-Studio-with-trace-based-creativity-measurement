@@ -103,6 +103,8 @@ what changed, why, and which files. Pre-registration changes are also logged, da
   Gemma 4, DeepSeek); MIG slices kept working. Gemma 3 moved to slices (one session per slice) as
   eight jobs: the four task groups times seeds 1-3 and 4-6 (no two jobs share a task and seed).
   DeepSeek-Coder-V2 236B never started on a two-GPU node and is reported as not run.
+- Gemma 3 does not fit a MIG slice even with one session (46 of 49 layers on the GPU), so it runs on
+  A100s again, which became free on 1 November. Follow-up jobs now also avoid gpu11.
 
 ## 2026-10-22 (Week 5) - University GPU (ISCA): 27B becomes the main model
 
