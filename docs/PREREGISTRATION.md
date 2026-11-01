@@ -335,5 +335,9 @@ and never edited to match results.
   DeepSeek-Coder-V2 Lite: it rates only Qwen3.5-27B solutions, so a DeepSeek panel member does not
   make it rate its own family's code. The open-problem search stays on 27B and 9B. Anything not
   finished by Monday 2 November 2026 12:00 is reported with the sessions completed by then.
+- _2026-11-01_ — **Reference-size sensitivity also on Qwen3.5-9B (before either check ran).** The
+  27B check could not get a working A100 (GPU start-up failures all week). The same check (same six
+  tasks, 50/100/200) also runs on Qwen3.5-9B, which fits a MIG slice. If both finish, both are
+  reported; the 27B one is the pre-registered result.
 - _…_ — **[fill after SC3]** `CLUSTER_THRESHOLD` frozen at __ (mean ARI __; N labelled proposals
   over __ tasks). Table:
