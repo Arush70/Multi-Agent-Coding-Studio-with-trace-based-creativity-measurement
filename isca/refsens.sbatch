@@ -21,13 +21,13 @@ set -uo pipefail
 PROFILE=${PROFILE:-qwen35_27b}
 MODEL_NAME=${MODEL_NAME:-qwen3.5:27b}
 TASKS=${TASKS:-t1_mbpp119_search,t1_mbpp130_max_occurrences,t2_humaneval0_has_close_elements,t2_humaneval20_find_closest_elements,t3_bin_packing,t3_cap_set}
-WORKERS=6
+WORKERS=${WORKERS:-6}
 PREFIX=${MACS_PREFIX:-$HOME/macs-tools}
 source "$PREFIX/miniforge3/etc/profile.d/conda.sh"
 conda activate macs
 export OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 PYTHONUNBUFFERED=1 HF_HOME="$PREFIX/hf" HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1
 export OLLAMA_MODELS="$PREFIX/models" OLLAMA_HOST="127.0.0.1:$((11500 + SLURM_JOB_ID % 400))"
-export OLLAMA_NUM_PARALLEL=$WORKERS OLLAMA_KEEP_ALIVE=-1 OLLAMA_MAX_LOADED_MODELS=1 OLLAMA_CONTEXT_LENGTH=16384
+export OLLAMA_NUM_PARALLEL=$WORKERS OLLAMA_KEEP_ALIVE=-1 OLLAMA_MAX_LOADED_MODELS=1 OLLAMA_CONTEXT_LENGTH=${CONTEXT:-16384}
 OLLAMA="$PREFIX/ollama/bin/ollama"
 echo "== reference sensitivity job $SLURM_JOB_ID on $(hostname) $(date)"
 
@@ -39,7 +39,13 @@ mkdir -p "$LOCAL" && cp -r "$PREFIX/ollama/." "$LOCAL/" && OLLAMA="$LOCAL/bin/ol
 # can take longer than Ollama's 30-second GPU discovery watchdog; Ollama then falls back to the
 # CPU. A small helper wakes the GPU first and keeps a CUDA context open for the whole job
 # (about 0.5 GB of GPU memory), so discovery always finds a GPU that is already awake.
-python - > "data/jobs/gpu-keeper-$SLURM_JOB_ID.log" 2>&1 <<'PY' &
+KEEPER=""
+if [[ "${GRES:-}" == *1g.* ]]; then
+  # MIG slice (10 GB): the slice needs no wake-up and has no room for extras, so UniXcoder runs on the CPU
+  export MACS_EMBED_DEVICE=cpu
+  echo "MIG slice: no GPU helper; UniXcoder on CPU"
+else
+  python - > "data/jobs/gpu-keeper-$SLURM_JOB_ID.log" 2>&1 <<'PY' &
 import time, torch
 t = time.time()
 for i in range(torch.cuda.device_count()):
@@ -48,9 +54,10 @@ print(f"GPU awake: {torch.cuda.device_count()} device(s) in {time.time() - t:.1f
 while True:
     time.sleep(3600)
 PY
-KEEPER=$!
-for _ in $(seq 120); do grep -q "GPU awake" "data/jobs/gpu-keeper-$SLURM_JOB_ID.log" 2>/dev/null && break; sleep 2; done
-cat "data/jobs/gpu-keeper-$SLURM_JOB_ID.log"
+  KEEPER=$!
+  for _ in $(seq 120); do grep -q "GPU awake" "data/jobs/gpu-keeper-$SLURM_JOB_ID.log" 2>/dev/null && break; sleep 2; done
+  cat "data/jobs/gpu-keeper-$SLURM_JOB_ID.log"
+fi
 export OLLAMA_VULKAN=false                   # CUDA only: do not spend discovery time on Vulkan
 export OLLAMA_LLM_LIBRARY=cuda_v12           # one CUDA library (works with every A100 driver): one 30 s try, not three
 SERVER=""
@@ -85,6 +92,6 @@ OLLAMA="$OLLAMA" python isca/pin_revisions.py
 "$OLLAMA" list
 
 python scripts/build_reference.py --tasks "$TASKS" --n 200 --profile "$PROFILE" --parallel "$WORKERS"
-python scripts/reference_sensitivity.py --model "$MODEL_NAME"
-tar -czf data/jobs/refsens_results.tgz data/results/reference_sensitivity.json data/reference/models
-echo "== reference sensitivity finished $(date); download data/jobs/refsens_results.tgz"
+python scripts/reference_sensitivity.py --model "$MODEL_NAME" --out "data/results/reference_sensitivity_$(echo "$MODEL_NAME" | tr ":" "_").json"
+tar -czf "data/jobs/refsens_results_$PROFILE.tgz" data/results/reference_sensitivity_*.json data/reference/models
+echo "== reference sensitivity finished $(date); download data/jobs/refsens_results_$PROFILE.tgz"
