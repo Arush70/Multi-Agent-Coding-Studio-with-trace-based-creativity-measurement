@@ -1,12 +1,14 @@
-# Tier 3 HARD / OPEN problem. Load-balancing / scheduling to minimise makespan is NP-hard; an LLM-heuristic testbed in ReEvo.
-# Source: Ye et al. (2024), ReEvo: Large Language Models as Hyper-Heuristics with Reflective Evolution, NeurIPS 2024, arXiv:2402.01145
+# Tier 3 HARD / OPEN problem. Scheduling jobs on identical machines to minimise makespan is NP-hard; the online
+# version is the classic list-scheduling problem.
+# Source: Graham, R.L. (1966), Bounds for certain multiprocessing anomalies, Bell System Technical Journal 45(9):1563-1581, doi:10.1002/j.1538-7305.1966.tb01709.x (online list scheduling on identical machines)
+# (Corrected 2026-11-02: earlier cited ReEvo, which does not include machine scheduling. Problem unchanged.)
 # NP-hard / open: there is no known optimal polynomial algorithm, so solutions are
 # scored by a metric, not pass/fail. This is where creativity has the most room.
 # known_families are BLIND LABELS (named heuristics), written before any model output.
 id: t3_scheduling
 tier: 3
 source: research
-citation: "Ye et al. (2024), ReEvo: Large Language Models as Hyper-Heuristics with Reflective Evolution, NeurIPS 2024, arXiv:2402.01145"
+citation: "Graham, R.L. (1966), Bounds for certain multiprocessing anomalies, Bell System Technical Journal 45(9):1563-1581, doi:10.1002/j.1538-7305.1966.tb01709.x (online list scheduling on identical machines)"
 entry_point: priority
 title: Online scheduling (makespan) heuristic
 prompt: |
