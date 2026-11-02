@@ -1,0 +1,317 @@
+{
+  "t1_mbpp119_search": {
+    "model": "qwen3.5:27b",
+    "reference_available": 200,
+    "n_solutions": 346,
+    "sizes_checked": [
+      50,
+      100,
+      200
+    ],
+    "spearman_100_vs_50": 0.9527819115627715,
+    "novel_flag_agreement_100_vs_50": 0.9624277456647399,
+    "spearman_100_vs_200": 0.9166876652950843,
+    "novel_flag_agreement_100_vs_200": 0.9277456647398844
+  },
+  "t1_mbpp130_max_occurrences": {
+    "model": "qwen3.5:27b",
+    "reference_available": 200,
+    "n_solutions": 361,
+    "sizes_checked": [
+      50,
+      100,
+      200
+    ],
+    "spearman_100_vs_50": 0.8958465059968133,
+    "novel_flag_agreement_100_vs_50": 0.9085872576177285,
+    "spearman_100_vs_200": 0.8553790621164137,
+    "novel_flag_agreement_100_vs_200": 0.7894736842105263
+  },
+  "t1_mbpp140_extract_singly": {
+    "model": "qwen3.5:27b",
+    "reference_available": 100,
+    "n_solutions": 367,
+    "sizes_checked": [
+      50,
+      100
+    ],
+    "spearman_100_vs_50": 0.6323365599671869,
+    "novel_flag_agreement_100_vs_50": 0.6376021798365122
+  },
+  "t1_mbpp167_next_power_of_2": {
+    "model": "qwen3.5:27b",
+    "reference_available": 100,
+    "n_solutions": 348,
+    "sizes_checked": [
+      50,
+      100
+    ],
+    "spearman_100_vs_50": 0.8875027840328993,
+    "novel_flag_agreement_100_vs_50": 0.9683908045977011
+  },
+  "t1_mbpp19_test_duplicate": {
+    "model": "qwen3.5:27b",
+    "reference_available": 100,
+    "n_solutions": 379,
+    "sizes_checked": [
+      50,
+      100
+    ],
+    "spearman_100_vs_50": 0.9084098503202902,
+    "novel_flag_agreement_100_vs_50": 0.7150395778364116
+  },
+  "t1_mbpp245_max_sum": {
+    "model": "qwen3.5:27b",
+    "reference_available": 100,
+    "n_solutions": 320,
+    "sizes_checked": [
+      50,
+      100
+    ],
+    "spearman_100_vs_50": 0.760364714644656,
+    "novel_flag_agreement_100_vs_50": 0.85625
+  },
+  "t1_mbpp256_count_primes_nums": {
+    "model": "qwen3.5:27b",
+    "reference_available": 100,
+    "n_solutions": 356,
+    "sizes_checked": [
+      50,
+      100
+    ],
+    "spearman_100_vs_50": 0.870561415203124,
+    "novel_flag_agreement_100_vs_50": 0.6938202247191011
+  },
+  "t1_mbpp3_is_not_prime": {
+    "model": "qwen3.5:27b",
+    "reference_available": 100,
+    "n_solutions": 354,
+    "sizes_checked": [
+      50,
+      100
+    ],
+    "spearman_100_vs_50": 0.26065531102299333,
+    "novel_flag_agreement_100_vs_50": 0.9689265536723164
+  },
+  "t1_mbpp583_catalan_number": {
+    "model": "qwen3.5:27b",
+    "reference_available": 100,
+    "n_solutions": 358,
+    "sizes_checked": [
+      50,
+      100
+    ],
+    "spearman_100_vs_50": 0.8597894976908448,
+    "novel_flag_agreement_100_vs_50": 0.9497206703910615
+  },
+  "t1_mbpp58_opposite_signs": {
+    "model": "qwen3.5:27b",
+    "reference_available": 100,
+    "n_solutions": 357,
+    "sizes_checked": [
+      50,
+      100
+    ],
+    "spearman_100_vs_50": 0.952486714746188,
+    "novel_flag_agreement_100_vs_50": 0.8403361344537815
+  },
+  "t1_mbpp88_freq_count": {
+    "model": "qwen3.5:27b",
+    "reference_available": 100,
+    "n_solutions": 380,
+    "sizes_checked": [
+      50,
+      100
+    ],
+    "spearman_100_vs_50": 0.6330665887274142,
+    "novel_flag_agreement_100_vs_50": 0.8447368421052631
+  },
+  "t2_evoeval13_find_rarest_element": {
+    "model": "qwen3.5:27b",
+    "reference_available": 100,
+    "n_solutions": 344,
+    "sizes_checked": [
+      50,
+      100
+    ],
+    "spearman_100_vs_50": 0.9003198824347693,
+    "novel_flag_agreement_100_vs_50": 0.8633720930232558
+  },
+  "t2_evoeval16_fibonacci_sum": {
+    "model": "qwen3.5:27b",
+    "reference_available": 100,
+    "n_solutions": 344,
+    "sizes_checked": [
+      50,
+      100
+    ],
+    "spearman_100_vs_50": 0.9870434362255128,
+    "novel_flag_agreement_100_vs_50": 0.8488372093023255
+  },
+  "t2_evoeval31_unique_paths": {
+    "model": "qwen3.5:27b",
+    "reference_available": 100,
+    "n_solutions": 322,
+    "sizes_checked": [
+      50,
+      100
+    ],
+    "spearman_100_vs_50": 0.8451615036733604,
+    "novel_flag_agreement_100_vs_50": 0.4440993788819876
+  },
+  "t2_humaneval0_has_close_elements": {
+    "model": "qwen3.5:27b",
+    "reference_available": 200,
+    "n_solutions": 346,
+    "sizes_checked": [
+      50,
+      100,
+      200
+    ],
+    "spearman_100_vs_50": 0.900171898708239,
+    "novel_flag_agreement_100_vs_50": 1.0,
+    "spearman_100_vs_200": 0.5662014052020834,
+    "novel_flag_agreement_100_vs_200": 1.0
+  },
+  "t2_humaneval20_find_closest_elements": {
+    "model": "qwen3.5:27b",
+    "reference_available": 200,
+    "n_solutions": 330,
+    "sizes_checked": [
+      50,
+      100,
+      200
+    ],
+    "spearman_100_vs_50": 0.9249650578643609,
+    "novel_flag_agreement_100_vs_50": 0.803030303030303,
+    "spearman_100_vs_200": 0.9885656851554312,
+    "novel_flag_agreement_100_vs_200": 0.8939393939393939
+  },
+  "t2_humaneval26_remove_duplicates": {
+    "model": "qwen3.5:27b",
+    "reference_available": 100,
+    "n_solutions": 350,
+    "sizes_checked": [
+      50,
+      100
+    ],
+    "spearman_100_vs_50": 0.8953580542041955,
+    "novel_flag_agreement_100_vs_50": 0.9914285714285714
+  },
+  "t2_humaneval40_triples_sum_to_zero": {
+    "model": "qwen3.5:27b",
+    "reference_available": 100,
+    "n_solutions": 322,
+    "sizes_checked": [
+      50,
+      100
+    ],
+    "spearman_100_vs_50": 0.9674454687921594,
+    "novel_flag_agreement_100_vs_50": 0.9565217391304348
+  },
+  "t2_humaneval48_is_palindrome": {
+    "model": "qwen3.5:27b",
+    "reference_available": 100,
+    "n_solutions": 360,
+    "sizes_checked": [
+      50,
+      100
+    ],
+    "spearman_100_vs_50": 0.9999926355247557,
+    "novel_flag_agreement_100_vs_50": 1.0
+  },
+  "t2_humaneval55_fib": {
+    "model": "qwen3.5:27b",
+    "reference_available": 100,
+    "n_solutions": 369,
+    "sizes_checked": [
+      50,
+      100
+    ],
+    "spearman_100_vs_50": 0.9752965428104217,
+    "novel_flag_agreement_100_vs_50": 0.9539295392953929
+  },
+  "t2_humaneval57_monotonic": {
+    "model": "qwen3.5:27b",
+    "reference_available": 100,
+    "n_solutions": 346,
+    "sizes_checked": [
+      50,
+      100
+    ],
+    "spearman_100_vs_50": 0.9607951701811867,
+    "novel_flag_agreement_100_vs_50": 0.6502890173410405
+  },
+  "t2_humaneval9_rolling_max": {
+    "model": "qwen3.5:27b",
+    "reference_available": 100,
+    "n_solutions": 348,
+    "sizes_checked": [
+      50,
+      100
+    ],
+    "spearman_100_vs_50": 0.9262770256004595,
+    "novel_flag_agreement_100_vs_50": 0.9655172413793104
+  },
+  "t3_bin_packing": {
+    "model": "qwen3.5:27b",
+    "reference_available": 200,
+    "n_solutions": 283,
+    "sizes_checked": [
+      50,
+      100,
+      200
+    ],
+    "spearman_100_vs_50": 0.7235267709032513,
+    "novel_flag_agreement_100_vs_50": 0.7173144876325088,
+    "spearman_100_vs_200": 0.9001268788477956,
+    "novel_flag_agreement_100_vs_200": 0.901060070671378
+  },
+  "t3_cap_set": {
+    "model": "qwen3.5:27b",
+    "reference_available": 200,
+    "n_solutions": 287,
+    "sizes_checked": [
+      50,
+      100,
+      200
+    ],
+    "spearman_100_vs_50": 0.6683405912367575,
+    "novel_flag_agreement_100_vs_50": 0.8013937282229965,
+    "spearman_100_vs_200": 0.820690375488515,
+    "novel_flag_agreement_100_vs_200": 0.9372822299651568
+  },
+  "t3_graph_coloring": {
+    "model": "qwen3.5:27b",
+    "reference_available": 100,
+    "n_solutions": 356,
+    "sizes_checked": [
+      50,
+      100
+    ],
+    "spearman_100_vs_50": 0.8835620520592744,
+    "novel_flag_agreement_100_vs_50": 0.8735955056179775
+  },
+  "t3_scheduling": {
+    "model": "qwen3.5:27b",
+    "reference_available": 100,
+    "n_solutions": 354,
+    "sizes_checked": [
+      50,
+      100
+    ],
+    "spearman_100_vs_50": null,
+    "novel_flag_agreement_100_vs_50": 0.5508474576271186
+  },
+  "t3_tsp_construction": {
+    "model": "qwen3.5:27b",
+    "reference_available": 100,
+    "n_solutions": 341,
+    "sizes_checked": [
+      50,
+      100
+    ],
+    "spearman_100_vs_50": 0.9370363247502099,
+    "novel_flag_agreement_100_vs_50": 0.9178885630498533
+  }
+}
