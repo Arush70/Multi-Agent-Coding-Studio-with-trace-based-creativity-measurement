@@ -7,6 +7,17 @@ what changed, why, and which files. Pre-registration changes are also logged, da
 
 ---
 
+## 2026-11-02 (Week 6) - runs stopped at the cut-off, final analysis
+
+- Meeting moved to 3 Nov. Remaining model jobs cancelled; the 235 traces written after the
+  pre-registered cut-off (2 Nov 12:00, by file time) moved to `data/archive/after_cutoff_2026-11-02/`
+  on ISCA. Final analysis (ISCA job 2746855, finished 20:18) over 12,909 sessions; results in
+  `data/results/`. 27B and 9B numbers unchanged; the panel models now include every completed seed.
+- Condition P produced no scoreable code on Granite 4.2 8B (0 families, pass rate 0) and mostly
+  failed on Gemma 4 (pass rate 0.25): these models do not return 5 separable approaches in one
+  reply. Reported as a format failure; D - P is pooled over the 7 models where it is estimable.
+- 27B reference-size sensitivity found complete (job 2743179, 1 Nov); result in PREREGISTRATION.
+
 ## 2026-11-02 (Week 6) - two task citations corrected
 
 - While adding a direct link for every problem (meeting document "Problem Bank"), two Tier 3 task
