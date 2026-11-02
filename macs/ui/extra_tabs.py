@@ -6,6 +6,7 @@ the rest of the dashboard. Each function receives the Streamlit module and a con
 """
 from __future__ import annotations
 
+from macs.ui.compat import FULL_WIDTH
 import json
 from pathlib import Path
 
@@ -94,7 +95,7 @@ def statistics_extras(st, c) -> None:
                             "95% CI": f"[{m['random_ci'][0]:.3f}, {m['random_ci'][1]:.3f}]",
                             "I²": f"{m['I2']:.0%}", "same direction": f"{m['same_sign']}/{m['k']}"})
             rows.append(row)
-        st.dataframe(pd.DataFrame(rows), hide_index=True, use_container_width=True)
+        st.dataframe(pd.DataFrame(rows), hide_index=True, **FULL_WIDTH)
 
     st.markdown("##### Does creativity pay off?")
     st.caption("Quality-diversity frontier (pass rate against novelty per condition) and, on Tier 3, whether "
@@ -105,10 +106,10 @@ def statistics_extras(st, c) -> None:
     fr = _read(ROOT / "data" / "results" / "frontier.json")
     if fr:
         st.dataframe(pd.DataFrame([{"condition": k, **v} for k, v in fr["frontier"].items()]),
-                     hide_index=True, use_container_width=True)
+                     hide_index=True, **FULL_WIDTH)
         if fr.get("tier3"):
             st.dataframe(pd.DataFrame([{"condition": k, **v} for k, v in fr["tier3"].items()]),
-                         hide_index=True, use_container_width=True)
+                         hide_index=True, **FULL_WIDTH)
         png = ROOT / "data" / "results" / "frontier.png"
         if png.exists():
             st.image(str(png), width=520)
@@ -123,7 +124,7 @@ def statistics_extras(st, c) -> None:
     if mu:
         st.dataframe(pd.DataFrame([{"task": k, "solutions": v["solutions"], "mutants": v["mutants"],
                                     "killed": v["killed"], "mutation score": v["score"]} for k, v in mu.items()]),
-                     hide_index=True, use_container_width=True)
+                     hide_index=True, **FULL_WIDTH)
 
 
 # ---------------------------------------------------------------- References: sensitivity
@@ -186,7 +187,7 @@ def rating_study(st, c) -> None:
                 rows.append({"raters": who, "question": q, "Spearman rho": v["spearman_rho"], "95% CI": v["rho_ci"],
                              "Cohen's kappa": v["mean_cohen_kappa"], "Fleiss' kappa": v["fleiss_kappa"],
                              "majority picks more novel": v["majority_picks_more_novel"], "pairs": v["n_pairs"]})
-        st.dataframe(pd.DataFrame(rows), hide_index=True, use_container_width=True)
+        st.dataframe(pd.DataFrame(rows), hide_index=True, **FULL_WIDTH)
         st.caption("SC4 targets: Spearman's rho of at least 0.50 against the automatic novelty; Cohen's kappa of "
                    "at least 0.60 between raters. The judge is reported separately, never pooled with humans.")
         if "judge_vs_humans" in res:
@@ -229,7 +230,7 @@ def open_problems(st, c) -> None:
                                         "best raw value": v["best_raw"], "gap to best known": v["gap_to_best_known"],
                                         "AUC": round(v["auc_mean"], 4), "valid share": round(v["valid_share"], 2),
                                         "tokens": int(v["tokens_mean"]), "interventions": v["interventions"]}
-                                       for s, v in t["strategies"].items()]), hide_index=True, use_container_width=True)
+                                       for s, v in t["strategies"].items()]), hide_index=True, **FULL_WIDTH)
             if t.get("comparisons"):
                 st.write(t["comparisons"])
     # best-so-far curves

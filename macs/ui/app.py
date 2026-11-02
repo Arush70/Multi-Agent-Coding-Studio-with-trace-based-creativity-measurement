@@ -22,6 +22,7 @@ tested without Streamlit; only main() imports `st`.
 """
 from __future__ import annotations
 
+from macs.ui.compat import FULL_WIDTH
 import json
 import subprocess
 import sys
@@ -417,7 +418,7 @@ def main() -> None:  # pragma: no cover - layout isn't unit-tested
                                "Correct&Novel": summary[c].get("avg_correct_and_novel"),
                                "Interventions": summary[c].get("avg_interventions"),
                                "Tokens": summary[c].get("avg_tokens")} for c in present]),
-                hide_index=True, use_container_width=True)
+                hide_index=True, **FULL_WIDTH)
 
     # ============================================================ STATISTICS (S8)
     with tab_stats:
@@ -455,16 +456,16 @@ def main() -> None:  # pragma: no cover - layout isn't unit-tested
                     rows.append(r)
                 return pd.DataFrame(rows)
             st.markdown(f"**Primary (Holm family)** · task set: {res.get('task_set', 'main')}")
-            st.dataframe(table(res.get("primary", []), True), hide_index=True, use_container_width=True)
+            st.dataframe(table(res.get("primary", []), True), hide_index=True, **FULL_WIDTH)
             st.markdown("**Secondary (exploratory, unadjusted)**")
-            st.dataframe(table(res.get("secondary", []), False), hide_index=True, use_container_width=True)
+            st.dataframe(table(res.get("secondary", []), False), hide_index=True, **FULL_WIDTH)
             d = res.get("design", {})
             st.markdown(f"**Minimum detectable effect** for {d.get('tasks')} tasks x {d.get('seeds')} seeds "
                         "(80% power, Holm-strict alpha)")
             st.dataframe(pd.DataFrame([{"outcome": k, "MDE": round(v["mde"], 3),
                                         "residual SD": round(v["sigma2_residual"] ** 0.5, 3)}
                                        for k, v in res.get("mde", {}).items()]),
-                         hide_index=True, use_container_width=True)
+                         hide_index=True, **FULL_WIDTH)
 
         extra_tabs.statistics_extras(st, ctx)
 
@@ -559,7 +560,7 @@ def main() -> None:  # pragma: no cover - layout isn't unit-tested
                 is_heur = "vs_baseline" in tbl[0]
                 cols = ["proposal", "strategy", "lines", "correct", ("vs_baseline" if is_heur else "novelty_z"), "creative"]
                 st.dataframe(pd.DataFrame([{c: r.get(c) for c in cols} for r in tbl]),
-                             hide_index=True, use_container_width=True)
+                             hide_index=True, **FULL_WIDTH)
                 st.write("**The code behind each proposal:**")
                 for r in tbl:
                     verdict = "correct" if r.get("correct") else "wrong"
@@ -575,7 +576,7 @@ def main() -> None:  # pragma: no cover - layout isn't unit-tested
                 cache.pop(pick.name, None)
                 st.rerun()
             with st.expander("Full event timeline"):
-                st.dataframe(pd.DataFrame(event_rows(events)), hide_index=True, use_container_width=True)
+                st.dataframe(pd.DataFrame(event_rows(events)), hide_index=True, **FULL_WIDTH)
 
     # ============================================================ REFERENCES
     with tab_ref:
@@ -591,7 +592,7 @@ def main() -> None:  # pragma: no cover - layout isn't unit-tested
             c = st.columns(4)
             for col, (k, v) in zip(c, counts.items()):
                 col.metric(k.capitalize(), v)
-            st.dataframe(pd.DataFrame(rows), hide_index=True, use_container_width=True)
+            st.dataframe(pd.DataFrame(rows), hide_index=True, **FULL_WIDTH)
             _job_panel(st, "references", "Reference build")
         _live(st, "references", ref_status, every=5)
 
@@ -659,7 +660,7 @@ def main() -> None:  # pragma: no cover - layout isn't unit-tested
             td = json.loads(tfile.read_text(encoding="utf-8"))
             st.dataframe(pd.DataFrame([{"task": r["task_id"], "tau": r["tau_matched_rule"], "checks": r["studio_checks"],
                                         **{f"fire p{k}": v["fire_rate"] for k, v in r.get("by_percentile", {}).items()}}
-                                       for r in td.get("tasks", [])]), hide_index=True, use_container_width=True)
+                                       for r in td.get("tasks", [])]), hide_index=True, **FULL_WIDTH)
         extra_tabs.reference_sensitivity(st, ctx)
 
     # ============================================================ MULTI-RUN
@@ -771,7 +772,7 @@ def main() -> None:  # pragma: no cover - layout isn't unit-tested
             tasks_in_pool = sorted({r["task_id"] for r in pool})
             prog = pd.DataFrame([{"task": t, "labelled": sum(1 for r in pool if r["task_id"] == t and r["key"] in labels),
                                   "in pool": sum(1 for r in pool if r["task_id"] == t)} for t in tasks_in_pool])
-            st.dataframe(prog, hide_index=True, use_container_width=True)
+            st.dataframe(prog, hide_index=True, **FULL_WIDTH)
             task_pick = st.selectbox("Task", tasks_in_pool, key="lab_task")
             items = [r for r in pool if r["task_id"] == task_pick]
             only_open = st.checkbox("Show unlabelled only", value=True, key="lab_open")
@@ -832,7 +833,7 @@ def main() -> None:  # pragma: no cover - layout isn't unit-tested
     with tab_setup:
         st.subheader("Setup checks")
         st.dataframe(pd.DataFrame([{k: (json.dumps(v) if isinstance(v, dict) else v) for k, v in p.items()}
-                                   for p in profiles]), hide_index=True, use_container_width=True)
+                                   for p in profiles]), hide_index=True, **FULL_WIDTH)
         st.caption("Profiles come from config/models.yaml (API keys are not shown). Edit that file to add a model.")
         if st.button("Run checks"):
             import shutil
@@ -855,7 +856,7 @@ def main() -> None:  # pragma: no cover - layout isn't unit-tested
                 ok = importlib.util.find_spec(name) is not None
                 results.append((name + " (statistics cross-check)", ok, "installed" if ok else "optional"))
             st.dataframe(pd.DataFrame([{"check": a, "ok": "✅" if b else "❌", "detail": c} for a, b, c in results]),
-                         hide_index=True, use_container_width=True)
+                         hide_index=True, **FULL_WIDTH)
 
 
 if __name__ == "__main__":
