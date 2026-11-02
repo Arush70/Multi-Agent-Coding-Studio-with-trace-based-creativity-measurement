@@ -1,12 +1,13 @@
-# Tier 3 HARD / OPEN problem. Graph colouring is NP-hard; heuristic vertex orderings are an LLM-heuristic testbed in ReEvo.
-# Source: Ye et al. (2024), ReEvo: Large Language Models as Hyper-Heuristics with Reflective Evolution, NeurIPS 2024, arXiv:2402.01145
+# Tier 3 HARD / OPEN problem. Graph colouring is NP-hard; it is one of the 36 problems in CO-Bench.
+# Source: Sun, W. et al. (2025), CO-Bench: Benchmarking Language Model Agents in Algorithm Search for Combinatorial Optimization, arXiv:2504.04310 (problem: Graph colouring)
+# (Corrected 2026-11-02: earlier cited ReEvo, which does not include graph colouring. Problem unchanged.)
 # NP-hard / open: there is no known optimal polynomial algorithm, so solutions are
 # scored by a metric, not pass/fail. This is where creativity has the most room.
 # known_families are BLIND LABELS (named heuristics), written before any model output.
 id: t3_graph_coloring
 tier: 3
 source: research
-citation: "Ye et al. (2024), ReEvo: Large Language Models as Hyper-Heuristics with Reflective Evolution, NeurIPS 2024, arXiv:2402.01145"
+citation: "Sun, W. et al. (2025), CO-Bench: Benchmarking Language Model Agents in Algorithm Search for Combinatorial Optimization, arXiv:2504.04310 (problem: Graph colouring)"
 entry_point: vertex_order
 title: Greedy graph-colouring order
 prompt: |

@@ -7,6 +7,16 @@ what changed, why, and which files. Pre-registration changes are also logged, da
 
 ---
 
+## 2026-11-02 (Week 6) - two task citations corrected
+
+- While adding a direct link for every problem (meeting document "Problem Bank"), two Tier 3 task
+  files turned out to cite a paper that does not contain the problem: `t3_graph_coloring` and
+  `t3_scheduling` cited ReEvo (Ye et al. 2024), whose experiments cover TSP, CVRP, OP, MKP, BPP and
+  DPP only. Graph colouring is now cited to CO-Bench (Sun et al. 2025, problem "Graph colouring");
+  online makespan scheduling on identical machines to Graham (1966). Only the `citation` field and
+  header comments changed: prompts, tests, instances and every result are unchanged (the citation
+  is not part of any prompt, hash or cache key). `docs/TASK_SOURCES.md` updated.
+
 ## 2026-10-23 (Week 5) - six learners, 8192-token context, 2-learner run archived
 
 - First 9B results (2 learners, 24 tasks x 6 seeds): studio beats tutor by about 2 families

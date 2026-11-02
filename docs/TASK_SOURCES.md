@@ -13,6 +13,7 @@ problems from **HumanEval**; and the hard / open problems from the **FunSearch**
 - **ReEvo** — Ye, H. et al. (2024). *ReEvo: Large Language Models as Hyper-Heuristics with Reflective Evolution.* NeurIPS 2024. arXiv:2402.01145.
 - **CO-Bench** — Sun, W. et al. (2025). *CO-Bench: Benchmarking Language Model Agents in Algorithm Search for Combinatorial Optimization.* arXiv:2504.04310.
 - **EvoEval** — Xia, C.S., Deng, Y. and Zhang, L. (2024). *Top Leaderboard Ranking = Top Coding Proficiency, Always? EvoEval: Evolving Coding Benchmarks via LLM.* COLM 2024. arXiv:2403.19114.
+- **Graham (1966)**: Graham, R.L. (1966). *Bounds for certain multiprocessing anomalies.* Bell System Technical Journal 45(9), 1563–1581. doi:10.1002/j.1538-7305.1966.tb01709.x.
 - **APPS** (documented alternative for competition-level problems, not used in the current bank due to access limits) — Hendrycks, D. et al. (2021). *Measuring Coding Challenge Competence With APPS.* NeurIPS 2021 D&B. arXiv:2105.09938.
 
 ## Tier 1 — introductory (MBPP)
@@ -55,9 +56,14 @@ judged by a metric against a baseline. This is where creative, non-obvious appro
 |---|---|---|---|
 | `t3_bin_packing` | Online bin packing | FunSearch | `priority` |
 | `t3_cap_set` | Cap set (open problem) | FunSearch | `build_cap_set` |
-| `t3_graph_coloring` | Graph colouring order | ReEvo | `vertex_order` |
-| `t3_scheduling` | Makespan scheduling | ReEvo | `priority` |
+| `t3_graph_coloring` | Graph colouring order | CO-Bench | `vertex_order` |
+| `t3_scheduling` | Makespan scheduling (online, identical machines) | Graham (1966) | `priority` |
 | `t3_tsp_construction` | Travelling salesman heuristic | CO-Bench / ReEvo | `choose_next` |
+
+*Corrected 2026-11-02:* graph colouring and makespan scheduling were cited to ReEvo, whose
+experiments cover TSP, CVRP, OP, MKP, BPP and DPP only. Graph colouring is a CO-Bench problem;
+online makespan scheduling on identical machines is Graham's (1966) list-scheduling problem. The
+problems, instances and results are unchanged; only the citations were corrected.
 
 ## Contamination check — EvoEval rewrites (separate task set)
 
