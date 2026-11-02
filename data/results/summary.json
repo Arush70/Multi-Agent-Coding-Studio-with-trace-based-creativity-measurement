@@ -1192,13 +1192,13 @@
       "n_interventions": 0,
       "n_revisions": 1,
       "n_proposals": 6,
-      "n_correct": 5,
+      "n_correct": 6,
       "families": 6,
       "families_first10": 6,
       "entropy": 2.584962500721156,
       "diversity_scale": "within-sample",
       "mean_novelty": 3.5128765414121563,
-      "correct_and_novel_rate": 0.6666666666666666,
+      "correct_and_novel_rate": 0.8333333333333334,
       "scoring": "tests",
       "heuristic_score": null,
       "heuristic_best": null,
@@ -1219,7 +1219,7 @@
           "heuristic_score": null
         },
         {
-          "correct": false,
+          "correct": true,
           "novelty": 3.8478411467803197,
           "heuristic_score": null
         },
@@ -1949,13 +1949,13 @@
       "n_interventions": 0,
       "n_revisions": 1,
       "n_proposals": 6,
-      "n_correct": 5,
+      "n_correct": 6,
       "families": 6,
       "families_first10": 6,
       "entropy": 2.584962500721156,
       "diversity_scale": "within-sample",
       "mean_novelty": 3.5128765414121563,
-      "correct_and_novel_rate": 0.6666666666666666,
+      "correct_and_novel_rate": 0.8333333333333334,
       "scoring": "tests",
       "heuristic_score": null,
       "heuristic_best": null,
@@ -1976,7 +1976,7 @@
           "heuristic_score": null
         },
         {
-          "correct": false,
+          "correct": true,
           "novelty": 3.8478411467803197,
           "heuristic_score": null
         },
@@ -86304,7 +86304,7 @@
       "mean_novelty": 1.089453694289843,
       "correct_and_novel_rate": 0.6666666666666666,
       "scoring": "heuristic",
-      "heuristic_score": 0.9869258705404828,
+      "heuristic_score": 0.9837221206479912,
       "heuristic_best": 1.0,
       "learner_uptake_final": null,
       "learner_uptake_any": null,
@@ -86331,7 +86331,7 @@
         {
           "correct": true,
           "novelty": 1.3367745020920214,
-          "heuristic_score": 0.9867549668874173
+          "heuristic_score": 0.9675324675324676
         },
         {
           "correct": true,
@@ -87096,7 +87096,7 @@
       "mean_novelty": 0.2821662887788756,
       "correct_and_novel_rate": 0.2,
       "scoring": "heuristic",
-      "heuristic_score": 0.9960526315789474,
+      "heuristic_score": 0.9947712418300654,
       "heuristic_best": 1.0,
       "learner_uptake_final": 0.0,
       "learner_uptake_any": 0.0,
@@ -87125,7 +87125,7 @@
         {
           "correct": true,
           "novelty": 3.064174470756602,
-          "heuristic_score": 0.980263157894737
+          "heuristic_score": 0.9738562091503268
         },
         {
           "correct": true,
@@ -87402,7 +87402,7 @@
       "mean_novelty": 2.5818341356268237,
       "correct_and_novel_rate": 0.8333333333333334,
       "scoring": "heuristic",
-      "heuristic_score": 1.0,
+      "heuristic_score": 0.9988888888888888,
       "heuristic_best": 1.0,
       "learner_uptake_final": null,
       "learner_uptake_any": null,
@@ -87434,7 +87434,7 @@
         {
           "correct": true,
           "novelty": 1.001750004714195,
-          "heuristic_score": 1.0
+          "heuristic_score": 0.9933333333333334
         },
         {
           "correct": true,
@@ -87826,7 +87826,7 @@
       "mean_novelty": 0.2821662887788756,
       "correct_and_novel_rate": 0.2,
       "scoring": "heuristic",
-      "heuristic_score": 0.9973509933774836,
+      "heuristic_score": 0.9947712418300654,
       "heuristic_best": 1.0,
       "learner_uptake_final": 0.0,
       "learner_uptake_any": 0.0,
@@ -87855,7 +87855,7 @@
         {
           "correct": true,
           "novelty": 3.064174470756602,
-          "heuristic_score": 0.9867549668874173
+          "heuristic_score": 0.9738562091503268
         },
         {
           "correct": true,
@@ -89549,8 +89549,8 @@
       "mean_novelty": 0.05825170840345352,
       "correct_and_novel_rate": 0.0,
       "scoring": "heuristic",
-      "heuristic_score": 1.1071428571428572,
-      "heuristic_best": 1.1071428571428572,
+      "heuristic_score": 1.0892857142857142,
+      "heuristic_best": 1.0892857142857142,
       "learner_uptake_final": 1.0,
       "learner_uptake_any": 1.0,
       "learner_led_share": 1.0,
@@ -89563,7 +89563,7 @@
         {
           "correct": true,
           "novelty": 0.05825170840345352,
-          "heuristic_score": 1.1071428571428572
+          "heuristic_score": 1.0892857142857142
         }
       ]
     },
@@ -89763,8 +89763,8 @@
       "mean_novelty": 0.33133620403731295,
       "correct_and_novel_rate": 0.0,
       "scoring": "heuristic",
-      "heuristic_score": 1.130952380952381,
-      "heuristic_best": 1.1785714285714286,
+      "heuristic_score": 1.119047619047619,
+      "heuristic_best": 1.1607142857142858,
       "learner_uptake_final": 1.0,
       "learner_uptake_any": 1.0,
       "learner_led_share": 0.7142857142857143,
@@ -89802,12 +89802,12 @@
         {
           "correct": true,
           "novelty": 1.2867012347125784,
-          "heuristic_score": 1.1785714285714286
+          "heuristic_score": 1.1607142857142858
         },
         {
           "correct": true,
           "novelty": -0.12939063422263167,
-          "heuristic_score": 1.1428571428571428
+          "heuristic_score": 1.125
         }
       ]
     },
@@ -89830,8 +89830,8 @@
       "mean_novelty": 0.34865625149602214,
       "correct_and_novel_rate": 0.0,
       "scoring": "heuristic",
-      "heuristic_score": 1.1428571428571428,
-      "heuristic_best": 1.1428571428571428,
+      "heuristic_score": 1.1785714285714286,
+      "heuristic_best": 1.1964285714285714,
       "learner_uptake_final": 1.0,
       "learner_uptake_any": 1.0,
       "learner_led_share": 0.6666666666666666,
@@ -89859,7 +89859,7 @@
         {
           "correct": true,
           "novelty": -0.23997822822152767,
-          "heuristic_score": 1.1428571428571428
+          "heuristic_score": 1.1607142857142858
         },
         {
           "correct": false,
@@ -89869,7 +89869,7 @@
         {
           "correct": true,
           "novelty": 0.2858503882278764,
-          "heuristic_score": 1.1428571428571428
+          "heuristic_score": 1.1964285714285714
         }
       ]
     },
@@ -89892,8 +89892,8 @@
       "mean_novelty": 0.09801314872567113,
       "correct_and_novel_rate": 0.0,
       "scoring": "heuristic",
-      "heuristic_score": 0.7202380952380952,
-      "heuristic_best": 1.1071428571428572,
+      "heuristic_score": 0.7142857142857143,
+      "heuristic_best": 1.0892857142857142,
       "learner_uptake_final": 0.0,
       "learner_uptake_any": 0.0,
       "learner_led_share": 0.0,
@@ -89931,7 +89931,7 @@
         {
           "correct": true,
           "novelty": 0.1432877345797838,
-          "heuristic_score": 1.1071428571428572
+          "heuristic_score": 1.0892857142857142
         }
       ]
     },
@@ -89954,8 +89954,8 @@
       "mean_novelty": 0.3840752044568343,
       "correct_and_novel_rate": 0.16666666666666666,
       "scoring": "heuristic",
-      "heuristic_score": 1.0357142857142856,
-      "heuristic_best": 1.1428571428571428,
+      "heuristic_score": 1.0401785714285714,
+      "heuristic_best": 1.1607142857142858,
       "learner_uptake_final": 0.0,
       "learner_uptake_any": 1.0,
       "learner_led_share": 0.6666666666666666,
@@ -89968,7 +89968,7 @@
         {
           "correct": true,
           "novelty": 0.26403520424923005,
-          "heuristic_score": 1.1428571428571428
+          "heuristic_score": 1.1607142857142858
         },
         {
           "correct": false,
@@ -90269,8 +90269,8 @@
       "mean_novelty": 0.09645829176429323,
       "correct_and_novel_rate": 0.0,
       "scoring": "heuristic",
-      "heuristic_score": 1.0714285714285714,
-      "heuristic_best": 1.0714285714285714,
+      "heuristic_score": 1.1071428571428572,
+      "heuristic_best": 1.1071428571428572,
       "learner_uptake_final": 0.0,
       "learner_uptake_any": 0.0,
       "learner_led_share": 0.0,
@@ -90285,7 +90285,7 @@
         {
           "correct": true,
           "novelty": 0.09645829176429323,
-          "heuristic_score": 1.0714285714285714
+          "heuristic_score": 1.1071428571428572
         }
       ]
     },
@@ -90744,8 +90744,8 @@
       "mean_novelty": 0.31679154943170207,
       "correct_and_novel_rate": 0.0,
       "scoring": "heuristic",
-      "heuristic_score": 1.0357142857142856,
-      "heuristic_best": 1.0714285714285714,
+      "heuristic_score": 1.0535714285714286,
+      "heuristic_best": 1.1071428571428572,
       "learner_uptake_final": 0.5,
       "learner_uptake_any": 0.5,
       "learner_led_share": 0.8333333333333334,
@@ -90786,7 +90786,7 @@
         {
           "correct": true,
           "novelty": 0.17836629254301248,
-          "heuristic_score": 1.0714285714285714
+          "heuristic_score": 1.1071428571428572
         }
       ]
     },
@@ -90809,7 +90809,7 @@
       "mean_novelty": 0.5329181314665954,
       "correct_and_novel_rate": 0.0,
       "scoring": "heuristic",
-      "heuristic_score": 1.1071428571428572,
+      "heuristic_score": 1.0982142857142856,
       "heuristic_best": 1.1607142857142858,
       "learner_uptake_final": 1.0,
       "learner_uptake_any": 1.0,
@@ -90828,7 +90828,7 @@
         {
           "correct": true,
           "novelty": 0.1377938230950054,
-          "heuristic_score": 1.1428571428571428
+          "heuristic_score": 1.125
         },
         {
           "correct": false,
@@ -90843,7 +90843,7 @@
         {
           "correct": true,
           "novelty": 0.02358648431584601,
-          "heuristic_score": 1.125
+          "heuristic_score": 1.1071428571428572
         },
         {
           "correct": false,
@@ -90945,8 +90945,8 @@
       "mean_novelty": 0.1115266918905446,
       "correct_and_novel_rate": 0.0,
       "scoring": "heuristic",
-      "heuristic_score": 1.0803571428571428,
-      "heuristic_best": 1.1607142857142858,
+      "heuristic_score": 1.0714285714285714,
+      "heuristic_best": 1.1428571428571428,
       "learner_uptake_final": 0.0,
       "learner_uptake_any": 1.0,
       "learner_led_share": 0.625,
@@ -90975,7 +90975,7 @@
         {
           "correct": true,
           "novelty": 0.19793695795472055,
-          "heuristic_score": 1.1607142857142858
+          "heuristic_score": 1.1428571428571428
         },
         {
           "correct": true,
@@ -91018,7 +91018,7 @@
       "mean_novelty": 0.5407936784306403,
       "correct_and_novel_rate": 0.0,
       "scoring": "heuristic",
-      "heuristic_score": 0.8964285714285716,
+      "heuristic_score": 0.9035714285714285,
       "heuristic_best": 1.0,
       "learner_uptake_final": 0.6666666666666666,
       "learner_uptake_any": 1.0,
@@ -91049,7 +91049,7 @@
         {
           "correct": true,
           "novelty": 1.2071577049040418,
-          "heuristic_score": 0.4821428571428571
+          "heuristic_score": 0.5178571428571428
         },
         {
           "correct": true,
@@ -91087,8 +91087,8 @@
       "mean_novelty": 0.41691652278807456,
       "correct_and_novel_rate": 0.0,
       "scoring": "heuristic",
-      "heuristic_score": 1.0178571428571428,
-      "heuristic_best": 1.0714285714285714,
+      "heuristic_score": 1.0267857142857144,
+      "heuristic_best": 1.1071428571428572,
       "learner_uptake_final": 0.6666666666666666,
       "learner_uptake_any": 0.6666666666666666,
       "learner_led_share": 0.6666666666666666,
@@ -91128,7 +91128,7 @@
         {
           "correct": true,
           "novelty": 0.02358648431584601,
-          "heuristic_score": 1.0714285714285714
+          "heuristic_score": 1.1071428571428572
         }
       ]
     },
@@ -91278,7 +91278,7 @@
       "correct_and_novel_rate": 0.0,
       "scoring": "heuristic",
       "heuristic_score": 1.0446428571428572,
-      "heuristic_best": 1.1071428571428572,
+      "heuristic_best": 1.125,
       "learner_uptake_final": 0.5,
       "learner_uptake_any": 0.5,
       "learner_led_share": 0.5,
@@ -91292,7 +91292,7 @@
         {
           "correct": true,
           "novelty": 0.47589522315604665,
-          "heuristic_score": 1.0714285714285714
+          "heuristic_score": 1.125
         },
         {
           "correct": false,
@@ -91307,7 +91307,7 @@
         {
           "correct": true,
           "novelty": -0.31884304873443947,
-          "heuristic_score": 1.1071428571428572
+          "heuristic_score": 1.0535714285714286
         },
         {
           "correct": true,
@@ -91546,8 +91546,8 @@
       "mean_novelty": 0.3869206040894318,
       "correct_and_novel_rate": 0.0,
       "scoring": "heuristic",
-      "heuristic_score": 1.0654761904761905,
-      "heuristic_best": 1.1607142857142858,
+      "heuristic_score": 1.0595238095238095,
+      "heuristic_best": 1.1428571428571428,
       "learner_uptake_final": 0.5,
       "learner_uptake_any": 0.5,
       "learner_led_share": 1.0,
@@ -91588,7 +91588,7 @@
         {
           "correct": true,
           "novelty": 0.5535685816315624,
-          "heuristic_score": 1.1607142857142858
+          "heuristic_score": 1.1428571428571428
         }
       ]
     },
@@ -91611,8 +91611,8 @@
       "mean_novelty": 0.5329181314665954,
       "correct_and_novel_rate": 0.0,
       "scoring": "heuristic",
-      "heuristic_score": 1.0982142857142858,
-      "heuristic_best": 1.1785714285714286,
+      "heuristic_score": 1.0982142857142856,
+      "heuristic_best": 1.1607142857142858,
       "learner_uptake_final": 1.0,
       "learner_uptake_any": 1.0,
       "learner_led_share": 0.7142857142857143,
@@ -91640,12 +91640,12 @@
         {
           "correct": true,
           "novelty": 0.07099702806134789,
-          "heuristic_score": 1.1785714285714286
+          "heuristic_score": 1.1607142857142858
         },
         {
           "correct": true,
           "novelty": 0.02358648431584601,
-          "heuristic_score": 1.0892857142857142
+          "heuristic_score": 1.1071428571428572
         },
         {
           "correct": false,
@@ -91889,8 +91889,8 @@
       "mean_novelty": 0.5881186774348185,
       "correct_and_novel_rate": 0.0,
       "scoring": "heuristic",
-      "heuristic_score": 1.0285714285714285,
-      "heuristic_best": 1.0714285714285714,
+      "heuristic_score": 1.0392857142857141,
+      "heuristic_best": 1.125,
       "learner_uptake_final": 1.0,
       "learner_uptake_any": 1.0,
       "learner_led_share": 0.8333333333333334,
@@ -91920,7 +91920,7 @@
         {
           "correct": true,
           "novelty": 0.7109559046099566,
-          "heuristic_score": 1.0714285714285714
+          "heuristic_score": 1.125
         },
         {
           "correct": true,
@@ -91953,8 +91953,8 @@
       "mean_novelty": 0.4341476110985183,
       "correct_and_novel_rate": 0.0,
       "scoring": "heuristic",
-      "heuristic_score": 1.0178571428571428,
-      "heuristic_best": 1.0892857142857142,
+      "heuristic_score": 1.0071428571428571,
+      "heuristic_best": 1.0357142857142856,
       "learner_uptake_final": 0.5,
       "learner_uptake_any": 0.5,
       "learner_led_share": 1.0,
@@ -91995,7 +91995,7 @@
         {
           "correct": true,
           "novelty": 0.9207775712086522,
-          "heuristic_score": 1.0892857142857142
+          "heuristic_score": 1.0357142857142856
         }
       ]
     },
@@ -92080,7 +92080,7 @@
       "mean_novelty": 0.5257108243410412,
       "correct_and_novel_rate": 0.16666666666666666,
       "scoring": "heuristic",
-      "heuristic_score": 1.1190476190476188,
+      "heuristic_score": 1.119047619047619,
       "heuristic_best": 1.1607142857142858,
       "learner_uptake_final": 0.3333333333333333,
       "learner_uptake_any": 0.6666666666666666,
@@ -92101,12 +92101,12 @@
         {
           "correct": true,
           "novelty": 0.9019333649649343,
-          "heuristic_score": 1.1428571428571428
+          "heuristic_score": 1.1607142857142858
         },
         {
           "correct": true,
           "novelty": -0.44305595618357013,
-          "heuristic_score": 1.1428571428571428
+          "heuristic_score": 1.1607142857142858
         },
         {
           "correct": true,
@@ -92116,12 +92116,12 @@
         {
           "correct": true,
           "novelty": 0.16634171175494736,
-          "heuristic_score": 1.1607142857142858
+          "heuristic_score": 1.1428571428571428
         },
         {
           "correct": true,
           "novelty": 0.8152326111559803,
-          "heuristic_score": 1.1071428571428572
+          "heuristic_score": 1.0892857142857142
         }
       ]
     },
@@ -92144,8 +92144,8 @@
       "mean_novelty": 0.13926362183844584,
       "correct_and_novel_rate": 0.0,
       "scoring": "heuristic",
-      "heuristic_score": 1.0267857142857142,
-      "heuristic_best": 1.1607142857142858,
+      "heuristic_score": 1.0238095238095237,
+      "heuristic_best": 1.1428571428571428,
       "learner_uptake_final": 1.0,
       "learner_uptake_any": 1.0,
       "learner_led_share": 1.0,
@@ -92184,7 +92184,7 @@
         {
           "correct": true,
           "novelty": 0.659357062155951,
-          "heuristic_score": 1.1607142857142858
+          "heuristic_score": 1.1428571428571428
         }
       ]
     },
@@ -92271,7 +92271,7 @@
       "mean_novelty": 0.8181498782581745,
       "correct_and_novel_rate": 0.0,
       "scoring": "heuristic",
-      "heuristic_score": 1.0535714285714286,
+      "heuristic_score": 1.0446428571428572,
       "heuristic_best": 1.1071428571428572,
       "learner_uptake_final": 1.0,
       "learner_uptake_any": 1.0,
@@ -92292,7 +92292,7 @@
         {
           "correct": true,
           "novelty": 0.9204685637367382,
-          "heuristic_score": 1.1071428571428572
+          "heuristic_score": 1.0714285714285714
         },
         {
           "correct": false,
@@ -92473,7 +92473,7 @@
       "correct_and_novel_rate": 0.16666666666666666,
       "scoring": "heuristic",
       "heuristic_score": 1.1130952380952381,
-      "heuristic_best": 1.1607142857142858,
+      "heuristic_best": 1.1785714285714286,
       "learner_uptake_final": 0.3333333333333333,
       "learner_uptake_any": 1.0,
       "learner_led_share": 0.6666666666666666,
@@ -92498,17 +92498,17 @@
         {
           "correct": true,
           "novelty": -0.44305595618357013,
-          "heuristic_score": 1.1428571428571428
+          "heuristic_score": 1.1071428571428572
         },
         {
           "correct": true,
           "novelty": 0.7792394278619058,
-          "heuristic_score": 1.1428571428571428
+          "heuristic_score": 1.1607142857142858
         },
         {
           "correct": true,
           "novelty": -0.4033862602539367,
-          "heuristic_score": 1.1607142857142858
+          "heuristic_score": 1.1785714285714286
         },
         {
           "correct": true,
@@ -92536,8 +92536,8 @@
       "mean_novelty": 0.25673449531418435,
       "correct_and_novel_rate": 0.0,
       "scoring": "heuristic",
-      "heuristic_score": 1.0654761904761905,
-      "heuristic_best": 1.1964285714285714,
+      "heuristic_score": 1.0535714285714286,
+      "heuristic_best": 1.1607142857142858,
       "learner_uptake_final": 0.0,
       "learner_uptake_any": 1.0,
       "learner_led_share": 0.8,
@@ -92561,7 +92561,7 @@
         {
           "correct": true,
           "novelty": 0.5117422589250916,
-          "heuristic_score": 1.1964285714285714
+          "heuristic_score": 1.1607142857142858
         },
         {
           "correct": false,
@@ -93271,8 +93271,8 @@
       "mean_novelty": 0.24311042576076394,
       "correct_and_novel_rate": 0.1111111111111111,
       "scoring": "heuristic",
-      "heuristic_score": 1.0158730158730158,
-      "heuristic_best": 1.1428571428571428,
+      "heuristic_score": 1.0178571428571428,
+      "heuristic_best": 1.1607142857142858,
       "learner_uptake_final": 0.0,
       "learner_uptake_any": 0.6666666666666666,
       "learner_led_share": 0.2222222222222222,
@@ -93302,7 +93302,7 @@
         {
           "correct": true,
           "novelty": 0.3497999571844752,
-          "heuristic_score": 1.1428571428571428
+          "heuristic_score": 1.1607142857142858
         },
         {
           "correct": true,
@@ -95204,7 +95204,7 @@
       "mean_novelty": 1.769107906732675,
       "correct_and_novel_rate": 0.5,
       "scoring": "heuristic",
-      "heuristic_score": 0.9574830988624092,
+      "heuristic_score": 0.9618248355570871,
       "heuristic_best": 1.0689655172413794,
       "learner_uptake_final": 0.3333333333333333,
       "learner_uptake_any": 0.6666666666666666,
@@ -95240,7 +95240,7 @@
         {
           "correct": true,
           "novelty": 3.668087165920742,
-          "heuristic_score": 0.8857142857142858
+          "heuristic_score": 0.911764705882353
         },
         {
           "correct": true,
@@ -96417,8 +96417,8 @@
       "mean_novelty": 1.5070894312297978,
       "correct_and_novel_rate": 0.6,
       "scoring": "heuristic",
-      "heuristic_score": 1.046638655462185,
-      "heuristic_best": 1.1071428571428572,
+      "heuristic_score": 1.054839713663243,
+      "heuristic_best": 1.1481481481481481,
       "learner_uptake_final": 0.3333333333333333,
       "learner_uptake_any": 0.6666666666666666,
       "learner_led_share": 1.0,
@@ -96448,7 +96448,7 @@
         {
           "correct": true,
           "novelty": 2.4483656130785962,
-          "heuristic_score": 1.1071428571428572
+          "heuristic_score": 1.1481481481481481
         },
         {
           "correct": true,
@@ -97586,8 +97586,8 @@
       "mean_novelty": 4.681012990178396,
       "correct_and_novel_rate": 1.0,
       "scoring": "heuristic",
-      "heuristic_score": 0.9997613853286065,
-      "heuristic_best": 1.0,
+      "heuristic_score": 1.0000204792135983,
+      "heuristic_best": 1.000102396067991,
       "learner_uptake_final": null,
       "learner_uptake_any": null,
       "learner_led_share": null,
@@ -97618,7 +97618,7 @@
         {
           "correct": true,
           "novelty": 4.761921139806321,
-          "heuristic_score": 0.9988069266430323
+          "heuristic_score": 1.000102396067991
         },
         {
           "correct": true,
@@ -97888,7 +97888,7 @@
       "mean_novelty": 3.9492811557875562,
       "correct_and_novel_rate": 0.8333333333333334,
       "scoring": "heuristic",
-      "heuristic_score": 0.8767233318867066,
+      "heuristic_score": 0.8767403932392511,
       "heuristic_best": 1.0,
       "learner_uptake_final": null,
       "learner_uptake_any": null,
@@ -97905,7 +97905,7 @@
         {
           "correct": true,
           "novelty": 4.67834322375159,
-          "heuristic_score": 0.9998635045214127
+          "heuristic_score": 0.99996587263668
         },
         {
           "correct": true,
@@ -98874,8 +98874,8 @@
       "mean_novelty": 4.63371020435952,
       "correct_and_novel_rate": 0.8333333333333334,
       "scoring": "heuristic",
-      "heuristic_score": 0.9981939935064934,
-      "heuristic_best": 1.0,
+      "heuristic_score": 1.000994649471807,
+      "heuristic_best": 1.004973247359034,
       "learner_uptake_final": 0.0,
       "learner_uptake_any": 0.0,
       "learner_led_share": 0.0,
@@ -98898,7 +98898,7 @@
         {
           "correct": true,
           "novelty": 4.742456150777658,
-          "heuristic_score": 0.9909699675324675
+          "heuristic_score": 1.004973247359034
         },
         {
           "correct": true,
@@ -99058,7 +99058,7 @@
       "mean_novelty": 3.875897986270539,
       "correct_and_novel_rate": 0.8333333333333334,
       "scoring": "heuristic",
-      "heuristic_score": 0.9862198150815019,
+      "heuristic_score": 0.9814753020880732,
       "heuristic_best": 1.0,
       "learner_uptake_final": null,
       "learner_uptake_any": null,
@@ -99090,7 +99090,7 @@
         {
           "correct": true,
           "novelty": 4.7058241030164485,
-          "heuristic_score": 0.9173188904890113
+          "heuristic_score": 0.8888518125284393
         },
         {
           "correct": true,
@@ -100230,7 +100230,7 @@
       "mean_novelty": 3.6745685429446597,
       "correct_and_novel_rate": 0.8,
       "scoring": "heuristic",
-      "heuristic_score": 0.7599791334172995,
+      "heuristic_score": 0.759999440382761,
       "heuristic_best": 1.0038370619068826,
       "learner_uptake_final": 0.0,
       "learner_uptake_any": 0.0,
@@ -100254,7 +100254,7 @@
         {
           "correct": true,
           "novelty": 4.527512400392734,
-          "heuristic_score": 0.9957858963466439
+          "heuristic_score": 0.9958874311739513
         },
         {
           "correct": true,
@@ -101508,7 +101508,7 @@
       "mean_novelty": 4.464872966247788,
       "correct_and_novel_rate": 0.6666666666666666,
       "scoring": "heuristic",
-      "heuristic_score": 0.9252395957856034,
+      "heuristic_score": 0.9157619466548332,
       "heuristic_best": 1.0,
       "learner_uptake_final": 0.0,
       "learner_uptake_any": 0.0,
@@ -101537,7 +101537,7 @@
         {
           "correct": true,
           "novelty": 4.468691160264309,
-          "heuristic_score": 0.7284482283587832
+          "heuristic_score": 0.681059982704933
         },
         {
           "correct": false,
@@ -101570,7 +101570,7 @@
       "mean_novelty": 3.3247861784922805,
       "correct_and_novel_rate": 0.5,
       "scoring": "heuristic",
-      "heuristic_score": 0.9218217162779055,
+      "heuristic_score": 0.9219880883477846,
       "heuristic_best": 1.0257014795750627,
       "learner_uptake_final": 0.0,
       "learner_uptake_any": 1.0,
@@ -101589,7 +101589,7 @@
         {
           "correct": true,
           "novelty": 5.817440298244982,
-          "heuristic_score": 0.5834071018144643
+          "heuristic_score": 0.5842389621638597
         },
         {
           "correct": true,
@@ -101697,7 +101697,7 @@
       "mean_novelty": 4.198957704112614,
       "correct_and_novel_rate": 0.8333333333333334,
       "scoring": "heuristic",
-      "heuristic_score": 0.7792560719601639,
+      "heuristic_score": 0.7737407725096909,
       "heuristic_best": 1.0,
       "learner_uptake_final": null,
       "learner_uptake_any": null,
@@ -101724,7 +101724,7 @@
         {
           "correct": true,
           "novelty": 5.374918121184097,
-          "heuristic_score": 0.5371260353464024
+          "heuristic_score": 0.504034238643564
         },
         {
           "correct": true,
@@ -101757,7 +101757,7 @@
       "mean_novelty": 5.9720144763126015,
       "correct_and_novel_rate": 0.8,
       "scoring": "heuristic",
-      "heuristic_score": 0.7960632509741598,
+      "heuristic_score": 0.7986350658775991,
       "heuristic_best": 1.0,
       "learner_uptake_final": 0.0,
       "learner_uptake_any": 0.0,
@@ -101776,12 +101776,12 @@
         {
           "correct": true,
           "novelty": 5.656745808924563,
-          "heuristic_score": 0.7226016979662238
+          "heuristic_score": 0.7346930085330646
         },
         {
           "correct": true,
           "novelty": 6.776797993112323,
-          "heuristic_score": 0.4616513059304154
+          "heuristic_score": 0.4598472549773319
         },
         {
           "correct": false,
@@ -102387,7 +102387,7 @@
       "mean_novelty": 4.056372080338581,
       "correct_and_novel_rate": 0.75,
       "scoring": "heuristic",
-      "heuristic_score": 0.9002912432838749,
+      "heuristic_score": 0.9104189480289322,
       "heuristic_best": 1.0,
       "learner_uptake_final": 0.0,
       "learner_uptake_any": 0.0,
@@ -102406,7 +102406,7 @@
         {
           "correct": true,
           "novelty": 5.817763823273757,
-          "heuristic_score": 0.6011649731354997
+          "heuristic_score": 0.6416757921157287
         },
         {
           "correct": false,
@@ -102449,7 +102449,7 @@
       "mean_novelty": 2.35783827886466,
       "correct_and_novel_rate": 0.6,
       "scoring": "heuristic",
-      "heuristic_score": 0.8963785034187091,
+      "heuristic_score": 0.866234714538934,
       "heuristic_best": 1.0,
       "learner_uptake_final": 0.0,
       "learner_uptake_any": 0.0,
@@ -102468,7 +102468,7 @@
         {
           "correct": true,
           "novelty": 4.98994900986271,
-          "heuristic_score": 0.8895595938390606
+          "heuristic_score": 0.733969449193642
         },
         {
           "correct": false,
@@ -102478,7 +102478,7 @@
         {
           "correct": true,
           "novelty": 5.824765914679824,
-          "heuristic_score": 0.592332923254485
+          "heuristic_score": 0.5972041235010278
         },
         {
           "correct": true,
@@ -102573,7 +102573,7 @@
       "mean_novelty": 3.7871905082714066,
       "correct_and_novel_rate": 0.6666666666666666,
       "scoring": "heuristic",
-      "heuristic_score": 0.8990904887501946,
+      "heuristic_score": 0.8921270296353709,
       "heuristic_best": 1.0,
       "learner_uptake_final": 0.0,
       "learner_uptake_any": 0.0,
@@ -102597,7 +102597,7 @@
         {
           "correct": true,
           "novelty": 5.74122925219163,
-          "heuristic_score": 0.7161802037686542
+          "heuristic_score": 0.6586721238556751
         },
         {
           "correct": true,
@@ -102612,7 +102612,7 @@
         {
           "correct": true,
           "novelty": 4.93550734211057,
-          "heuristic_score": 0.6783627287325132
+          "heuristic_score": 0.6940900539565502
         }
       ]
     },
@@ -102635,7 +102635,7 @@
       "mean_novelty": 5.943589191944966,
       "correct_and_novel_rate": 0.6666666666666666,
       "scoring": "heuristic",
-      "heuristic_score": 0.6690769576524054,
+      "heuristic_score": 0.6524195106444598,
       "heuristic_best": 1.0,
       "learner_uptake_final": 0.0,
       "learner_uptake_any": 1.0,
@@ -102649,12 +102649,12 @@
         {
           "correct": true,
           "novelty": 5.702016802681271,
-          "heuristic_score": 0.5332100818091756
+          "heuristic_score": 0.5136065188371124
         },
         {
           "correct": true,
           "novelty": 6.121007379242389,
-          "heuristic_score": 0.5737942096672763
+          "heuristic_score": 0.5516650235349473
         },
         {
           "correct": false,
@@ -102674,7 +102674,7 @@
         {
           "correct": true,
           "novelty": 4.6726808375204945,
-          "heuristic_score": 0.56930353913317
+          "heuristic_score": 0.5444065002057795
         }
       ]
     },
@@ -102697,7 +102697,7 @@
       "mean_novelty": 4.984868296241251,
       "correct_and_novel_rate": 0.6666666666666666,
       "scoring": "heuristic",
-      "heuristic_score": 0.8947116235667153,
+      "heuristic_score": 0.9010692751977369,
       "heuristic_best": 1.0,
       "learner_uptake_final": 0.0,
       "learner_uptake_any": 1.0,
@@ -102731,7 +102731,7 @@
         {
           "correct": true,
           "novelty": 5.820469578705662,
-          "heuristic_score": 0.5758083672643426
+          "heuristic_score": 0.6075966254194519
         },
         {
           "correct": true,
@@ -102759,7 +102759,7 @@
       "mean_novelty": 4.954297310401203,
       "correct_and_novel_rate": 0.6666666666666666,
       "scoring": "heuristic",
-      "heuristic_score": 0.9148096872017389,
+      "heuristic_score": 0.899588069032566,
       "heuristic_best": 1.0,
       "learner_uptake_final": 0.0,
       "learner_uptake_any": 1.0,
@@ -102773,7 +102773,7 @@
         {
           "correct": true,
           "novelty": 6.468863032369482,
-          "heuristic_score": 0.6862862728792485
+          "heuristic_score": 0.658498070832888
         },
         {
           "correct": true,
@@ -102798,7 +102798,7 @@
         {
           "correct": true,
           "novelty": 4.25881500665103,
-          "heuristic_score": 0.9729524759277072
+          "heuristic_score": 0.9398542052973764
         }
       ]
     },
@@ -102821,7 +102821,7 @@
       "mean_novelty": 4.54882589738183,
       "correct_and_novel_rate": 0.6,
       "scoring": "heuristic",
-      "heuristic_score": 0.7892229506284819,
+      "heuristic_score": 0.8013261961993163,
       "heuristic_best": 1.0,
       "learner_uptake_final": 0.0,
       "learner_uptake_any": 1.0,
@@ -102840,7 +102840,7 @@
         {
           "correct": true,
           "novelty": 5.148582731506211,
-          "heuristic_score": 0.7676765663240815
+          "heuristic_score": 0.8039863030365848
         },
         {
           "correct": true,
@@ -102945,7 +102945,7 @@
       "mean_novelty": 3.399471872932848,
       "correct_and_novel_rate": 0.6666666666666666,
       "scoring": "heuristic",
-      "heuristic_score": 0.9400933314434085,
+      "heuristic_score": 0.9254545102530509,
       "heuristic_best": 1.0,
       "learner_uptake_final": 0.0,
       "learner_uptake_any": 0.0,
@@ -102979,7 +102979,7 @@
         {
           "correct": true,
           "novelty": 4.7166278820641985,
-          "heuristic_score": 0.7004666572170416
+          "heuristic_score": 0.6272725512652542
         },
         {
           "correct": true,
@@ -103131,7 +103131,7 @@
       "mean_novelty": 4.056372080338581,
       "correct_and_novel_rate": 0.75,
       "scoring": "heuristic",
-      "heuristic_score": 0.8953822804313747,
+      "heuristic_score": 0.9025139612134434,
       "heuristic_best": 1.0,
       "learner_uptake_final": 0.0,
       "learner_uptake_any": 0.0,
@@ -103150,7 +103150,7 @@
         {
           "correct": true,
           "novelty": 5.817763823273757,
-          "heuristic_score": 0.5815291217254988
+          "heuristic_score": 0.6100558448537734
         },
         {
           "correct": false,
@@ -103193,7 +103193,7 @@
       "mean_novelty": 2.35783827886466,
       "correct_and_novel_rate": 0.6,
       "scoring": "heuristic",
-      "heuristic_score": 0.8750306135256775,
+      "heuristic_score": 0.8788701982954616,
       "heuristic_best": 1.0,
       "learner_uptake_final": 0.0,
       "learner_uptake_any": 0.0,
@@ -103212,7 +103212,7 @@
         {
           "correct": true,
           "novelty": 4.98994900986271,
-          "heuristic_score": 0.7855490536212074
+          "heuristic_score": 0.7940869372086347
         },
         {
           "correct": false,
@@ -103222,7 +103222,7 @@
         {
           "correct": true,
           "novelty": 5.824765914679824,
-          "heuristic_score": 0.5896040140071794
+          "heuristic_score": 0.6002640542686739
         },
         {
           "correct": true,
@@ -103317,7 +103317,7 @@
       "mean_novelty": 3.7871905082714066,
       "correct_and_novel_rate": 0.6666666666666666,
       "scoring": "heuristic",
-      "heuristic_score": 0.8858421464065085,
+      "heuristic_score": 0.8871990525420456,
       "heuristic_best": 1.0,
       "learner_uptake_final": 0.0,
       "learner_uptake_any": 0.0,
@@ -103341,7 +103341,7 @@
         {
           "correct": true,
           "novelty": 5.74122925219163,
-          "heuristic_score": 0.650682511695391
+          "heuristic_score": 0.6255789344170779
         },
         {
           "correct": true,
@@ -103356,7 +103356,7 @@
         {
           "correct": true,
           "novelty": 4.93550734211057,
-          "heuristic_score": 0.6643703667436595
+          "heuristic_score": 0.697615380835195
         }
       ]
     },
@@ -104237,7 +104237,7 @@
       "mean_novelty": 3.352232191683582,
       "correct_and_novel_rate": 0.8,
       "scoring": "heuristic",
-      "heuristic_score": 0.9449156380824106,
+      "heuristic_score": 0.9467506387381504,
       "heuristic_best": 1.0,
       "learner_uptake_final": 0.0,
       "learner_uptake_any": 0.0,
@@ -104266,7 +104266,7 @@
         {
           "correct": true,
           "novelty": 5.901373870274204,
-          "heuristic_score": 0.7245781904120534
+          "heuristic_score": 0.7337531936907518
         },
         {
           "correct": true,
@@ -104294,7 +104294,7 @@
       "mean_novelty": 4.18872294490863,
       "correct_and_novel_rate": 0.8,
       "scoring": "heuristic",
-      "heuristic_score": 0.8783531462252003,
+      "heuristic_score": 0.8723739631447038,
       "heuristic_best": 1.0,
       "learner_uptake_final": 0.0,
       "learner_uptake_any": 1.0,
@@ -104328,7 +104328,7 @@
         {
           "correct": true,
           "novelty": 6.405170739992815,
-          "heuristic_score": 0.49401598055676854
+          "heuristic_score": 0.4641200651542855
         }
       ]
     },
@@ -104351,7 +104351,7 @@
       "mean_novelty": 4.8205008718223885,
       "correct_and_novel_rate": 1.0,
       "scoring": "heuristic",
-      "heuristic_score": 0.892186305242624,
+      "heuristic_score": 0.8938807587041356,
       "heuristic_best": 1.0,
       "learner_uptake_final": 0.0,
       "learner_uptake_any": 0.0,
@@ -104380,7 +104380,7 @@
         {
           "correct": true,
           "novelty": 5.703749340488081,
-          "heuristic_score": 0.46093152621311917
+          "heuristic_score": 0.4694037935206783
         },
         {
           "correct": true,
@@ -105088,8 +105088,8 @@
       "avg_correct": 0.988,
       "avg_mean_novelty": 0.86,
       "avg_correct_and_novel": 0.321,
-      "avg_heuristic_score": 1.004,
-      "avg_heuristic_best": 1.004,
+      "avg_heuristic_score": 1.003,
+      "avg_heuristic_best": 1.003,
       "avg_tokens": 874.864,
       "avg_interventions": 0,
       "n_stopped_by_token_ceiling": 0,
@@ -105106,8 +105106,8 @@
       "avg_correct": 5.043,
       "avg_mean_novelty": 3.521,
       "avg_correct_and_novel": 0.658,
-      "avg_heuristic_score": 0.978,
-      "avg_heuristic_best": 1.047,
+      "avg_heuristic_score": 0.979,
+      "avg_heuristic_best": 1.048,
       "avg_tokens": 15235.302,
       "avg_interventions": 0.062,
       "n_stopped_by_token_ceiling": 0,
@@ -105124,8 +105124,8 @@
       "avg_correct": 0.988,
       "avg_mean_novelty": 0.865,
       "avg_correct_and_novel": 0.377,
-      "avg_heuristic_score": 0.999,
-      "avg_heuristic_best": 0.999,
+      "avg_heuristic_score": 1.0,
+      "avg_heuristic_best": 1.0,
       "avg_tokens": 3800.914,
       "avg_interventions": 0,
       "n_stopped_by_token_ceiling": 0,
@@ -105157,11 +105157,11 @@
       "avg_families": 4.685,
       "avg_families_first10": 4.685,
       "avg_entropy": 2.09,
-      "avg_correct": 5.123,
+      "avg_correct": 5.13,
       "avg_mean_novelty": 3.607,
-      "avg_correct_and_novel": 0.65,
+      "avg_correct_and_novel": 0.651,
       "avg_heuristic_score": 0.97,
-      "avg_heuristic_best": 1.032,
+      "avg_heuristic_best": 1.033,
       "avg_tokens": 20259.617,
       "avg_interventions": 0.025,
       "n_stopped_by_token_ceiling": 4,
@@ -105178,8 +105178,8 @@
       "avg_correct": 5.093,
       "avg_mean_novelty": 3.493,
       "avg_correct_and_novel": 0.665,
-      "avg_heuristic_score": 0.968,
-      "avg_heuristic_best": 1.043,
+      "avg_heuristic_score": 0.967,
+      "avg_heuristic_best": 1.045,
       "avg_tokens": 17654.827,
       "avg_interventions": 0.043,
       "n_stopped_by_token_ceiling": 0,
@@ -105193,11 +105193,11 @@
       "avg_families": 4.698,
       "avg_families_first10": 4.698,
       "avg_entropy": 2.094,
-      "avg_correct": 5.136,
+      "avg_correct": 5.142,
       "avg_mean_novelty": 3.606,
-      "avg_correct_and_novel": 0.651,
-      "avg_heuristic_score": 0.969,
-      "avg_heuristic_best": 1.036,
+      "avg_correct_and_novel": 0.652,
+      "avg_heuristic_score": 0.97,
+      "avg_heuristic_best": 1.035,
       "avg_tokens": 20300.395,
       "avg_interventions": 0,
       "n_stopped_by_token_ceiling": 4,

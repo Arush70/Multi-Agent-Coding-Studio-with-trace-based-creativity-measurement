@@ -370,22 +370,27 @@ and Run.
 
 ---
 
-## 15. What we have done (status, 28 October 2026)
+## 15. What we have done (status, 2 November 2026)
 
 **System:** 11 conditions (A, B, C, D, D_minus, E, E_minus, S, P, C4, D4), orchestrator 0.4.0,
-trace schema 0.3.0, 133 automated tests. Runs on the laptop (Ollama) and on ISCA (`isca/`: setup,
+trace schema 0.3.0, 134 automated tests. Runs on the laptop (Ollama) and on ISCA (`isca/`: setup,
 one job per model with parallel workers, GPU checks, automatic follow-up jobs, analysis job,
 rating job, reference-sensitivity job; `isca/status.sh` for an overview).
 
-**Runs complete:** Qwen3.5-27B (main) and Qwen3.5-9B, full design (27 tasks x 11 conditions x 6
-seeds = 1,782 sessions each); Qwen3.5-122B, gpt-oss-120b, Gemma 4 31B, Gemma 3 12B, Llama 3.1 8B
-and Granite 4.2 8B, reduced design (24 tasks x 7 conditions x 3 seeds = 504 each). Every model has
-its own 100-sample reference sets. Open-problem search (circle packing, bin packing, cap set; random,
-single, studio; 3 seeds; budget 40) on 27B and 9B.
+**Runs (stopped at the pre-registered cut-off, 2 Nov 12:00):** every model was set to the full
+design (27 tasks x 11 conditions x 6 seeds = 1,782 sessions). Complete: Qwen3.5-27B (main),
+Qwen3.5-9B, Qwen3.5-122B, Llama 3.1 8B. Partly complete: Granite 4.2 8B 1,588, Gemma 3 12B 1,440,
+gpt-oss-120b 1,435, Gemma 4 31B 1,318 (mostly missing the conditions added last: S, P, C4, D4).
+Total 12,909 sessions; 235 sessions that finished after the cut-off are in
+`data/archive/after_cutoff_2026-11-02/` and not analysed. Not run: Llama 4 Scout (cut-off of
+30 Oct) and DeepSeek-Coder-V2 236B (needs a partition the project account cannot use). Every model
+has its own 100-sample reference sets. Open-problem search (circle packing, bin packing, cap set;
+random, single, studio; 3 seeds; budget 40) on 27B and 9B.
 
-**Analysis complete:** per-model mixed models with Holm-corrected planned contrasts, learner curve,
-contamination check, mutation testing, UniXcoder representation, frontier chart, cross-model
-random-effects meta-analysis, open-problem report (`data/results/`).
+**Analysis complete (final, ISCA job 2746855, 2 Nov):** per-model mixed models with
+Holm-corrected planned contrasts, learner curve, contamination check, mutation testing, UniXcoder
+representation, frontier chart, cross-model random-effects meta-analysis, open-problem report,
+reference-size sensitivity on 27B (`data/results/`).
 
 **Human part (in progress):** rater form built (Part A: 60 pairs, SC4; Part B: 48 labelling items,
 SC3) with booklet and Microsoft Forms file (`data/rating/`); the AI rater has answered both parts.
@@ -394,20 +399,21 @@ analysis is rerun.
 
 ---
 
-## 16. Results (main model Qwen3.5-27B unless stated; 24 main tasks)
+## 16. Results (main model Qwen3.5-27B unless stated; 24 main tasks; final 2 Nov)
 
 | Question | Result |
 |---|---|
-| Studio vs tutor, distinct approaches (matched) | +2.76 (1 learner), +2.63 (6 learners), Holm p < 0.001; pooled over 8 models +1.04, same direction in 8/8 |
-| Studio vs tutor, correct-and-novel rate | +0.35 / +0.28, Holm p < 0.001; pooled +0.12 (strong for Qwen and gpt-oss, near zero for Gemma, Llama, Granite; I2 about 90%) |
-| Equal token budget (D vs S) | +2.63 approaches, +0.30 correct-and-novel, Holm p < 0.001 |
-| Facilitator where ideas can converge (E vs E_minus) | +0.25 approaches, Holm p = 0.003; pooled +0.12, same direction in 8/8 |
+| Studio vs tutor, distinct approaches (matched) | +2.76 (1 learner), +2.63 (6 learners), Holm p < 0.001; pooled over 8 models +1.66 [1.02, 2.30], significant in 8/8 |
+| Studio vs tutor, correct-and-novel rate | +0.35 / +0.28, Holm p < 0.001; pooled B - A +0.15 [0.05, 0.24], p = 0.002, significant in 5/8 (not Gemma 3, Granite, Llama 3.1; I2 = 92%); pooled D - C +0.08 (n.s.) |
+| Equal token budget (D vs S) | +2.63 approaches, +0.30 correct-and-novel, Holm p < 0.001; pooled +1.73 approaches (8/8), +0.12 correct-and-novel |
+| Facilitator where ideas can converge (E vs E_minus) | +0.25 approaches, Holm p = 0.003; pooled +0.19 [0.14, 0.23], 8/8, I2 = 31% (the most consistent effect) |
 | Facilitator when the Innovator is told to differ (D vs D_minus) | about 0 in every model |
-| Diversity instruction (D_minus vs E_minus) | +2.16 approaches; pooled +0.78 |
-| Single diversity prompt (D vs P) | +0.23 approaches (Holm p = 0.67), correct-and-novel +0.00; the studio costs about 16,000 more tokens |
-| Number of learners (1, 4, 6) | no effect on diversity or quality in any model; about 1,000 tokens per extra learner |
-| Cost | studio about +20,000 tokens per task; pass rate 10-14 points lower |
-| Open problems (27B) | studio above single prompting on circle packing (area under curve, 2 of 3 seeds), not on bin packing or cap set; best circle packing 2.44 vs best known 2.636 |
+| Diversity instruction (D_minus vs E_minus) | +2.16 approaches; pooled +1.24 |
+| Single diversity prompt (D vs P) | +0.23 approaches (Holm p = 0.67), correct-and-novel +0.00; pooled over 7 models +0.04 / -0.02 (n.s.); on 122B P is better on correct-and-novel (-0.10). P produced no scoreable code on Granite and mostly failed on Gemma 4 (format not followed). The studio costs about 19,000 more tokens than P |
+| Number of learners (1, 4, 6) | no effect on diversity; about 1,000 tokens per extra learner |
+| Cost | studio about +19,000 tokens per task (pooled); pass rate 11-14 points lower |
+| Reference size (27B, six pre-registered tasks) | 100 vs 200 references: same "novel" verdict for a median 91% of solutions (rank agreement 0.88); 50 less stable; 100 kept |
+| Open problems (27B) | studio above single prompting on circle packing (area under curve, 2 of 3 seeds) and most valid programs (27%), not on bin packing or cap set; best circle packing: random 2.507, studio 2.439, single 2.155 (best known 2.636) |
 | AI judge | position-consistent on 23% of pairs; not a substitute for human raters |
 
 Earlier pilot results (2 learners, 4096 context) are in `data/archive/2026-10-23_two_learner_ctx4096/`
