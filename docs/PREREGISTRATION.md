@@ -339,5 +339,18 @@ and never edited to match results.
   27B check could not get a working A100 (GPU start-up failures all week). The same check (same six
   tasks, 50/100/200) also runs on Qwen3.5-9B, which fits a MIG slice. If both finish, both are
   reported; the 27B one is the pre-registered result.
+- _2026-11-02_ — **Reference-size sensitivity: result (pre-registered check of 28 Oct).** The 27B
+  check did complete (ISCA job 2743179, finished 1 Nov 12:51; the note of 1 Nov was written before
+  it was seen); the 9B check stopped at the 24 h limit and is not reported. On the six tasks fixed
+  on 28 Oct, novelty computed against 100 references agrees with 200 references: Spearman of the
+  kNN-distance ranking median 0.88 (range 0.57-0.99), agreement of the "novel" flag (above the
+  90th percentile) median 0.91 (range 0.79-1.00). Against 50 references: Spearman median 0.90
+  (0.67-0.95), flag agreement median 0.86 (0.72-1.00); over all 27 tasks at 50 vs 100, flag
+  agreement median 0.86 (range 0.44-1.00), with t3_scheduling's 50-sample ranking undefined (no
+  spread). Reading: 100 references give the same classification as 200 on about nine in ten
+  solutions and are more stable than 50; the analysis keeps 100, as pre-registered. The lowest
+  100 vs 200 rank agreement (t2_humaneval0, 0.57) comes with full flag agreement (1.00): the
+  order of solutions shifts, but no solution moves between "ordinary" and "novel".
+  `data/results/reference_sensitivity_qwen3.5_27b.json`.
 - _…_ — **[fill after SC3]** `CLUSTER_THRESHOLD` frozen at __ (mean ARI __; N labelled proposals
   over __ tasks). Table:
