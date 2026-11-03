@@ -63,19 +63,65 @@ def list_traces() -> list[Path]:
     return sorted(TRACES_DIR.glob("*.jsonl"))
 
 
-def trace_index(paths: list[Path]) -> list[dict]:
-    """Model, task, condition and seed of each trace, from its first line only (fast even for
-    thousands of traces)."""
-    out = []
-    for p in paths:
+INDEX_CACHE = ROOT / "data" / "cache" / "trace_index.json"
+
+
+def _dir_stats(paths: list[Path]) -> dict[str, tuple[int, int]]:
+    """(mtime_ns, size) of every file in the folders of `paths`, from one directory listing per
+    folder. On Windows a listing carries this information, so no file is opened."""
+    import os
+    out: dict[str, tuple[int, int]] = {}
+    for folder in {p.parent for p in paths}:
         try:
-            with open(p, encoding="utf-8") as fh:
-                first = json.loads(fh.readline())
-        except (OSError, ValueError):
+            with os.scandir(folder) as it:
+                for e in it:
+                    if e.is_file():
+                        st = e.stat()
+                        out[str(Path(folder) / e.name)] = (st.st_mtime_ns, st.st_size)
+        except OSError:
             continue
-        h = first.get("header", {})
-        out.append({"path": p, "model": h.get("model", "?"), "task_id": first.get("task_id", "?"),
-                    "condition": first.get("condition", "?"), "seed": h.get("seed", "?")})
+    return out
+
+
+def trace_index(paths: list[Path], cache_file: Path | None = None) -> list[dict]:
+    """Model, task, condition and seed of each trace, from its first line only.
+
+    With `cache_file`, the result is kept on disk keyed by file name, modification time and size,
+    so only new or changed traces are opened. Opening thousands of small files is slow on Windows
+    (it took about a minute for 6,000 traces), and the dashboard draws every tab in one pass, so
+    without the cache the tabs after Traces stayed empty until the index was built."""
+    cache: dict = {}
+    if cache_file is not None and cache_file.exists():
+        try:
+            cache = json.loads(cache_file.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            cache = {}
+    stats = _dir_stats(paths) if cache_file is not None else {}
+    out, fresh, changed = [], {}, False
+    for p in paths:
+        sig = list(stats.get(str(p), ())) or None
+        hit = cache.get(p.name) if sig is not None else None
+        if hit is not None and hit.get("sig") == sig:
+            rec = hit["rec"]
+        else:
+            try:
+                with open(p, encoding="utf-8") as fh:
+                    first = json.loads(fh.readline())
+            except (OSError, ValueError):
+                continue
+            h = first.get("header", {})
+            rec = {"model": h.get("model", "?"), "task_id": first.get("task_id", "?"),
+                   "condition": first.get("condition", "?"), "seed": h.get("seed", "?")}
+            changed = True
+        if sig is not None:
+            fresh[p.name] = {"sig": sig, "rec": rec}
+        out.append({"path": p, **rec})
+    if cache_file is not None and (changed or set(fresh) != set(cache)):
+        try:
+            cache_file.parent.mkdir(parents=True, exist_ok=True)
+            cache_file.write_text(json.dumps(fresh), encoding="utf-8")
+        except OSError:
+            pass
     return out
 
 
@@ -516,7 +562,7 @@ def main() -> None:  # pragma: no cover - layout isn't unit-tested
         else:
             @st.cache_data(show_spinner="indexing traces by model...")
             def _index(names: tuple[str, ...]) -> list[dict]:
-                return [{**r, "path": str(r["path"])} for r in trace_index([TRACES_DIR / n for n in names])]
+                return [{**r, "path": str(r["path"])} for r in trace_index([TRACES_DIR / n for n in names], cache_file=INDEX_CACHE)]
             idx = _index(tuple(p.name for p in traces))
             models = sorted({r["model"] for r in idx})
             f1, f2, f3 = st.columns(3)
