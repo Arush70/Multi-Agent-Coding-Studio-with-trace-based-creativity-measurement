@@ -51,7 +51,7 @@ def cmd_export(a):
     b = forms.export_booklet(pairs, _prompts(pairs, items), DIR / "rating_booklet.html", items)
     f = forms.export_form(pairs, DIR / "form_quick_import.docx", items)
     print(f"booklet: {b}  (open in a browser, print to PDF for the raters)\nform:    {f}  "
-          "(Microsoft Forms > New > Quick import; add the consent page from the ethics consent form first)")
+          "(Microsoft Forms > New > Quick import; then mark the consent, rater code and experience questions as required)")
 
 
 def cmd_import(a):
