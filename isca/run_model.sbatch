@@ -109,7 +109,9 @@ for attempt in $(seq 20); do
   "$OLLAMA" serve > "data/jobs/ollama-$SLURM_JOB_ID.log" 2>&1 &
   SERVER=$!
   for _ in $(seq 90); do curl -sf "http://$OLLAMA_HOST/api/version" >/dev/null && break; sleep 2; done
-  sleep 5
+  # the server answers before GPU discovery has finished (two GPUs take longer than one), so wait
+  # up to 90 s for discovery to report its result instead of checking after a fixed 5 s
+  for _ in $(seq 45); do grep -qE 'inference compute|no compatible GPUs' "data/jobs/ollama-$SLURM_JOB_ID.log" && break; sleep 2; done
   if grep -q 'inference compute.*library=CUDA' "data/jobs/ollama-$SLURM_JOB_ID.log"; then
     echo "GPU found by Ollama (attempt $attempt)"; break
   fi
