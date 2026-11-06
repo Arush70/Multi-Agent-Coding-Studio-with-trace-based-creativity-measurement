@@ -9,6 +9,7 @@
 #                                                                  # share a session (unit = task and seed)
 #   bash isca/submit_split.sh gemma3_12b gpu        # 4 jobs on full A100s (context 16384, enough for every profile)
 #   EXTRA="--gres=gpu:2 -c 24 --mem=128G" bash isca/submit_split.sh qwen35_122b gpu   # two-GPU models
+#   WORKERS=2 EXTRA="--gres=gpu:2 -c 24 --mem=200G" bash isca/submit_split.sh deepseek_v2_236b gpu   # 236B: two sessions per job (KV cache room)
 set -u
 PROFILE=$1
 WHERE=${2:-mig}
@@ -25,7 +26,7 @@ for i in "${!TASK_GROUPS[@]}"; do
       GRES=gpu:1g.10gb:1 SEARCH=0 \
       sbatch -J "m-$PROFILE-g$((i + 1))-s${SEEDS:-1-6}" -p gpu-mig --gres=gpu:1g.10gb:1 -c 4 --mem=24G isca/run_model.sbatch
   else
-    env TASKS="${TASK_GROUPS[$i]}" CONDITIONS=all SEEDS=1-6 PROFILE="$PROFILE" CONTEXT=16384 WORKERS=4 SEARCH=0 \
+    env TASKS="${TASK_GROUPS[$i]}" CONDITIONS=all SEEDS=1-6 PROFILE="$PROFILE" CONTEXT=16384 WORKERS="${WORKERS:-4}" SEARCH=0 \
       sbatch -J "m-$PROFILE-g$((i + 1))" --exclude=gpu11 ${EXTRA:-} isca/run_model.sbatch
   fi
   sleep 20

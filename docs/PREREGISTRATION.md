@@ -352,5 +352,13 @@ and never edited to match results.
   100 vs 200 rank agreement (t2_humaneval0, 0.57) comes with full flag agreement (1.00): the
   order of solutions shifts, but no solution moves between "ordinary" and "novel".
   `data/results/reference_sensitivity_qwen3.5_27b.json`.
+- _2026-11-06_: **DeepSeek-Coder-V2 236B as an exploratory ninth model (amendment made after all
+  eight-model results were seen; reported as such).** At the supervisor's request, DeepSeek-Coder-V2
+  236B (profile `deepseek_v2_236b`, Ollama q4_0, two A100 80GB) is run again with the same full design
+  as every other model (27 tasks x 11 conditions x 6 seeds), split into the four task groups of
+  `isca/submit_split.sh`. It is analysed with the same per-model mixed model and Holm family, and
+  reported as a separate exploratory model. The pre-registered eight-model meta-analysis is unchanged;
+  a nine-model meta-analysis is reported only as a sensitivity check. Sessions completed by
+  20 November 2026 12:00 are analysed; later ones are archived, as on 2 November.
 - _…_ — **[fill after SC3]** `CLUSTER_THRESHOLD` frozen at __ (mean ARI __; N labelled proposals
   over __ tasks). Table:
