@@ -9,6 +9,7 @@
 #                                                                  # share a session (unit = task and seed)
 #   bash isca/submit_split.sh gemma3_12b gpu        # 4 jobs on full A100s (context 16384, enough for every profile)
 #   EXTRA="--gres=gpu:2 -c 24 --mem=128G" bash isca/submit_split.sh qwen35_122b gpu   # two-GPU models
+#   GROUPS_ONLY=2,3,4 ...  submits only those task groups
 #   WORKERS=2 EXTRA="--gres=gpu:2 -c 24 --mem=200G" bash isca/submit_split.sh deepseek_v2_236b gpu   # 236B: two sessions per job (KV cache room)
 set -u
 PROFILE=$1
@@ -21,6 +22,8 @@ TASK_GROUPS=(
   "t3_bin_packing,t3_cap_set,t3_graph_coloring,t3_scheduling,t3_tsp_construction"
 )
 for i in "${!TASK_GROUPS[@]}"; do
+  # GROUPS=2,3,4 submits only those task groups (1-4), e.g. when group 1 is already running
+  if [ -n "${GROUPS_ONLY:-}" ] && [[ ",$GROUPS_ONLY," != *",$((i + 1)),"* ]]; then continue; fi
   if [ "$WHERE" = mig ]; then
     env TASKS="${TASK_GROUPS[$i]}" CONDITIONS=all SEEDS="${SEEDS:-1-6}" PROFILE="$PROFILE" CONTEXT=8192 WORKERS="${WORKERS:-3}" \
       GRES=gpu:1g.10gb:1 SEARCH=0 \
