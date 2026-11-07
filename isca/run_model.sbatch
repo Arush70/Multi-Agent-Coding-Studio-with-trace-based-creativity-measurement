@@ -126,7 +126,16 @@ fi
 
 # download this profile's model if it is not there yet, then pin every revision in the config
 MODEL=$(python isca/pin_revisions.py --profile-model "$PROFILE")
-"$OLLAMA" list | awk 'NR > 1 {print $1}' | grep -qx "$MODEL" || "$OLLAMA" pull "$MODEL"
+# a pull of a very large model can stop part-way (it resumes where it left off), so retry, and
+# stop the job if the model is still missing: sessions without the model would all fail at once
+for try in $(seq 10); do
+  "$OLLAMA" list | awk 'NR > 1 {print $1}' | grep -qx "$MODEL" && break
+  echo "pulling $MODEL (try $try)"; "$OLLAMA" pull "$MODEL" || sleep 60
+done
+if ! "$OLLAMA" list | awk 'NR > 1 {print $1}' | grep -qx "$MODEL"; then
+  echo "model $MODEL could not be downloaded; stopping before any session runs"
+  exit 1
+fi
 OLLAMA="$OLLAMA" python isca/pin_revisions.py
 "$OLLAMA" list
 
