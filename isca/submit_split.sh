@@ -32,7 +32,7 @@ for i in "${!TASK_GROUPS[@]}"; do
       GRES=gpu:1g.10gb:1 SEARCH=0 \
       sbatch -J "m-$PROFILE-g$((i + 1))-s${SEEDS:-1-6}" -p gpu-mig --gres=gpu:1g.10gb:1 -c 4 --mem=24G isca/run_model.sbatch
   else
-    env TASKS="${TASK_GROUPS[$i]}" CONDITIONS=all SEEDS=1-6 PROFILE="$PROFILE" CONTEXT="${CONTEXT:-16384}" WORKERS="${WORKERS:-4}" SEARCH=0 \
+    env TASKS="${TASK_GROUPS[$i]}" CONDITIONS="${CONDITIONS:-all}" SEEDS="${SEEDS:-1-6}" PROFILE="$PROFILE" CONTEXT="${CONTEXT:-16384}" WORKERS="${WORKERS:-4}" SEARCH=0 \
       sbatch -J "m-$PROFILE-g$((i + 1))" --exclude=gpu11 ${EXTRA:-} isca/run_model.sbatch
   fi
   sleep 20
