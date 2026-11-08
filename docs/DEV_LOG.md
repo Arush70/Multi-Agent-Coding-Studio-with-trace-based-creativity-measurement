@@ -134,6 +134,12 @@ what changed, why, and which files. Pre-registration changes are also logged, da
   OLLAMA_NOPRUNE=1. With two 16384-token slots only 53 of 61 layers fitted on the two A100s (the
   rest on the CPU, far too slow), so the 236B runs one session per job at 8192 tokens, the context
   every non-reasoning model in the panel uses; all 61 layers then fit on the GPUs.
+- 2026-11-08: with all 61 layers on the GPUs the 236B ran out of GPU memory during a session (CUDA
+  out of memory; UniXcoder embeddings were also using the GPUs), and every reload then failed: loading
+  133 GB from shared storage took longer than the 5-minute load limit and the 300 s request time-out,
+  which cancelled the load. The 236B jobs now run UniXcoder on the CPU (same embeddings up to
+  rounding, as on MIG slices), use flash attention, allow 30 minutes to load, and every job loads its
+  model once before the first session with no time-out. One session had completed.
 - Gemma 3 does not fit a MIG slice even with one session (46 of 49 layers on the GPU), so it runs on
   A100s again, which became free on 1 November. Follow-up jobs now also avoid gpu11.
 

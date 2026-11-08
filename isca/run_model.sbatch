@@ -142,6 +142,13 @@ fi
 OLLAMA="$OLLAMA" python isca/pin_revisions.py
 "$OLLAMA" list
 
+# load the model once before any session, with no client time-out: a 133 GB model read from the shared
+# storage can take longer than the 300 s a session request waits, and a request that gives up also
+# cancels the load (seen with the 236B on 8 Nov)
+echo "loading $MODEL ($(date +%H:%M))"
+curl -s -m 3600 "http://$OLLAMA_HOST/api/generate" -d "{\"model\": \"$MODEL\", \"keep_alive\": -1}" > /dev/null \
+  && echo "model loaded ($(date +%H:%M))" || echo "model preload did not finish; sessions will load it"
+
 # work units: (task, seed), the slow tier-3 tasks first so no worker is left with them at the end
 TASK_IDS=$(python -c "import sys; sys.path.insert(0, 'scripts'); from build_reference import resolve_tasks; print(' '.join(sorted((t.id for t in resolve_tasks('$TASKS')), reverse=True)))")
 SEED_LIST=$(python -c "import sys; sys.path.insert(0, 'scripts'); from run_experiment import parse_seeds; print(' '.join(map(str, parse_seeds('$SEEDS'))))")

@@ -10,7 +10,10 @@
 #   bash isca/submit_split.sh gemma3_12b gpu        # 4 jobs on full A100s (context 16384, enough for every profile)
 #   EXTRA="--gres=gpu:2 -c 24 --mem=128G" bash isca/submit_split.sh qwen35_122b gpu   # two-GPU models
 #   GROUPS_ONLY=2,3,4 ...  submits only those task groups
-#   CONTEXT=8192 WORKERS=1 EXTRA="--gres=gpu:2 -c 24 --mem=200G" bash isca/submit_split.sh deepseek_v2_236b gpu   # 236B: one 8192-token session per job, so all 61 layers fit on the two GPUs
+#   MACS_EMBED_DEVICE=cpu OLLAMA_FLASH_ATTENTION=1 OLLAMA_LOAD_TIMEOUT=30m CONTEXT=8192 WORKERS=1 \
+#     EXTRA="--gres=gpu:2 -c 24 --mem=200G" bash isca/submit_split.sh deepseek_v2_236b gpu
+#       236B: one 8192-token session per job so all 61 layers fit on the two A100s; UniXcoder on the CPU
+#       and flash attention so nothing else claims GPU memory mid-session; long load time-out
 set -u
 PROFILE=$1
 WHERE=${2:-mig}
