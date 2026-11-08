@@ -140,6 +140,9 @@ what changed, why, and which files. Pre-registration changes are also logged, da
   which cancelled the load. The 236B jobs now run UniXcoder on the CPU (same embeddings up to
   rounding, as on MIG slices), use flash attention, allow 30 minutes to load, and every job loads its
   model once before the first session with no time-out. One session had completed.
+- 2026-11-08: with the model loading once and staying on the GPUs, a 236B session took about 40 to
+  50 minutes (3 sessions in about 2 hours), so the run was stopped and the 236B withdrawn from the
+  study (pre-registration, 8 Nov). The job-script fixes above stay: they apply to every model.
 - Gemma 3 does not fit a MIG slice even with one session (46 of 49 layers on the GPU), so it runs on
   A100s again, which became free on 1 November. Follow-up jobs now also avoid gpu11.
 

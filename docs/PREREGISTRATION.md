@@ -360,5 +360,12 @@ and never edited to match results.
   reported as a separate exploratory model. The pre-registered eight-model meta-analysis is unchanged;
   a nine-model meta-analysis is reported only as a sensitivity check. Sessions completed by
   20 November 2026 12:00 are analysed; later ones are archived, as on 2 November.
+- _2026-11-08_: **DeepSeek-Coder-V2 236B withdrawn (before any of its results were looked at).** The
+  amendment of 6 November is withdrawn. Once the job faults were fixed the model ran entirely on two
+  A100s, but one session took about 40 to 50 minutes, so even the reduced panel design could not
+  finish within the project. The three sessions completed are archived in
+  `data/archive/deepseek_v2_236b_withdrawn/` and not analysed. The panel stays at the eight models
+  of the 2 November analysis; nothing in the pre-registered or reported analysis changes. The AI
+  rater (DeepSeek-Coder-V2 Lite) is unaffected.
 - _…_ — **[fill after SC3]** `CLUSTER_THRESHOLD` frozen at __ (mean ARI __; N labelled proposals
   over __ tasks). Table:

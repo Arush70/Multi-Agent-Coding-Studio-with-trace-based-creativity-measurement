@@ -383,7 +383,7 @@ Qwen3.5-9B, Qwen3.5-122B, Llama 3.1 8B. Partly complete: Granite 4.2 8B 1,588, G
 gpt-oss-120b 1,435, Gemma 4 31B 1,318 (mostly missing the conditions added last: S, P, C4, D4).
 Total 12,909 sessions; 235 sessions that finished after the cut-off are in
 `data/archive/after_cutoff_2026-11-02/` and not analysed. Not run: Llama 4 Scout (cut-off of
-30 Oct) and DeepSeek-Coder-V2 236B (needs a partition the project account cannot use). Every model
+30 Oct) and DeepSeek-Coder-V2 236B (tried again 6 to 8 Nov; about 40 to 50 minutes per session on two A100s, withdrawn 8 Nov). Every model
 has its own 100-sample reference sets. Open-problem search (circle packing, bin packing, cap set;
 random, single, studio; 3 seeds; budget 40) on 27B and 9B.
 
