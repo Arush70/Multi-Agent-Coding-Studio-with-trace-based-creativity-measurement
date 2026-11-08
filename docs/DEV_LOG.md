@@ -124,6 +124,16 @@ what changed, why, and which files. Pre-registration changes are also logged, da
   Gemma 4, DeepSeek); MIG slices kept working. Gemma 3 moved to slices (one session per slice) as
   eight jobs: the four task groups times seeds 1-3 and 4-6 (no two jobs share a task and seed).
   DeepSeek-Coder-V2 236B never started on a two-GPU node and is reported as not run.
+- 2026-11-06 to 11-08: DeepSeek-Coder-V2 236B run again (pre-registration amendment of 6 Nov). Three
+  job-script faults found and fixed: (i) the GPU check ran 5 s after the server answered, before
+  discovery on two GPUs had finished, so two-GPU jobs restarted Ollama 20 times and stopped; jobs now
+  wait up to 90 s for discovery to report. (ii) A 132 GB download that stopped part-way was not
+  noticed, so one job ran every session against a missing model (all failed, none counted); jobs now
+  retry the download and stop if the model is missing. (iii) Each new Ollama server pruned the
+  shared model folder at start-up, deleting another job's partial download; servers now start with
+  OLLAMA_NOPRUNE=1. With two 16384-token slots only 53 of 61 layers fitted on the two A100s (the
+  rest on the CPU, far too slow), so the 236B runs one session per job at 8192 tokens, the context
+  every non-reasoning model in the panel uses; all 61 layers then fit on the GPUs.
 - Gemma 3 does not fit a MIG slice even with one session (46 of 49 layers on the GPU), so it runs on
   A100s again, which became free on 1 November. Follow-up jobs now also avoid gpu11.
 
