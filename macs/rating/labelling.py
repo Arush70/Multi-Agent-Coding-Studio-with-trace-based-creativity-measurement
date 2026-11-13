@@ -130,8 +130,9 @@ def read_label_responses(rows: list[dict]) -> list[dict]:
 
 def _family(choice: str, item: dict) -> str:
     """Option text -> family name ('other' for anything else)."""
+    choice = re.sub(r"^[A-Z][.)]\s+", "", choice.strip())   # in case Forms kept the "A." label
     for opt in item["options"]:
-        if choice.strip() == opt and opt != OTHER:
+        if choice == opt and opt != OTHER:
             return opt.split(":", 1)[0].strip().replace(" ", "_")
     return "other"
 
