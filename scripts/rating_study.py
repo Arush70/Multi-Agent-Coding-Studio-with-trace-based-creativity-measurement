@@ -48,8 +48,10 @@ def cmd_export(a):
     if not pairs:
         raise SystemExit("no pairs yet: run `build` first")
     items = L.load_items(DIR)
-    b = forms.export_booklet(pairs, _prompts(pairs, items), DIR / "rating_booklet.html", items)
-    f = forms.export_form(pairs, DIR / "form_quick_import.docx", items)
+    # human raters see Part A only (the approved design); Part B is labelled by the AI raters
+    human_items = items if getattr(a, "with_part_b", False) else []
+    b = forms.export_booklet(pairs, _prompts(pairs, human_items), DIR / "rating_booklet.html", human_items)
+    f = forms.export_form(pairs, DIR / "form_quick_import.docx", human_items)
     print(f"booklet: {b}  (open in a browser, print to PDF for the raters)\nform:    {f}  "
           "(Microsoft Forms > New > Quick import; then mark the consent, rater code and experience questions as required)")
 
@@ -124,7 +126,7 @@ def main() -> None:
     b = sub.add_parser("build"); b.add_argument("--n", type=int, default=P.N_PAIRS); b.add_argument("--seed", type=int, default=2026)
     b.add_argument("--traces", default="data/traces"); b.add_argument("--model", default=None)
     b.add_argument("--sandbox", default="subprocess", choices=["subprocess", "docker"]); b.add_argument("--force", action="store_true")
-    sub.add_parser("export")
+    e = sub.add_parser("export"); e.add_argument("--with-part-b", action="store_true")
     i = sub.add_parser("import"); i.add_argument("file")
     j = sub.add_parser("judge"); j.add_argument("--profile", default="deepseek")
     sub.add_parser("analyse")
