@@ -79,6 +79,7 @@ def test_form_export_and_response_import(tmp_path):
     from docx import Document
     text = "\n".join(p.text for p in Document(str(docx_path)).paragraphs)
     assert "Pair 01: Which of these two correct solutions" in text and "Pair 03: Which is the more creative" in text
+    assert "A. Solution A" in text and "B. Solution B" in text and "\nQ1. " in "\n" + text
     html_path = forms.export_booklet(pairs, {"t": "Write f."}, tmp_path / "b.html")
     assert "Pair 02" in html_path.read_text()
     # a Forms-style export
@@ -87,7 +88,7 @@ def test_form_export_and_response_import(tmp_path):
     with open(tmp_path / "r.csv", "w", newline="", encoding="utf-8") as fh:
         w = csv.writer(fh); w.writerow(head)
         w.writerow(["1", "R01", "3 to 5"] + ["A", "B"] * 3)
-        w.writerow(["2", "R02", "1 to 2"] + ["B", "", "A", "B", "A", "A"])
+        w.writerow(["2", "R02", "1 to 2"] + ["Solution B", "", "A", "B", "A", "A"])
     long, exp = forms.read_responses(tmp_path / "r.csv")
     assert exp == {"R01": "3 to 5", "R02": "1 to 2"}
     assert len(long) == 11                                   # one blank answer skipped
@@ -134,3 +135,8 @@ def test_label_columns_are_read_from_the_form_export():
     from macs.rating.labelling import read_label_responses
     rows = [{"Your rater code (for example R01)": "R07", "Item L03: Which approach does this solution use?": "x: y"}]
     assert read_label_responses(rows) == [{"rater": "R07", "item_id": "L03", "choice": "x: y"}]
+
+
+def test_pair_choice_accepts_forms_option_labels():
+    for v, want in [("A", "A"), ("Solution B", "B"), ("A. Solution A", "A"), ("b", "B"), ("", ""), ("I agree", "")]:
+        assert forms.pair_choice(v) == want

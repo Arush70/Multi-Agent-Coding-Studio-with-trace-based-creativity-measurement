@@ -100,36 +100,54 @@ def question_text(pair_id: str, kind: str) -> str:
     return f"Pair {pair_id[1:]}: {QUESTIONS[kind]}"
 
 
+LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+PAIR_OPTIONS = ("Solution A", "Solution B")
+
+
 def export_form(pairs: list[dict], path: Path, items: list[dict] | None = None) -> Path:
-    """Word document for Microsoft Forms Quick import: numbered questions, each followed by its
-    options on their own lines. Every question is a single choice between A and B."""
+    """Word document for Microsoft Forms Quick import, in the layout Quick import recognises as
+    choice questions: "Q1. question" on one line, each option on its own line labelled "A.", "B.",
+    and so on, and an empty line between questions. Questions without options (the rater code)
+    become text questions. No headings or tables, which can merge questions."""
     from docx import Document
     doc = Document()
-    doc.add_heading("Code originality rating", level=1)
+    doc.add_paragraph("Code originality rating")
     doc.add_paragraph(INFO)
     doc.add_paragraph("Please use the rating booklet to see each pair and item.")
+    doc.add_paragraph("")
     n = 1
+
+    def q(text, options=()):
+        nonlocal n
+        doc.add_paragraph(f"Q{n}. {text}"); n += 1
+        for letter, opt in zip(LETTERS, options):
+            doc.add_paragraph(f"{letter}. {opt}")
+        doc.add_paragraph("")
+
     for statement in CONSENT_STATEMENTS:          # make each of these required in Forms
-        doc.add_paragraph(f"{n}. {statement}"); n += 1
-        doc.add_paragraph("I agree")
-    doc.add_paragraph(f"{n}. {CODE_Q}"); n += 1
-    doc.add_paragraph(f"{n}. {EXPERIENCE_Q}"); n += 1
-    for opt in ("Less than 1", "1 to 2", "3 to 5", "More than 5"):
-        doc.add_paragraph(opt)
+        q(statement, ["I agree"])
+    q(CODE_Q)
+    q(EXPERIENCE_Q, ["Less than 1", "1 to 2", "3 to 5", "More than 5"])
     for p in pairs:
         for kind in ("original", "creative"):
-            doc.add_paragraph(f"{n}. {question_text(p['pair_id'], kind)}"); n += 1
-            doc.add_paragraph("A")
-            doc.add_paragraph("B")
+            q(question_text(p["pair_id"], kind), PAIR_OPTIONS)
     from macs.rating.labelling import question_text as label_q
     for it in items or []:
-        doc.add_paragraph(f"{n}. {label_q(it['item_id'])}"); n += 1
-        for o in it["options"]:
-            doc.add_paragraph(o)
+        q(label_q(it["item_id"]), it["options"])
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
     doc.save(str(path))
     return path
+
+
+_CHOICE = re.compile(r"^(?:[A-Z][.)]\s*)?(?:solution\s+)?([AB])\b", re.I)
+
+
+def pair_choice(value: str) -> str:
+    """'A', 'B', 'Solution A', 'A. Solution A' -> 'A' / 'B'; anything else -> ''."""
+    v = str(value).strip()
+    m = re.search(r"solution\s*([AB])\b", v, re.I) or _CHOICE.match(v)
+    return m.group(1).upper() if m else ""
 
 
 _PAIR_COL = re.compile(r"Pair\s*(\d+)", re.I)
@@ -161,7 +179,7 @@ def read_responses(path: Path) -> tuple[list[dict], dict[str, str]]:
             if not m or not str(v).strip():
                 continue
             kind = "original" if "original" in k.lower() else "creative" if "creative" in k.lower() else None
-            choice = str(v).strip().upper()[:1]
+            choice = pair_choice(v)
             if kind and choice in ("A", "B"):
                 long.append({"rater": rater, "pair_id": f"P{int(m.group(1)):02d}", "question": kind, "choice": choice})
     return long, experience
