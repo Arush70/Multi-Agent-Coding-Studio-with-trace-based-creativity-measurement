@@ -18,37 +18,38 @@ from pathlib import Path
 Q_ORIGINAL = "Which of these two correct solutions takes the more original approach?"
 Q_CREATIVE = "Which is the more creative solution?"
 QUESTIONS = {"original": Q_ORIGINAL, "creative": Q_CREATIVE}
-EXPERIENCE_Q = "How many years of Python programming experience do you have?"
-CODE_Q = "Your rater code (for example R01)"
+EXPERIENCE_Q = "How many years have you been programming in Python?"
+EXPERIENCE_OPTIONS = ["less than 1", "1 to 3", "3 to 5", "more than 5"]   # as in the rater guide submitted for ethical review (v1.0)
+CODE_Q = "Your rater code (sent to you by the researcher; please do not enter your name)"
 
 
-INFO = ("This short study is part of an MSc project on how creative AI-generated code is "
-        "(University of Exeter ethics reference 14275550). You will see pairs of short Python solutions "
-        "and say which one takes the more original approach (Part A), then say which approach some single "
-        "solutions use (Part B). It takes about one hour. Please read the Participant Information Sheet "
-        "(version 1.1, 3 November 2026) before you start. Taking part is voluntary and you can stop at any "
-        "time; if you close the form before submitting, nothing is saved. Your answers are recorded under "
-        "the rater code the researcher gives you, never your name.")
+INFO = ("This short study is part of an MSc project on how original AI-written code is (University of Exeter "
+        "ethics reference 14275550). You will see 60 pairs of short Python solutions and, for each pair, say which "
+        "one takes the more original approach and which is the more creative solution. Keep the rating booklet open "
+        "alongside this form. It takes about one hour. Please read the Participant Information Sheet (version 1.0, "
+        "18 October 2026) before you start. Taking part is voluntary and you can stop at any time; if you close the "
+        "form before submitting, nothing is saved. Your ratings are recorded under the rater code the researcher "
+        "gives you, never your name.")
 CONSENT_Q = "I have read the information above, I am 18 or over, and I agree to take part."
 # The consent statements of the approved consent form (version 1.1), one required question each, so
 # the form cannot be submitted unless every statement is agreed to.
-CONSENT_STATEMENTS = [
-    "I confirm that I have read the information sheet dated 03/11/2026 (version no. 1.1) for the above "
+CONSENT_STATEMENTS = [   # the consent form submitted for ethical review (version 1.0, 18/10/2026)
+    "I confirm that I have read the information sheet dated 18/10/2026 (version no. 1.0) for the above "
     "project. I have had the opportunity to consider the information, ask questions and have had these "
     "answered satisfactorily.",
     "I understand that my participation is voluntary and that I am free to withdraw at any time without "
     "giving any reason and without my legal rights being affected. I understand that if I close the form "
     "before submitting, nothing is saved.",
-    "I understand that I can ask for my answers to be deleted by emailing the researcher within two weeks "
-    "of taking part, quoting my rater code, and that after this they can no longer be identified or removed.",
+    "I understand that I can ask for my ratings to be deleted by emailing the researcher within two weeks of "
+    "taking part, quoting my rater code, and that after this they can no longer be identified or removed.",
     "I understand that relevant sections of the data collected during the study may be looked at by members "
     "of the research team (the researcher and the supervisor) and by individuals from the University of "
     "Exeter, where it is relevant to my taking part in this research.",
-    "I understand that taking part involves my rating responses, my choices of approach and my years of "
-    "Python experience, recorded under my rater code only and anonymised after the withdrawal period, to be "
-    "used for the purposes of: the researcher's MSc dissertation; reports published in academic "
-    "publications and conference presentations; sharing as a supplementary dataset with the project's "
-    "results; and storage by the University until 31/12/2031.",
+    "I understand that taking part involves my rating responses and my years of Python experience, recorded "
+    "under my rater code only and anonymised after the withdrawal period, to be used for the purposes of: the "
+    "researcher's MSc dissertation; reports published in academic publications and conference presentations; "
+    "sharing as a supplementary dataset with the project's results; and storage by the University until "
+    "31/12/2031.",
     "I confirm that I am aged 18 or over.",
     "I agree to take part in the above project.",
 ]
@@ -127,7 +128,7 @@ def export_form(pairs: list[dict], path: Path, items: list[dict] | None = None) 
     for statement in CONSENT_STATEMENTS:          # make each of these required in Forms
         q(statement, ["I agree"])
     q(CODE_Q)
-    q(EXPERIENCE_Q, ["Less than 1", "1 to 2", "3 to 5", "More than 5"])
+    q(EXPERIENCE_Q, EXPERIENCE_OPTIONS)
     for p in pairs:
         for kind in ("original", "creative"):
             q(question_text(p["pair_id"], kind), PAIR_OPTIONS)
@@ -173,7 +174,8 @@ def read_responses(path: Path) -> tuple[list[dict], dict[str, str]]:
     for i, row in enumerate(_rows(path), start=1):
         rater = next((v.strip() for k, v in row.items() if "rater code" in k.lower() and v), "") or f"rater{i}"
         for k, v in row.items():
-            if "years of python" in k.lower() and v:
+            kl = k.lower()
+            if ("years of python" in kl or ("years" in kl and "programming in python" in kl)) and v:
                 experience[rater] = v.strip()
             m = _PAIR_COL.search(k)
             if not m or not str(v).strip():
