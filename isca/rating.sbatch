@@ -12,10 +12,12 @@
 #SBATCH -D .
 #
 # Rater materials and the AI rater, from the main model's traces:
-#   1. build  - 60 pairs of correct solutions (Part A, SC4) and 48 labelling items (Part B, SC3)
-#   2. export - rating booklet (HTML) and the Microsoft Forms Quick-import file (.docx)
+#   1. build  - 60 pairs of correct solutions (Part A, SC4) and 48 labelling items (SC3)
+#   2. export - rating booklet (HTML) and the Microsoft Forms Quick-import file (.docx), Part A
+#               only, as in the approved ethics documents (v1.0); --with-part-b adds the items
 #   3. judge  - the AI rater (DeepSeek-Coder-V2, a different family from the models studied) answers
-#               Part A and Part B; reported separately from the human raters, never combined.
+#               the pairs and labels the 48 items. On the pairs it is reported separately from the
+#               human raters; the 48 SC3 labels come only from AI raters (amendment 2026-11-14).
 # The pairs are frozen once responses exist (build refuses to overwrite them).
 #
 #   sbatch isca/rating.sbatch

@@ -1,7 +1,8 @@
-"""SC3 blind labelling by independent raters (Part B of the rater form, amended 2026-10-25).
+"""SC3 blind labelling (amended 2026-10-25 and 2026-11-14).
 
-Raters are classmates or acquaintances of the researcher, never the researcher or the
-supervisor. For a sample of solutions they choose which of the task's pre-registered approaches
+Since 2026-11-14 the labels come from AI raters (not among the studied models), because the
+approved ethics application covers only the pairwise comparison; human raters do not label.
+Never the researcher or the supervisor. For a sample of solutions they choose which of the task's pre-registered approaches
 (`known_families`, written before any model output) each solution uses, or "Something else".
 The majority label per solution is the human reference: the automatic clustering is compared with
 it by ARI (scripts/calibrate_clustering.py reads data/calibration/labels.jsonl), and raters'
