@@ -21,17 +21,46 @@ OUT = P.RATING_DIR / "ai_raters"
 CAL = Path("data/calibration/ai_raters")
 LET = "ABCDEFGH"
 
-INSTR = """You are one of several independent raters in a research study on program code. For each
-item below you see a short programming problem and one correct Python solution to it. Decide which
-approach (algorithm or main idea) the solution uses, choosing exactly one of the listed options.
-Choose "Something else / none of these" only if none of the listed approaches fits.
+INSTR = """INSTRUCTIONS FOR THE RATER (please read before answering)
 
-Judge the method, not variable names, comments, layout or length. Answer every item. Do not explain.
-Reply with exactly one line per item, in this format and nothing else:
+Your role
+You are an independent rater in a university research study about program code. Several raters
+label the same items separately. Please work only from this document; do not search the web and
+do not use anything from earlier conversations.
+
+What you see
+There are 48 items, numbered L01 to L48. Each item has:
+  - Problem: a short programming problem;
+  - Solution: one Python solution to it. Every solution is correct (it passes the problem's tests);
+  - Options: a list of approaches, labelled A, B, C, ..., with "Something else / none of these" last.
+
+Your task
+For each item, decide which approach the solution uses and choose exactly one option.
+  - An approach is the algorithm or main idea used to solve the problem (for example: a loop,
+    recursion with a cache, sorting first, a set, a mathematical formula).
+  - Judge the method only. Ignore variable names, comments, layout, style, length and efficiency
+    details that do not change the method.
+  - If the solution combines several ideas, choose the option that describes its main idea, the
+    one that does the essential work.
+  - Choose "Something else / none of these" only if none of the listed approaches describes the
+    main idea.
+  - You do not need to run the code. You are not told how or by whom the solutions were written;
+    please do not guess.
+  - The options are listed separately for each item; their letters differ between items. Use the
+    letter shown under that item.
+
+How to answer
+Answer every item, from L01 to L48. Reply with exactly 48 lines and nothing else: no
+explanations, no headings, no code blocks. Each line has the item number, a colon, a space and one
+letter, like this:
 L01: B
 L02: A
+L03: E
 ...
 L48: D"""
+
+END = """END OF ITEMS. Now give your answer: exactly 48 lines, L01 to L48, each in the form
+"L01: B", with no other text."""
 
 
 def ordered(it, order):
@@ -54,17 +83,18 @@ def export(_a):
             e = html.escape
             hb.append(f"<div class='it'><h2>Item {it['item_id']}</h2><div class='task'>{e(prompts[it['task_id']].strip())}</div>"
                       f"<pre>{e(it['display'])}</pre><ol type='A'>" + "".join(f"<li>{e(o)}</li>" for o in opts) + "</ol></div>")
+        txt += ["=" * 70, END]
         (OUT / f"PartB_order{order}.txt").write_text("\n".join(txt), encoding="utf-8")
         (OUT / f"PartB_order{order}.html").write_text(f"""<!doctype html><html><head><meta charset="utf-8">
 <title>SC3 approach labelling, order {order}</title><style>
 @page{{size:A4;margin:14mm}} body{{font-family:Arial,sans-serif;font-size:10pt;color:#111}}
-h1{{font-size:15pt}} h2{{font-size:11.5pt;margin:0 0 4pt}} .ins{{white-space:pre-wrap;background:#f2f4f7;padding:8pt;font-family:Consolas,monospace;font-size:9pt}}
+h1{{font-size:15pt}} h2{{font-size:11.5pt;margin:0 0 4pt}} .ins{{white-space:pre;background:#f2f4f7;padding:8pt;font-family:Consolas,monospace;font-size:8pt;line-height:1.35}}
 .it{{page-break-inside:avoid;border-top:1px solid #ccc;padding-top:6pt;margin-top:8pt}}
 .task{{white-space:pre-wrap;font-size:9pt;color:#333;margin-bottom:4pt}}
 pre{{font-family:Consolas,monospace;font-size:8.3pt;background:#f6f7f9;padding:5pt;white-space:pre-wrap}}
 ol{{margin:3pt 0 0 0}}</style></head><body>
 <h1>SC3 approach labelling: order {order} of 2 ({len(items)} items)</h1>
-<div class="ins">{html.escape(INSTR)}</div>{''.join(hb)}</body></html>""", encoding="utf-8")
+<div class="ins">{html.escape(INSTR)}</div>{''.join(hb)}<div class="ins" style="margin-top:10pt">{html.escape(END)}</div></body></html>""", encoding="utf-8")
     print("written to", OUT)
 
 
