@@ -5,7 +5,8 @@ export_booklet  a self-contained HTML booklet (print to PDF from the browser): t
                 read the booklet and answer in the Microsoft Form.
 export_form     a Word document laid out for Microsoft Forms "Quick import": the consent statements
                 of the approved consent form (one required question each), the rater code and
-                experience questions, the two A/B questions for every pair, and Part B.
+                experience questions, the two A/B questions for every pair (Part B only if items are passed;
+                the approved study uses Part A only).
 read_responses  the Form's Excel (or CSV) export -> one row per (rater, pair, question, choice).
 """
 from __future__ import annotations

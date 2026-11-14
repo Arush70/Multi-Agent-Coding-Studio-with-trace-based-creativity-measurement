@@ -114,7 +114,7 @@ Stated openly so examiners see considered decisions, not drift. Each is also in 
 | Ollama defaults | Server context of at least 8192 tokens, checked before every run and stamped in each trace | The 4096 default cut some Critic prompts short (found 23 Oct). |
 | Reported numbers from the Docker sandbox | Subprocess sandbox with resource limits (`macs/sandbox/runner.py`) | Docker is not available on ISCA compute nodes. Generated code runs as an unprivileged user on a batch node with CPU and memory limits; no network use was observed. Stated as a limitation. |
 | Human raters recruited by advert (ethics application) | Classmates and acquaintances invited directly; never the researcher or supervisor; information text, consent question, rater codes, no personal data | Supervisor's guidance (25 Oct): direct invitation does not need the advert approval. |
-| SC3 labels by the researcher and supervisor | Part B of the rater form: independent raters assign the pre-registered approach families; AI rater reported separately | Researcher and supervisor take no part in rating or labelling (25 Oct). |
+| SC3 labels by the researcher and supervisor | AI raters (not among the studied models) assign the pre-registered approach families to 48 blind items; human raters do only the pairwise comparison (Part A) | Researcher and supervisor take no part in rating or labelling (25 Oct); the approved ethics application (v1.0) covers Part A only (14 Nov). |
 | Cross-model panel of 3-5 models | 8 completed: Qwen3.5 9B/27B/122B, gpt-oss-120b, Gemma 4 31B, Gemma 3 12B, Llama 3.1 8B, Granite 4.2 8B; Llama 4 Scout could not start (GPU discovery failure on ISCA) | See DEV_LOG 28 Oct. |
 
 ---
@@ -392,10 +392,11 @@ Holm-corrected planned contrasts, learner curve, contamination check, mutation t
 representation, frontier chart, cross-model random-effects meta-analysis, open-problem report,
 reference-size sensitivity on 27B (`data/results/`).
 
-**Human part (in progress):** rater form built (Part A: 60 pairs, SC4; Part B: 48 labelling items,
-SC3) with booklet and Microsoft Forms file (`data/rating/`); the AI rater has answered both parts.
-Waiting for human responses; then `CLUSTER_THRESHOLD` is frozen from the labels and the family
-analysis is rerun.
+**Human part (in progress):** Microsoft Form and booklet match the submitted ethics documents
+(v1.0): consent, rater code, experience, 60 pairs (SC4), no labelling part (`data/rating/`,
+`data/rating/human_study_v1.0/`). Human responses are collected only after ethics approval.
+SC3 labels (48 items) come from AI raters instead (amendment 14 Nov); then `CLUSTER_THRESHOLD` is
+frozen from those labels and the family analysis is rerun.
 
 ---
 

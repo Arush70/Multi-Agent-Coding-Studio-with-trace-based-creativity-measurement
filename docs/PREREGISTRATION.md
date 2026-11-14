@@ -367,5 +367,17 @@ and never edited to match results.
   `data/archive/deepseek_v2_236b_withdrawn/` and not analysed. The panel stays at the eight models
   of the 2 November analysis; nothing in the pre-registered or reported analysis changes. The AI
   rater (DeepSeek-Coder-V2 Lite) is unaffected.
+- _2026-11-14_: **Human study limited to the approved ethics application; SC3 labels by AI raters
+  (amendment before any human rating or labelling).** The ethics application (ref. 14275550,
+  documents version 1.0 of 18 October 2026) covers only the pairwise comparison (Part A: 60 pairs,
+  SC4), and it could not be amended while in review. The human study therefore runs exactly as
+  submitted: Part A only, recruitment and consent as in the version 1.0 documents, after approval.
+  Part B of the 25 October amendment (48 approach-labelling items for SC3) is not given to human
+  raters. Instead the same 48 items, with the same blind view and option lists, are labelled by AI
+  raters that are not among the studied models; each item is asked in two option orders and a label
+  counts only when both orders agree. The majority label of the AI raters (ties left out) is the
+  reference for the ARI sweep, agreement is reported with Fleiss' kappa, and SC3 is reported as
+  validated against AI labels, not human labels (a limitation). The judge models are fixed before
+  any labelling is run. Neither the researcher nor the supervisor labels anything.
 - _…_ — **[fill after SC3]** `CLUSTER_THRESHOLD` frozen at __ (mean ARI __; N labelled proposals
   over __ tasks). Table:

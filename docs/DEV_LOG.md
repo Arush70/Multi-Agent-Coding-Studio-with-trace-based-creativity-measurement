@@ -143,6 +143,13 @@ what changed, why, and which files. Pre-registration changes are also logged, da
 - 2026-11-08: with the model loading once and staying on the GPUs, a 236B session took about 40 to
   50 minutes (3 sessions in about 2 hours), so the run was stopped and the 236B withdrawn from the
   study (pre-registration, 8 Nov). The job-script fixes above stay: they apply to every model.
+- 2026-11-14: the ethics application (v1.0 documents, 18 Oct) covers only the 60 pairs and could
+  not be amended in review, so the human study is cut back to it: the Microsoft Form now has the v1.0
+  consent statements, rater code, experience question and Part A only; the Part B questions were
+  deleted from the form (the one test response kept its Part A answers). `rating_study.py export`
+  leaves Part B out unless `--with-part-b`; `forms.py` uses the v1.0 wording; booklet regenerated
+  (61 pages); v1.0 documents and rater files in `data/rating/human_study_v1.0/`. SC3 labels will
+  come from AI raters (pre-registration amendment 2026-11-14).
 - Gemma 3 does not fit a MIG slice even with one session (46 of 49 layers on the GPU), so it runs on
   A100s again, which became free on 1 November. Follow-up jobs now also avoid gpu11.
 
