@@ -408,3 +408,10 @@ and never edited to match results.
   direction but weakly. Raters gave the same answer to both questions on 58 to 60 of 60 pairs. The
   AI judge (DeepSeek-Coder-V2 Lite) was consistent across orders on too few pairs (4 and 11) to
   analyse. Results: `data/rating/results.json`.
+- _2026-11-15_: **Exploratory AI judge on Part A (added after the human results were seen; not
+  pre-registered).** Claude Fable 5.2 (Anthropic, Claude app) answered the same 60 pairs in two new
+  chats, with A and B swapped in the second (`scripts/ai_judge_sheets.py`); a choice counts only when
+  both orders agree. Consistent on 40 of 60 pairs for each question. Against automatic novelty:
+  "original" rho 0.26 (95% CI 0.14 to 0.50), "creative" rho 0.18 (0.04 to 0.43). Agreement with the
+  human majority: 35 of 40 (87.5%) and 36 of 40 (90%). Reported separately from the humans and from
+  the pre-registered DeepSeek-Coder-V2 Lite judge. Results: `data/rating/ai_judge/fable_5_2.json`.
