@@ -32,7 +32,7 @@ from macs.analysis.score import implementations, task_by_id, score_code_heldout
 # Diversity is measured among the solutions themselves; novelty is measured against the frozen
 # reference. They deliberately use different spaces, so a homogeneous reference cannot collapse the
 # diversity measure.
-CLUSTER_THRESHOLD = 3.0
+CLUSTER_THRESHOLD = 3.0   # SC3 (2026-11-15): no value met ARI >= 0.60; provisional 3.0 kept
 NOVELTY_PERCENTILE = 0.90
 # Parallel representation (proposal: AST and UniXcoder analysed separately, never combined). In
 # UniXcoder space families are clustered by cosine distance (embeddings are unit-norm, so no

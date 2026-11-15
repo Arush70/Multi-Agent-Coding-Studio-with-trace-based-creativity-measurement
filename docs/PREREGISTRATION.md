@@ -379,5 +379,32 @@ and never edited to match results.
   reference for the ARI sweep, agreement is reported with Fleiss' kappa, and SC3 is reported as
   validated against AI labels, not human labels (a limitation). The judge models are fixed before
   any labelling is run. Neither the researcher nor the supervisor labels anything.
-- _…_ — **[fill after SC3]** `CLUSTER_THRESHOLD` frozen at __ (mean ARI __; N labelled proposals
-  over __ tasks). Table:
+- _2026-11-15_: **SC3 result: target not met; `CLUSTER_THRESHOLD` stays at 3.0.** AI raters
+  (Claude Fable 5.2, GPT-6, GLM 5.3 Flash; each item in two option orders, a label counts only when
+  both agree) labelled the 48 items on 14 Nov. Consistent in both orders: 44, 48 and 43 of 48.
+  Fleiss' kappa 0.88 on the 43 items all three answered consistently; majority label for 47 items
+  (one three-way split). ARI sweep (`scripts/calibrate_clustering.py`, 47 labelled proposals over
+  6 tasks), mean ARI over tasks:
+
+  | threshold | 0.5 | 1.0 | 1.5 | 2.0 | 2.5 | 3.0 | 3.5 | 4.0 | 4.5 | 5.0 | 5.5 | 6.0 |
+  |---|---|---|---|---|---|---|---|---|---|---|---|---|
+  | mean ARI | 0.000 | 0.000 | 0.037 | 0.043 | 0.149 | 0.189 | 0.191 | 0.142 | 0.096 | 0.193 | 0.219 | 0.156 |
+
+  Best per task: t1_mbpp119 0.275, t1_mbpp167 0.462, t1_mbpp19 0.611, t2_humaneval26 0.000,
+  t2_humaneval55 0.165, t2_humaneval57 1.000 (2 of 6 tasks reach 0.60). No threshold meets the
+  SC3 target (ARI >= 0.60 on at least four tasks). The protocol freezes only a value that meets
+  it, so none is frozen as validated: the provisional 3.0, fixed before the main run and used for
+  every reported result, is kept. The curve is flat (3.0: 0.189; best 5.5: 0.219, at the edge of
+  the grid, with eight items per task), so moving to 5.5 would be a choice made from noise after
+  the results were seen. Family counts are therefore reported as an unvalidated measure (SC3 not
+  met); the mean-pairwise-distance and correct-and-novel outcomes do not depend on the threshold.
+- _2026-11-15_: **Human rating study (Part A) result.** Three raters (R01 to R03, postgraduate
+  students) answered all 60 pairs (Microsoft Form responses of 13, 14 and 15 Nov; the supervisor
+  confirmed that ratings from students known to the researcher may be used). "More original":
+  Spearman rho 0.19 (95% CI 0.10 to 0.36), mean Cohen's kappa 0.47, Fleiss' kappa 0.44. "More
+  creative": rho 0.16 (0.06 to 0.33), mean Cohen's kappa 0.51, Fleiss' kappa 0.49. The raters'
+  majority picked the solution with the higher automatic novelty in 67% of the 36 pairs counted.
+  Targets (rho >= 0.50, kappa >= 0.60) not met: human judgement agrees with the novelty measure in
+  direction but weakly. Raters gave the same answer to both questions on 58 to 60 of 60 pairs. The
+  AI judge (DeepSeek-Coder-V2 Lite) was consistent across orders on too few pairs (4 and 11) to
+  analyse. Results: `data/rating/results.json`.

@@ -392,11 +392,11 @@ Holm-corrected planned contrasts, learner curve, contamination check, mutation t
 representation, frontier chart, cross-model random-effects meta-analysis, open-problem report,
 reference-size sensitivity on 27B (`data/results/`).
 
-**Human part (in progress):** Microsoft Form and booklet match the submitted ethics documents
-(v1.0): consent, rater code, experience, 60 pairs (SC4), no labelling part (`data/rating/`,
-`data/rating/human_study_v1.0/`). Human responses are collected only after ethics approval.
-SC3 labels (48 items) come from AI raters instead (amendment 14 Nov); then `CLUSTER_THRESHOLD` is
-frozen from those labels and the family analysis is rerun.
+**Human part (done, 15 Nov):** 3 raters answered the 60 pairs: original rho 0.19 (CI 0.10 to 0.36),
+kappa 0.47; creative rho 0.16 (0.06 to 0.33), kappa 0.51; targets not met (weak agreement in the
+right direction). SC3: three AI raters labelled 48 items (Fleiss' kappa 0.88); best mean ARI 0.22,
+target 0.60 not met, so `CLUSTER_THRESHOLD` stays at the provisional 3.0 and no rerun is needed.
+Details: PREREGISTRATION.md log, 15 Nov.
 
 ---
 

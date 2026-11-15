@@ -68,6 +68,17 @@ def _make_stub(traces_dir: str) -> None:
     print("Now open it and set every \"family\" to a short strategy name, then re-run without --make-stub.")
 
 
+_TRACE_CACHE: dict[str, dict[str, str]] = {}
+
+
+def _code_from_trace(session: str, proposal_id: str, traces_dir: str = "data/traces") -> str | None:
+    """Labels written by macs/rating/labelling.py carry session + proposal id, not the code."""
+    if session not in _TRACE_CACHE:
+        p = Path(traces_dir) / f"{session}.jsonl"
+        _TRACE_CACHE[session] = dict(implementations(list(read_trace(p)))) if p.exists() else {}
+    return _TRACE_CACHE[session].get(proposal_id)
+
+
 def _load_labels() -> dict[str, list[tuple[str, str]]]:
     """Return {task_id: [(code, family), ...]} for rows that actually have a family filled in."""
     if not CALIB_PATH.exists():
@@ -83,7 +94,11 @@ def _load_labels() -> dict[str, list[tuple[str, str]]]:
         if not fam or fam == "unsure":           # 'unsure' (dashboard labelling) is not a label
             blank += 1
             continue
-        by_task[rec["task_id"]].append((rec["code"], fam))
+        code = rec.get("code") or _code_from_trace(rec["session"], rec["proposal_id"])
+        if code is None:
+            blank += 1
+            continue
+        by_task[rec["task_id"]].append((code, fam))
     if blank:
         print(f"[warn] {blank} rows still have a blank family and were ignored.")
     return by_task

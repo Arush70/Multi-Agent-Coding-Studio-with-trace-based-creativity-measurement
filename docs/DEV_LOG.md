@@ -150,6 +150,11 @@ what changed, why, and which files. Pre-registration changes are also logged, da
   leaves Part B out unless `--with-part-b`; `forms.py` uses the v1.0 wording; booklet regenerated
   (61 pages); v1.0 documents and rater files in `data/rating/human_study_v1.0/`. SC3 labels will
   come from AI raters (pre-registration amendment 2026-11-14).
+- 2026-11-14/15: SC3 labels from three AI raters through chat apps (`scripts/ai_label_sheets.py`:
+  sheets in two option orders, import keeps labels that agree); Fleiss' kappa 0.88. `calibrate_clustering.py`
+  now reads the code from the trace when a label row has only session and proposal id. Sweep: best
+  mean ARI 0.22 (5.5), 3.0 gives 0.19; SC3 not met, threshold stays 3.0 (no rerun). Rating form
+  responses (3 raters) fetched from Forms, imported and analysed: rho 0.19 / 0.16, kappa 0.47 / 0.51.
 - Gemma 3 does not fit a MIG slice even with one session (46 of 49 layers on the GPU), so it runs on
   A100s again, which became free on 1 November. Follow-up jobs now also avoid gpu11.
 
