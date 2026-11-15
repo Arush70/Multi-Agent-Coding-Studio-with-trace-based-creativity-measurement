@@ -182,6 +182,6 @@ fi
 
 if [ "$(remaining)" = 0 ]; then
   tar -czf "data/jobs/results-$PROFILE.tgz" data/traces data/reference/models data/search data/jobs/*.log 2>/dev/null
-  echo "== all done for $PROFILE. Download data/jobs/results-$PROFILE.tgz to the laptop."
+  echo "== all done for $PROFILE. Download data/jobs/results-$PROFILE.tgz."
 fi
 echo "== job $SLURM_JOB_ID finished $(date)"

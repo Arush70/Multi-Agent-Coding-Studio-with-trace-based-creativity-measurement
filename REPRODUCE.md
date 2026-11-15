@@ -1,8 +1,8 @@
 # MACS: how it works and how to reproduce every result
 
-This is the code as submitted with the MSc dissertation (COMM514, University of Exeter,
-December 2026), frozen at git tag `dissertation-submission-v1.0`. Later work for publication is
-done after this tag and does not change it. To get exactly this version from the repository:
+This is the code submitted with the MSc dissertation (COMM514, University of Exeter, December
+2026). The submitted version carries the git tag `dissertation-submission-v1.0`; later work for
+publication is done after that tag and does not change it. To get exactly that version:
 
     git checkout dissertation-submission-v1.0
 
@@ -70,15 +70,49 @@ Sources: `docs/TASK_SOURCES.md`.
 
 ---
 
-## 2. Setup
+## 2. Prerequisites
 
-Python 3.10 or later and [Ollama](https://ollama.com).
+**Software**
+
+| What | Version / note |
+|---|---|
+| Operating system | Windows 10/11, Linux or macOS for local runs; Linux (Rocky, Slurm) on ISCA |
+| Python | 3.10 or later (tested on 3.10 and 3.11), with `pip` and `venv` |
+| Git | any recent version |
+| Ollama | a current release that serves the models below (https://ollama.com); `isca/setup.sh` installs it on ISCA |
+| Python packages | installed by `pip install -e ".[dev,embed,ui]"` from `pyproject.toml`: requests, PyYAML, jsonschema, NumPy, scikit-learn, SciPy, radon, black; dev: pytest, statsmodels, pandas, python-docx, openpyxl; embed: PyTorch, transformers; ui: Streamlit |
+| UniXcoder | `microsoft/unixcoder-base` from Hugging Face, downloaded on first use (needs `embed`) |
+| matplotlib | for `scripts/frontier.py --plot` (`pip install matplotlib`) |
+| Docker (optional) | for the isolated sandbox (`--sandbox docker`); the default is a subprocess sandbox with resource limits |
+
+**Hardware**
+
+| Model | Memory needed (4-bit) | Used on |
+|---|---|---|
+| Qwen3.5-9B, Llama 3.1 8B, Granite 4.2 8B, Gemma 3 12B | about 6 to 10 GB GPU memory | one A100 or an A100 MIG slice (10 GB); a laptop GPU works but is slow |
+| Qwen3.5-27B | about 17 GB | one A100 80 GB |
+| Gemma 4 31B | about 20 GB | one A100 80 GB |
+| gpt-oss-120b | about 65 GB | one A100 80 GB |
+| Qwen3.5-122B-A10B | about 70 GB | two A100 80 GB |
+
+Disk: about 200 GB for all model weights, about 500 MB for traces, references and cache. Memory:
+16 GB RAM for local runs; the ISCA jobs request 64 to 128 GB. The analysis needs no GPU.
+
+**Accounts and access**
+
+- For the reported runs: a University of Exeter ISCA account on project `COMM514`, and the
+  University VPN when off campus.
+- Internet access to download the models (Ollama library) and UniXcoder (Hugging Face).
+- For the human rating study: a Microsoft 365 account for Microsoft Forms.
+
+## 3. Setup
+
 
     python -m venv .venv
     .venv\Scripts\activate                 (Windows; on Linux/Mac: source .venv/bin/activate)
     pip install -e ".[dev,embed,ui]"
     copy config\models.example.yaml config\models.yaml      (Linux/Mac: cp)
-    pytest                                 (135 tests should pass)
+    pytest                                 (all tests should pass)
 
 `config/models.yaml` lists the model *profiles* (endpoint, model name, revision). Every LLM call
 goes through the same OpenAI-compatible client and is cached by request hash in `data/cache/`.
@@ -108,11 +142,11 @@ conditions A, B, C, D, D_minus, E, E_minus x seeds 1-3.
 
 ---
 
-## 3. Reproducing each part
+## 4. Reproducing each part
 
 Every step can be stopped and started again; it continues where it stopped.
 
-### 3.1 Reference sets (needed before novelty can be scored)
+### 4.1 Reference sets (needed before novelty can be scored)
 
 100 ordinary solutions per task, per model, from a neutral prompt:
 
@@ -122,7 +156,7 @@ Every step can be stopped and started again; it continues where it stopped.
 Output: `data/reference/models/<model>/<task>.jsonl`. On ISCA, `isca/run_model.sbatch` builds the
 references itself before the sessions.
 
-### 3.2 Sessions (the traces)
+### 4.2 Sessions (the traces)
 
     python scripts/run_experiment.py --tasks all --conditions all --seeds 1-6 --profile qwen35_27b --dry-run
     python scripts/run_experiment.py --tasks all --conditions all --seeds 1-6 --profile qwen35_27b
@@ -142,11 +176,11 @@ Output: one trace per session in `data/traces/`. On ISCA (what was actually run)
 Each job builds the references, runs the sessions, queues its own follow-up when the 24-hour limit
 is reached, and finishes with the open-problem search. Progress: `bash isca/status.sh`.
 
-**Cut-off.** The reported analysis uses the sessions finished by 2 November 2026 12:00 (by file
-time): 12,909 sessions over 8 models. Later traces were moved to `data/archive/` and are not
+**Cut-off.** The reported analysis uses the sessions finished by the cut-off recorded in
+`docs/PREREGISTRATION.md` (by file time). Later traces are moved to `data/archive/` and not
 analysed (`scripts/archive_traces.py` moves traces out of the analysed folder; nothing is deleted).
 
-### 3.3 Analysis (results tables)
+### 4.3 Analysis (results tables)
 
 On ISCA, everything at once on a CPU node:
 
@@ -164,14 +198,14 @@ or step by step:
 
 Output: `data/results/` (main model at the top level, every model in `data/results/models/`).
 
-### 3.4 Extra studies
+### 4.4 Extra studies
 
     python scripts/search_open.py run --tasks t3_circle_packing,t3_bin_packing,t3_cap_set --budget 40 --seeds 1-3
     python scripts/search_open.py report          # open problems: random vs single vs studio, equal budget
     sbatch isca/refsens.sbatch                    # reference-size sensitivity (50 / 100 / 200 references)
     python scripts/reference_sensitivity.py
 
-### 3.5 Checking the families against labels (SC3)
+### 4.5 Checking the families against labels (SC3)
 
 48 solutions (8 from each of 6 tasks, chosen by rule) are labelled with their approach by three AI
 raters through chat apps, each item in two option orders; a label counts only when both orders
@@ -182,10 +216,10 @@ agree.
     python scripts/ai_label_sheets.py import --rater fable --order1 fable_order1.txt --order2 fable_order2.txt
     python scripts/calibrate_clustering.py                     # ARI sweep against the majority labels
 
-The majority labels go to `data/calibration/labels.jsonl`. Result: no threshold reached ARI 0.60,
-so the pre-registered 3.0 was kept (PREREGISTRATION.md, 15 Nov 2026).
+The majority labels go to `data/calibration/labels.jsonl`; the frozen threshold and the sweep
+table are recorded in `docs/PREREGISTRATION.md`.
 
-### 3.6 Human validation of the novelty measure
+### 4.6 Human validation of the novelty measure
 
 Human raters compare 60 pairs of correct solutions ("more original?", "more creative?") in a
 Microsoft Form while reading the booklet:
@@ -200,26 +234,51 @@ approval and are not included; only the aggregate results are.
 
 ---
 
-## 4. Getting the same traces and references again
+## 5. Compute time on ISCA (estimates)
+
+Measured from the start and end times in the traces of the runs on ISCA (NVIDIA A100 80 GB, up to
+six sessions at once against one Ollama server). Times are GPU busy time for the sessions only,
+rounded; the small models ran partly on A100 MIG slices. Queue waiting is not included.
+
+| Step | Model | Sessions | Hardware | Approx. time |
+|---|---|---|---|---|
+| Reference sets (100 per task) | each model | - | 1 A100 | about 1 to 3 hours per model |
+| Sessions, full design | Qwen3.5-27B | 1,782 | 1 A100 | about 32 hours |
+| Sessions, full design | Qwen3.5-9B | 1,782 | 1 A100 | about 16 hours |
+| Sessions, reduced design | Granite 4.2 8B | 504 | A100 / MIG | about 13 hours |
+| Sessions, reduced design | Llama 3.1 8B | 504 | A100 / MIG | about 24 hours |
+| Sessions, reduced design | Gemma 3 12B | 504 | A100 / MIG | about 26 hours |
+| Sessions, reduced design | Gemma 4 31B | 504 | 1 A100 | about 33 hours |
+| Sessions, reduced design | gpt-oss-120b | 504 | 1 A100 | about 25 hours |
+| Sessions, reduced design | Qwen3.5-122B-A10B | 504 | 2 A100 | about 22 hours |
+| Analysis of all models | - | - | 1 CPU node | several hours |
+
+In total about 190 A100-hours for the sessions (about 8 GPU-days) plus about 8 to 24 hours for the
+reference sets. Run on several nodes at once, as in the study, the whole experiment took about ten
+calendar days including queueing. A session takes about 2 minutes (9B) to 15 minutes (the larger
+models) of wall time. For comparison, DeepSeek-Coder-V2 236B needed 40 to 50 minutes per session on
+two A100s and was withdrawn. On a laptop GPU, the 9B full design takes about one to two days.
+
+## 6. Getting the same traces and references again
 
 There are two ways, and they give different things:
 
-1. **The exact data used in the dissertation.** All traces (12,909 analysed sessions plus the
-   archived ones) and all reference sets are deposited as a data archive (Zenodo DOI given in the
+1. **The exact data used in the dissertation.** All traces (analysed and archived) and all
+   reference sets are deposited as a data archive (Zenodo DOI given in the
    dissertation). Unpack them into `data/traces/` and `data/reference/models/`, then run
-   section 3.3. This reproduces every number in `data/results/` exactly.
-2. **New runs.** Running sections 3.1 and 3.2 again generates new traces and references. Model
+   section 4.3. This reproduces every number in `data/results/` exactly.
+2. **New runs.** Running sections 4.1 and 4.2 again generates new traces and references. Model
    outputs are sampled, so individual sessions will differ, but the design is identical and the
    results should agree within the reported confidence intervals. To replay earlier runs exactly,
    copy the response cache (`data/cache/`) from the machine that made them: identical requests are
    then answered from the cache.
 
-Order for a complete rerun: setup (section 2) -> references (3.1) -> sessions (3.2) -> cut-off ->
-analysis (3.3) -> extra studies (3.4) -> labels and SC3 (3.5) -> human validation (3.6).
+Order for a complete rerun: setup (sections 2 and 3) -> references (4.1) -> sessions (4.2) -> cut-off ->
+analysis (4.3) -> extra studies (4.4) -> labels and SC3 (4.5) -> human validation (4.6).
 
 ---
 
-## 5. What is in `data/results/`
+## 7. What is in `data/results/`
 
 | File | What |
 |---|---|

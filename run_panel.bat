@@ -1,5 +1,5 @@
 @echo off
-REM Cross-model panel on the laptop under the 2026-10-23 design (6 learners, 8192-token context):
+REM Cross-model panel on a local machine under the 2026-10-23 design (6 learners, 8192-token context):
 REM Llama 3.1 8B, Gemma 3 12B and Granite 4.2 8B, reduced design (A, B, C, D, D_minus, E, E_minus;
 REM 24 main tasks; 3 seeds). The 9B and 27B main runs and the large models run on ISCA.
 REM Before starting: Ollama > Settings > Context length = 8k (or larger), then restart Ollama.

@@ -77,7 +77,7 @@ profiles:
     context_length: 16384         # reasoning plus answer can pass 8192
     extra_body: {reasoning_effort: low}
 
-  # ---- small open models (cross-model panel; moved from the laptop to ISCA on 23 Oct 2026) ----
+  # ---- small open models (cross-model panel) ----
   llama31_8b:                 # Meta Llama 3.1 8B (Llama 3.1 community licence)
     base_url: http://${OLLAMA_HOST}/v1
     api_key: ollama
@@ -114,7 +114,7 @@ profiles:
     temperature: 0.7
     max_tokens: 2048
 
-  local:                      # same 9B model as the laptop (only if you want it on ISCA too)
+  local:                      # Qwen3.5-9B, second full-design model
     base_url: http://${OLLAMA_HOST}/v1
     api_key: ollama
     model: qwen3.5:9b

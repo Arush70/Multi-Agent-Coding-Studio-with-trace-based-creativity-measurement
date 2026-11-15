@@ -7,12 +7,11 @@ trace for novelty, diversity and correctness. Builds on
 [ASTRA](https://github.com/solex2006/ASTRA-social-multi-agent-tutor) (Oyelere, 2026; MIT)
 and its [synthetic benchmark](https://doi.org/10.5281/zenodo.18114909) (CC-BY).
 
-## Status (15 November 2026)
+## Documentation
 
-Complete. All runs (12,909 sessions over 8 models, cut-off 2 November 2026), the analysis, the
-family check against labels (SC3) and the human rating study are finished; results in
-`data/results/` and `data/rating/results.json`. **How everything works and how to rerun each
-part: `REPRODUCE.md`.** The dissertation version is frozen at tag `dissertation-submission-v1.0`.
+**Prerequisites, how everything works, how to rerun each part and the compute time: see
+`REPRODUCE.md`.** Results are in `data/results/` and `data/rating/results.json`; every frozen
+decision and amendment is dated in `docs/PREREGISTRATION.md`.
 
 ## Layout
 

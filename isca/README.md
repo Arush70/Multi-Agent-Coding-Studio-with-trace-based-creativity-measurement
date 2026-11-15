@@ -11,7 +11,8 @@ slice (`gpu-mig`) is too small for it.
 ## 1. Log in (once per session)
 
 1. Off campus, connect the University VPN first.
-2. On the laptop, open PowerShell and run (replace `uid123` with your University username):
+2. On the local machine, open a terminal (PowerShell on Windows) and run, with `uid123` replaced
+   by the University username:
 
        ssh uid123@login.isca.ex.ac.uk
 
@@ -19,13 +20,13 @@ slice (`gpu-mig`) is too small for it.
 
 ## 2. Get the code onto ISCA (once)
 
-On the laptop, push first (`git push` in the project folder). Then on ISCA:
+Push the code to the repository first. Then on ISCA:
 
     git clone -b qwen35-thinking-off https://github.com/Arush70/Multi-Agent-Coding-Studio-with-trace-based-creativity-measurement.git macs
     cd macs
 
 If the repository is private and the clone asks for a password, use a GitHub personal access
-token as the password, or copy the code instead: on the laptop, in the project folder,
+token as the password, or copy the code instead: on the local machine, in the project folder,
 
     git archive -o macs.zip HEAD
     scp macs.zip uid123@login.isca.ex.ac.uk:~
@@ -40,9 +41,9 @@ Still on ISCA, inside the `macs` folder:
     bash isca/setup.sh
     exit
 
-This installs Python and Ollama in your home folder, downloads Qwen3.5-27B (about 17 GB) and
+This installs Python and Ollama in the home folder, downloads Qwen3.5-27B (about 17 GB) and
 UniXcoder, writes `config/models.yaml` with the pinned model revision, and runs the tests.
-If your home folder is short of space (`quota -s`), put the tools elsewhere first, for example
+If the home folder is short of space (`quota -s`), put the tools elsewhere first, for example
 `export MACS_PREFIX=/lustre/home/uid123/macs-tools`, and use the same setting for the jobs.
 
 ## 4. Start the main runs (27B, and 9B under the same design)
@@ -68,7 +69,7 @@ limit is reached, and continues where it stopped.
     tail -f data/jobs/isca-*.log         # what the job is doing (Ctrl+C to stop watching)
     ls data/traces | wc -l               # finished and running sessions so far
 
-You can log out at any time; the job keeps running.
+Logging out does not stop the job.
 
 ## 6. Analyse (on ISCA, CPU node)
 
@@ -77,7 +78,7 @@ You can log out at any time; the job keeps running.
 
 ## 7. Bring the results back
 
-When the log says `all done`, on the laptop in PowerShell, inside the project folder:
+When the log says `all done`, on the local machine, inside the project folder:
 
     scp uid123@login.isca.ex.ac.uk:macs/data/jobs/analysis_results.tgz .
     tar -xzf analysis_results.tgz
