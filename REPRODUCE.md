@@ -276,7 +276,8 @@ analysis (4.3) -> extra studies (4.4) -> labels and SC3 (4.5) -> human validatio
 
 ## 7. The submission package
 
-Built with `python scripts/package_submission.py --tag dissertation-submission-v1.0`. It holds the
+Built with `python scripts/package_submission.py --tag dissertation-submission-v1.0 --data-tgz
+macs_data_final.tgz` (the `data/` archive copied from ISCA). It holds the
 code at the tag and all data: traces, archived traces, reference sets, response cache, results,
 SC3 labels and the AI raters' answers, job logs with the Slurm accounting file, and the rating
 study without personal data (responses under rater codes only). `config/models.yaml` is never
