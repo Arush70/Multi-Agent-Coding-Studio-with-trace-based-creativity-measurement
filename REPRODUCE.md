@@ -234,51 +234,52 @@ approval and are not included; only the aggregate results are.
 
 ---
 
-## 5. Compute time on ISCA (estimates)
+## 5. Compute time
 
-Measured from the start and end times in the traces of the runs on ISCA (NVIDIA A100 80 GB, up to
-six sessions at once against one Ollama server). Times are GPU busy time for the sessions only,
-rounded; the small models ran partly on A100 MIG slices. Queue waiting is not included.
+The exact compute time of every run is in `docs/COMPUTE_TIME.md` (and
+`data/results/compute_time.json`), produced from the traces and from Slurm's accounting records:
 
-| Step | Model | Sessions | Hardware | Approx. time |
-|---|---|---|---|---|
-| Reference sets (100 per task) | each model | - | 1 A100 | about 1 to 3 hours per model |
-| Sessions, full design | Qwen3.5-27B | 1,782 | 1 A100 | about 32 hours |
-| Sessions, full design | Qwen3.5-9B | 1,782 | 1 A100 | about 16 hours |
-| Sessions, reduced design | Granite 4.2 8B | 504 | A100 / MIG | about 13 hours |
-| Sessions, reduced design | Llama 3.1 8B | 504 | A100 / MIG | about 24 hours |
-| Sessions, reduced design | Gemma 3 12B | 504 | A100 / MIG | about 26 hours |
-| Sessions, reduced design | Gemma 4 31B | 504 | 1 A100 | about 33 hours |
-| Sessions, reduced design | gpt-oss-120b | 504 | 1 A100 | about 25 hours |
-| Sessions, reduced design | Qwen3.5-122B-A10B | 504 | 2 A100 | about 22 hours |
-| Analysis of all models | - | - | 1 CPU node | several hours |
+    # on ISCA, after the last job: every job's GPUs and elapsed time
+    sacct -u $USER -S 2026-10-20 -E now -X -P \
+      --format=JobID,JobName%40,Partition,AllocTRES%80,State,Start,End,Elapsed > data/jobs/sacct_all.txt
+    # then, with the traces, job logs and that file in place
+    python scripts/compute_time.py --sacct data/jobs/sacct_all.txt
 
-In total about 190 A100-hours for the sessions (about 8 GPU-days) plus about 8 to 24 hours for the
-reference sets. Run on several nodes at once, as in the study, the whole experiment took about ten
-calendar days including queueing. A session takes about 2 minutes (9B) to 15 minutes (the larger
-models) of wall time. For comparison, DeepSeek-Coder-V2 236B needed 40 to 50 minutes per session on
-two A100s and was withdrawn. On a laptop GPU, the 9B full design takes about one to two days.
+It reports, per model: sessions, median session time, summed session time and the time the model
+was busy (from the traces); and per model profile: GPU-hours on full A100 80 GB GPUs and on A100
+MIG slices separately, and job wall hours (from Slurm, every job including failed and restarted
+ones). Hardware: NVIDIA A100 80 GB on ISCA, up to six sessions at once against one Ollama server;
+Qwen3.5-122B on two A100s; the small models partly on A100 MIG 1g.10gb slices.
 
 ## 6. Getting the same traces and references again
 
 There are two ways, and they give different things:
 
-1. **The exact data used in the dissertation.** All traces (analysed and archived) and all
-   reference sets are deposited as a data archive (Zenodo DOI given in the
-   dissertation). Unpack them into `data/traces/` and `data/reference/models/`, then run
-   section 4.3. This reproduces every number in `data/results/` exactly.
+1. **The exact data used in the dissertation.** The submission package contains every trace
+   (`data/traces/`, and `data/archive/` for traces after the cut-off and earlier pilots), every
+   reference set (`data/reference/`) and the response cache (`data/cache/`). Run section 4.3 on
+   them: this reproduces every number in `data/results/` exactly.
 2. **New runs.** Running sections 4.1 and 4.2 again generates new traces and references. Model
    outputs are sampled, so individual sessions will differ, but the design is identical and the
-   results should agree within the reported confidence intervals. To replay earlier runs exactly,
-   copy the response cache (`data/cache/`) from the machine that made them: identical requests are
-   then answered from the cache.
+   results should agree within the reported confidence intervals. With the response cache from
+   the package in `data/cache/`, identical requests are answered from the cache, so the earlier
+   runs are replayed exactly.
 
 Order for a complete rerun: setup (sections 2 and 3) -> references (4.1) -> sessions (4.2) -> cut-off ->
 analysis (4.3) -> extra studies (4.4) -> labels and SC3 (4.5) -> human validation (4.6).
 
 ---
 
-## 7. What is in `data/results/`
+## 7. The submission package
+
+Built with `python scripts/package_submission.py --tag dissertation-submission-v1.0`. It holds the
+code at the tag and all data: traces, archived traces, reference sets, response cache, results,
+SC3 labels and the AI raters' answers, job logs with the Slurm accounting file, and the rating
+study without personal data (responses under rater codes only). `config/models.yaml` is never
+included. Next to the zip: `.sha256` (checksum of the zip) and `_MANIFEST.txt` (every file with
+its size and SHA-256), so any change to the package can be detected.
+
+## 8. What is in `data/results/`
 
 | File | What |
 |---|---|
@@ -292,3 +293,4 @@ analysis (4.3) -> extra studies (4.4) -> labels and SC3 (4.5) -> human validatio
 | `reference_sensitivity_qwen3.5_27b.json` | reference-size sensitivity |
 | `search_report.json` | open-problem search |
 | `tau_diagnostics*.json` | Facilitator threshold diagnostics |
+| `compute_time.json` | sessions, busy time and GPU-hours per model (see section 5) |
