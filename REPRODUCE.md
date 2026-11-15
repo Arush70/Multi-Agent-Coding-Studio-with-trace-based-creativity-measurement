@@ -125,20 +125,24 @@ each trace).
 
 Model profiles used in the dissertation:
 
-| Profile | Model | Design |
+| Profile | Model | Sessions analysed |
 |---|---|---|
-| `qwen35_27b` | Qwen3.5-27B (main model) | full |
-| `local` | Qwen3.5-9B | full |
-| `qwen35_122b` | Qwen3.5-122B-A10B | reduced |
-| `gpt_oss_120b` | gpt-oss-120b | reduced |
-| `gemma4_31b` | Gemma 4 31B | reduced |
-| `gemma3_12b` | Gemma 3 12B | reduced |
-| `llama31_8b` | Llama 3.1 8B | reduced |
-| `granite42_8b` | Granite 4.2 8B | reduced |
+| `qwen35_27b` | Qwen3.5-27B (main model) | 1,782 |
+| `local` | Qwen3.5-9B | 1,782 |
+| `qwen35_122b` | Qwen3.5-122B-A10B | 1,782 |
+| `gpt_oss_120b` | gpt-oss-120b | 1,435 |
+| `gemma4_31b` | Gemma 4 31B | 1,318 |
+| `gemma3_12b` | Gemma 3 12B | 1,440 |
+| `llama31_8b` | Llama 3.1 8B | 1,782 |
+| `granite42_8b` | Granite 4.2 8B | 1,588 |
+| | **total** | **12,909** |
 | `deepseek` | DeepSeek-Coder-V2 Lite (AI judge only, not studied) | - |
 
-Full design: all 27 tasks x all 11 conditions x seeds 1-6. Reduced design: 24 main tasks x
-conditions A, B, C, D, D_minus, E, E_minus x seeds 1-3.
+Full design: all 27 tasks x all 11 conditions x seeds 1-6 (1,782 sessions). Qwen3.5-27B and 9B
+ran the full design first; the other models started with a reduced design (24 main tasks;
+conditions A, B, C, D, D_minus, E, E_minus; seeds 1-3) and were then extended towards the full
+design with `isca/submit_split.sh`. Every session finished by the cut-off is analysed; the counts
+above come from `docs/COMPUTE_TIME.md`.
 
 ---
 

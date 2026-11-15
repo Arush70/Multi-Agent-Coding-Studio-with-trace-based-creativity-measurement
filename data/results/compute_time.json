@@ -1,0 +1,3367 @@
+{
+ "traces": {
+  "qwen3.5:122b": {
+   "analysed": {
+    "sessions": 1782,
+    "session_hours": 172.7,
+    "busy_hours": 36.7,
+    "median_session_min": 4.1,
+    "first": "2026-10-24T20:41+00:00",
+    "last": "2026-10-31T01:36+00:00"
+   },
+   "archive": {
+    "sessions": 105,
+    "session_hours": 26.5,
+    "busy_hours": 6.6,
+    "median_session_min": 15.1,
+    "first": "2026-10-23T14:24+00:00",
+    "last": "2026-10-23T21:03+00:00"
+   }
+  },
+  "llama3.1:8b": {
+   "analysed": {
+    "sessions": 1782,
+    "session_hours": 153.4,
+    "busy_hours": 40.3,
+    "median_session_min": 2.4,
+    "first": "2026-10-24T00:53+00:00",
+    "last": "2026-11-01T13:29+00:00"
+   },
+   "excluded": {
+    "sessions": 945,
+    "session_hours": 145.8,
+    "busy_hours": 30.8,
+    "median_session_min": 2.5,
+    "first": "2026-10-29T20:59+00:00",
+    "last": "2026-10-31T19:49+00:00"
+   },
+   "archive": {
+    "sessions": 114,
+    "session_hours": 28.7,
+    "busy_hours": 7.9,
+    "median_session_min": 15.1,
+    "first": "2026-10-23T13:03+00:00",
+    "last": "2026-10-23T21:04+00:00"
+   }
+  },
+  "gemma3:12b": {
+   "analysed": {
+    "sessions": 1440,
+    "session_hours": 287.8,
+    "busy_hours": 68.1,
+    "median_session_min": 15.5,
+    "first": "2026-10-24T00:56+00:00",
+    "last": "2026-11-02T11:59+00:00"
+   },
+   "excluded": {
+    "sessions": 102,
+    "session_hours": 27.0,
+    "busy_hours": 3.7,
+    "median_session_min": 15.1,
+    "first": "2026-11-01T11:14+00:00",
+    "last": "2026-11-01T14:54+00:00"
+   },
+   "archive": {
+    "sessions": 162,
+    "session_hours": 39.6,
+    "busy_hours": 11.7,
+    "median_session_min": 15.1,
+    "first": "2026-10-23T13:27+00:00",
+    "last": "2026-11-02T16:24+00:00"
+   }
+  },
+  "granite4.2:8b": {
+   "analysed": {
+    "sessions": 1588,
+    "session_hours": 198.0,
+    "busy_hours": 55.7,
+    "median_session_min": 4.1,
+    "first": "2026-10-24T01:16+00:00",
+    "last": "2026-11-02T11:45+00:00"
+   },
+   "excluded": {
+    "sessions": 474,
+    "session_hours": 119.5,
+    "busy_hours": 13.5,
+    "median_session_min": 15.1,
+    "first": "2026-10-30T12:34+00:00",
+    "last": "2026-10-31T16:35+00:00"
+   },
+   "archive": {
+    "sessions": 175,
+    "session_hours": 36.1,
+    "busy_hours": 12.3,
+    "median_session_min": 15.1,
+    "first": "2026-10-23T13:15+00:00",
+    "last": "2026-11-02T16:14+00:00"
+   }
+  },
+  "gpt-oss:120b": {
+   "analysed": {
+    "sessions": 1435,
+    "session_hours": 310.5,
+    "busy_hours": 45.5,
+    "median_session_min": 16.0,
+    "first": "2026-10-23T14:36+00:00",
+    "last": "2026-10-31T15:33+00:00"
+   },
+   "excluded": {
+    "sessions": 130,
+    "session_hours": 32.8,
+    "busy_hours": 9.2,
+    "median_session_min": 15.1,
+    "first": "2026-10-24T13:28+00:00",
+    "last": "2026-10-24T22:46+00:00"
+   }
+  },
+  "qwen3.5:27b": {
+   "analysed": {
+    "sessions": 1782,
+    "session_hours": 185.7,
+    "busy_hours": 32.4,
+    "median_session_min": 3.5,
+    "first": "2026-10-23T11:21+00:00",
+    "last": "2026-10-24T23:30+00:00"
+   }
+  },
+  "qwen3.5:9b": {
+   "analysed": {
+    "sessions": 1782,
+    "session_hours": 90.0,
+    "busy_hours": 16.0,
+    "median_session_min": 1.7,
+    "first": "2026-10-23T11:19+00:00",
+    "last": "2026-10-24T05:59+00:00"
+   },
+   "archive": {
+    "sessions": 1555,
+    "session_hours": 31.5,
+    "busy_hours": 31.5,
+    "median_session_min": 0.7,
+    "first": "2026-10-15T11:58+00:00",
+    "last": "2026-10-22T20:40+00:00"
+   }
+  },
+  "gemma4:31b": {
+   "analysed": {
+    "sessions": 1318,
+    "session_hours": 237.7,
+    "busy_hours": 63.9,
+    "median_session_min": 7.7,
+    "first": "2026-10-24T01:59+00:00",
+    "last": "2026-11-02T11:03+00:00"
+   },
+   "archive": {
+    "sessions": 228,
+    "session_hours": 37.6,
+    "busy_hours": 10.5,
+    "median_session_min": 15.1,
+    "first": "2026-10-23T12:28+00:00",
+    "last": "2026-11-02T14:51+00:00"
+   }
+  },
+  "llama4:16x17b": {
+   "archive": {
+    "sessions": 106,
+    "session_hours": 26.7,
+    "busy_hours": 6.8,
+    "median_session_min": 15.1,
+    "first": "2026-10-23T14:20+00:00",
+    "last": "2026-10-23T21:06+00:00"
+   }
+  },
+  "deepseek-coder-v2:236b": {
+   "archive": {
+    "sessions": 224,
+    "session_hours": 1.3,
+    "busy_hours": 1.3,
+    "median_session_min": 0.0,
+    "first": "2026-11-07T00:08+00:00",
+    "last": "2026-11-08T14:48+00:00"
+   }
+  }
+ },
+ "slurm": {
+  "qwen35_27b": {
+   "A100 80GB GPU-hours": 58.9,
+   "job wall hours": 58.9
+  },
+  "local": {
+   "A100 80GB GPU-hours": 55.6,
+   "job wall hours": 55.6
+  },
+  "qwen35_122b": {
+   "A100 80GB GPU-hours": 215.7,
+   "job wall hours": 107.9
+  },
+  "gpt_oss_120b": {
+   "A100 80GB GPU-hours": 161.2,
+   "job wall hours": 161.2
+  },
+  "llama4_scout": {
+   "A100 80GB GPU-hours": 41.2,
+   "job wall hours": 22.5
+  },
+  "gemma4_31b": {
+   "A100 80GB GPU-hours": 174.4,
+   "job wall hours": 174.4
+  },
+  "llama31_8b": {
+   "A100 80GB GPU-hours": 76.5,
+   "job wall hours": 619.4,
+   "MIG 1g.10gb GPU-hours": 542.9
+  },
+  "gemma3_12b": {
+   "A100 80GB GPU-hours": 193.2,
+   "job wall hours": 222.7,
+   "MIG 1g.10gb GPU-hours": 29.4
+  },
+  "granite42_8b": {
+   "A100 80GB GPU-hours": 51.4,
+   "job wall hours": 298.3,
+   "MIG 1g.10gb GPU-hours": 246.9
+  },
+  "rating": {
+   "A100 80GB GPU-hours": 0.4,
+   "job wall hours": 0.4
+  },
+  "deepseek_v2_236b": {
+   "A100 80GB GPU-hours": 127.9,
+   "job wall hours": 63.9
+  },
+  "refsens": {
+   "A100 80GB GPU-hours": 0.9,
+   "job wall hours": 0.9
+  },
+  "m-refsens-9b": {
+   "MIG 1g.10gb GPU-hours": 6.0,
+   "job wall hours": 6.0
+  },
+  "m-refsens-27b": {
+   "A100 80GB GPU-hours": 1.6,
+   "job wall hours": 1.6
+  }
+ },
+ "jobs": [
+  {
+   "job": "2707044",
+   "name": "macs",
+   "profile": "qwen35_27b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "TIMEOUT",
+   "elapsed_h": 23.84
+  },
+  {
+   "job": "2707045",
+   "name": "macs",
+   "profile": "local",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "TIMEOUT",
+   "elapsed_h": 23.84
+  },
+  {
+   "job": "2707046",
+   "name": "macs",
+   "profile": "qwen35_122b",
+   "partition": "gpu",
+   "gpus": 2,
+   "gpu": "A100 80GB",
+   "state": "CANCELLED by 1253523",
+   "elapsed_h": 7.98
+  },
+  {
+   "job": "2707047",
+   "name": "macs",
+   "profile": "gpt_oss_120b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "TIMEOUT",
+   "elapsed_h": 23.84
+  },
+  {
+   "job": "2707048",
+   "name": "macs",
+   "profile": "llama4_scout",
+   "partition": "gpu",
+   "gpus": 2,
+   "gpu": "A100 80GB",
+   "state": "CANCELLED by 1253523",
+   "elapsed_h": 7.92
+  },
+  {
+   "job": "2707049",
+   "name": "macs",
+   "profile": "gemma4_31b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "CANCELLED by 1253523",
+   "elapsed_h": 9.86
+  },
+  {
+   "job": "2707055",
+   "name": "macs",
+   "profile": "qwen35_27b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "TIMEOUT",
+   "elapsed_h": 23.84
+  },
+  {
+   "job": "2707058",
+   "name": "macs",
+   "profile": "local",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "COMPLETED",
+   "elapsed_h": 1.46
+  },
+  {
+   "job": "2707177",
+   "name": "macs",
+   "profile": "llama31_8b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "CANCELLED by 1253523",
+   "elapsed_h": 9.65
+  },
+  {
+   "job": "2707178",
+   "name": "macs",
+   "profile": "gemma3_12b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "CANCELLED by 1253523",
+   "elapsed_h": 9.52
+  },
+  {
+   "job": "2707179",
+   "name": "macs",
+   "profile": "granite42_8b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "CANCELLED by 1253523",
+   "elapsed_h": 9.51
+  },
+  {
+   "job": "2707194",
+   "name": "macs",
+   "profile": "gpt_oss_120b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "CANCELLED by 1253523",
+   "elapsed_h": 11.79
+  },
+  {
+   "job": "2710361",
+   "name": "macs",
+   "profile": "qwen35_122b",
+   "partition": "gpu",
+   "gpus": 2,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.4
+  },
+  {
+   "job": "2710362",
+   "name": "macs",
+   "profile": "llama4_scout",
+   "partition": "gpu",
+   "gpus": 2,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.42
+  },
+  {
+   "job": "2710364",
+   "name": "macs",
+   "profile": "gemma4_31b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.42
+  },
+  {
+   "job": "2710367",
+   "name": "macs",
+   "profile": "llama31_8b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "CANCELLED by 1253523",
+   "elapsed_h": 17.7
+  },
+  {
+   "job": "2710368",
+   "name": "macs",
+   "profile": "gemma3_12b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "CANCELLED by 1253523",
+   "elapsed_h": 17.66
+  },
+  {
+   "job": "2710370",
+   "name": "macs",
+   "profile": "granite42_8b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "CANCELLED by 1253523",
+   "elapsed_h": 17.65
+  },
+  {
+   "job": "2710448",
+   "name": "macs",
+   "profile": "gemma4_31b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.36
+  },
+  {
+   "job": "2710541",
+   "name": "macs",
+   "profile": "gemma4_31b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "CANCELLED by 1253523",
+   "elapsed_h": 0.19
+  },
+  {
+   "job": "2710586",
+   "name": "macs",
+   "profile": "gemma4_31b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "CANCELLED by 1253523",
+   "elapsed_h": 16.76
+  },
+  {
+   "job": "2711151",
+   "name": "macs",
+   "profile": "qwen35_122b",
+   "partition": "gpu",
+   "gpus": 2,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.43
+  },
+  {
+   "job": "2711173",
+   "name": "macs",
+   "profile": "llama4_scout",
+   "partition": "gpu",
+   "gpus": 2,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.46
+  },
+  {
+   "job": "2711199",
+   "name": "macs",
+   "profile": "qwen35_122b",
+   "partition": "gpu",
+   "gpus": 2,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.42
+  },
+  {
+   "job": "2711237",
+   "name": "macs",
+   "profile": "llama4_scout",
+   "partition": "gpu",
+   "gpus": 2,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.45
+  },
+  {
+   "job": "2711250",
+   "name": "macs",
+   "profile": "qwen35_122b",
+   "partition": "gpu",
+   "gpus": 2,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.44
+  },
+  {
+   "job": "2711284",
+   "name": "macs",
+   "profile": "llama4_scout",
+   "partition": "gpu",
+   "gpus": 2,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.44
+  },
+  {
+   "job": "2711677",
+   "name": "macs",
+   "profile": "qwen35_122b",
+   "partition": "gpu",
+   "gpus": 2,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.43
+  },
+  {
+   "job": "2711678",
+   "name": "macs",
+   "profile": "llama4_scout",
+   "partition": "gpu",
+   "gpus": 2,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.36
+  },
+  {
+   "job": "2711695",
+   "name": "macs",
+   "profile": "llama4_scout",
+   "partition": "gpu",
+   "gpus": 2,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.44
+  },
+  {
+   "job": "2711701",
+   "name": "macs",
+   "profile": "qwen35_122b",
+   "partition": "gpu",
+   "gpus": 2,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.44
+  },
+  {
+   "job": "2711735",
+   "name": "macs",
+   "profile": "llama4_scout",
+   "partition": "gpu",
+   "gpus": 2,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.44
+  },
+  {
+   "job": "2711742",
+   "name": "macs",
+   "profile": "qwen35_122b",
+   "partition": "gpu",
+   "gpus": 2,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.46
+  },
+  {
+   "job": "2711870",
+   "name": "macs",
+   "profile": "llama4_scout",
+   "partition": "gpu",
+   "gpus": 2,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.4
+  },
+  {
+   "job": "2711875",
+   "name": "macs",
+   "profile": "qwen35_122b",
+   "partition": "gpu",
+   "gpus": 2,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.43
+  },
+  {
+   "job": "2711900",
+   "name": "macs",
+   "profile": "qwen35_27b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "CANCELLED by 1253523",
+   "elapsed_h": 4.68
+  },
+  {
+   "job": "2711919",
+   "name": "macs",
+   "profile": "local",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.44
+  },
+  {
+   "job": "2713497",
+   "name": "macs",
+   "profile": "local",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.44
+  },
+  {
+   "job": "2717435",
+   "name": "macs",
+   "profile": "llama31_8b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.4
+  },
+  {
+   "job": "2717440",
+   "name": "macs",
+   "profile": "gemma3_12b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.41
+  },
+  {
+   "job": "2717455",
+   "name": "macs",
+   "profile": "granite42_8b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.03
+  },
+  {
+   "job": "2717478",
+   "name": "macs",
+   "profile": "gemma4_31b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "TIMEOUT",
+   "elapsed_h": 23.84
+  },
+  {
+   "job": "2717491",
+   "name": "macs",
+   "profile": "granite42_8b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "TIMEOUT",
+   "elapsed_h": 23.84
+  },
+  {
+   "job": "2717492",
+   "name": "macs",
+   "profile": "gpt_oss_120b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.41
+  },
+  {
+   "job": "2717498",
+   "name": "macs",
+   "profile": "qwen35_122b",
+   "partition": "gpu",
+   "gpus": 2,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.42
+  },
+  {
+   "job": "2717510",
+   "name": "macs",
+   "profile": "granite42_8b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "CANCELLED by 1253523",
+   "elapsed_h": 0.41
+  },
+  {
+   "job": "2717512",
+   "name": "macs",
+   "profile": "llama4_scout",
+   "partition": "gpu",
+   "gpus": 2,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.41
+  },
+  {
+   "job": "2717832",
+   "name": "macs",
+   "profile": "llama31_8b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.38
+  },
+  {
+   "job": "2717916",
+   "name": "macs",
+   "profile": "gemma4_31b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "TIMEOUT",
+   "elapsed_h": 23.84
+  },
+  {
+   "job": "2717948",
+   "name": "macs",
+   "profile": "gemma3_12b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.44
+  },
+  {
+   "job": "2718284",
+   "name": "macs",
+   "profile": "gpt_oss_120b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.43
+  },
+  {
+   "job": "2718473",
+   "name": "macs",
+   "profile": "llama31_8b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "TIMEOUT",
+   "elapsed_h": 23.84
+  },
+  {
+   "job": "2718475",
+   "name": "macs",
+   "profile": "gemma3_12b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.43
+  },
+  {
+   "job": "2718480",
+   "name": "macs",
+   "profile": "gpt_oss_120b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.46
+  },
+  {
+   "job": "2718560",
+   "name": "macs",
+   "profile": "llama31_8b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.39
+  },
+  {
+   "job": "2718566",
+   "name": "macs",
+   "profile": "gemma3_12b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.42
+  },
+  {
+   "job": "2718571",
+   "name": "macs",
+   "profile": "gpt_oss_120b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.42
+  },
+  {
+   "job": "2718572",
+   "name": "macs",
+   "profile": "qwen35_122b",
+   "partition": "gpu",
+   "gpus": 2,
+   "gpu": "A100 80GB",
+   "state": "TIMEOUT",
+   "elapsed_h": 23.84
+  },
+  {
+   "job": "2718588",
+   "name": "macs",
+   "profile": "qwen35_122b",
+   "partition": "gpu",
+   "gpus": 2,
+   "gpu": "A100 80GB",
+   "state": "TIMEOUT",
+   "elapsed_h": 23.83
+  },
+  {
+   "job": "2719028",
+   "name": "m-gemma3_12b",
+   "profile": "gemma3_12b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "TIMEOUT",
+   "elapsed_h": 23.84
+  },
+  {
+   "job": "2719031",
+   "name": "m-gpt_oss_120b",
+   "profile": "gpt_oss_120b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "TIMEOUT",
+   "elapsed_h": 23.84
+  },
+  {
+   "job": "2719033",
+   "name": "m-llama4_scout",
+   "profile": "llama4_scout",
+   "partition": "gpu",
+   "gpus": 2,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.56
+  },
+  {
+   "job": "2719043",
+   "name": "m-gemma3_12b",
+   "profile": "gemma3_12b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "COMPLETED",
+   "elapsed_h": 0.33
+  },
+  {
+   "job": "2719629",
+   "name": "m-llama4_scout",
+   "profile": "llama4_scout",
+   "partition": "gpu",
+   "gpus": 2,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.57
+  },
+  {
+   "job": "2719684",
+   "name": "m-llama4_scout",
+   "profile": "llama4_scout",
+   "partition": "gpu",
+   "gpus": 2,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.57
+  },
+  {
+   "job": "2719729",
+   "name": "m-llama4_scout",
+   "profile": "llama4_scout",
+   "partition": "gpu",
+   "gpus": 2,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.57
+  },
+  {
+   "job": "2721035",
+   "name": "m-gemma4_31b",
+   "profile": "gemma4_31b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "COMPLETED",
+   "elapsed_h": 0.3
+  },
+  {
+   "job": "2721056",
+   "name": "m-qwen35_27b",
+   "profile": "qwen35_27b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "COMPLETED",
+   "elapsed_h": 6.53
+  },
+  {
+   "job": "2721057",
+   "name": "m-local",
+   "profile": "local",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "TIMEOUT",
+   "elapsed_h": 23.84
+  },
+  {
+   "job": "2721059",
+   "name": "m-qwen35_27b",
+   "profile": "qwen35_27b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "COMPLETED",
+   "elapsed_h": 0.0
+  },
+  {
+   "job": "2721060",
+   "name": "m-llama4_scout",
+   "profile": "llama4_scout",
+   "partition": "gpu",
+   "gpus": 2,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.61
+  },
+  {
+   "job": "2721101",
+   "name": "m-local",
+   "profile": "local",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.6
+  },
+  {
+   "job": "2721118",
+   "name": "m-llama4_scout",
+   "profile": "llama4_scout",
+   "partition": "gpu",
+   "gpus": 2,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.6
+  },
+  {
+   "job": "2721161",
+   "name": "m-llama4_scout",
+   "profile": "llama4_scout",
+   "partition": "gpu",
+   "gpus": 2,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.63
+  },
+  {
+   "job": "2721212",
+   "name": "m-qwen35_122b",
+   "profile": "qwen35_122b",
+   "partition": "gpu",
+   "gpus": 2,
+   "gpu": "A100 80GB",
+   "state": "TIMEOUT",
+   "elapsed_h": 23.84
+  },
+  {
+   "job": "2721226",
+   "name": "m-llama4_scout",
+   "profile": "llama4_scout",
+   "partition": "gpu",
+   "gpus": 2,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.61
+  },
+  {
+   "job": "2721553",
+   "name": "m-rating",
+   "profile": "rating",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "COMPLETED",
+   "elapsed_h": 0.41
+  },
+  {
+   "job": "2721557",
+   "name": "m-llama31_8b",
+   "profile": "llama31_8b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "CANCELLED by 1253523",
+   "elapsed_h": 0.0
+  },
+  {
+   "job": "2721562",
+   "name": "m-llama31_8b",
+   "profile": "llama31_8b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "TIMEOUT",
+   "elapsed_h": 23.84
+  },
+  {
+   "job": "2721563",
+   "name": "m-llama4_scout",
+   "profile": "llama4_scout",
+   "partition": "gpu",
+   "gpus": 2,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.53
+  },
+  {
+   "job": "2721575",
+   "name": "m-llama4_scout",
+   "profile": "llama4_scout",
+   "partition": "gpu",
+   "gpus": 2,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.59
+  },
+  {
+   "job": "2721577",
+   "name": "m-llama31_8b",
+   "profile": "llama31_8b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "COMPLETED",
+   "elapsed_h": 0.3
+  },
+  {
+   "job": "2719052",
+   "name": "m-gpt_oss_120b",
+   "profile": "gpt_oss_120b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "COMPLETED",
+   "elapsed_h": 0.3
+  },
+  {
+   "job": "2721608",
+   "name": "m-llama4_scout",
+   "profile": "llama4_scout",
+   "partition": "gpu",
+   "gpus": 2,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.58
+  },
+  {
+   "job": "2721637",
+   "name": "m-llama4_scout",
+   "profile": "llama4_scout",
+   "partition": "gpu",
+   "gpus": 2,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.57
+  },
+  {
+   "job": "2722420",
+   "name": "m-local",
+   "profile": "local",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.6
+  },
+  {
+   "job": "2722508",
+   "name": "m-local",
+   "profile": "local",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.61
+  },
+  {
+   "job": "2727159",
+   "name": "m-llama4_scout",
+   "profile": "llama4_scout",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.52
+  },
+  {
+   "job": "2727160",
+   "name": "m-local",
+   "profile": "local",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.55
+  },
+  {
+   "job": "2727170",
+   "name": "m-llama4_scout",
+   "profile": "llama4_scout",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.69
+  },
+  {
+   "job": "2727173",
+   "name": "m-local",
+   "profile": "local",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.66
+  },
+  {
+   "job": "2727221",
+   "name": "m-llama4_scout",
+   "profile": "llama4_scout",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.63
+  },
+  {
+   "job": "2727222",
+   "name": "m-local",
+   "profile": "local",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.64
+  },
+  {
+   "job": "2727598",
+   "name": "m-local",
+   "profile": "local",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "COMPLETED",
+   "elapsed_h": 1.94
+  },
+  {
+   "job": "2727599",
+   "name": "m-llama4_scout",
+   "profile": "llama4_scout",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.62
+  },
+  {
+   "job": "2729469",
+   "name": "m-gpt_oss_120b",
+   "profile": "gpt_oss_120b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.6
+  },
+  {
+   "job": "2729474",
+   "name": "m-qwen35_122b",
+   "profile": "qwen35_122b",
+   "partition": "gpu",
+   "gpus": 2,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.66
+  },
+  {
+   "job": "2729475",
+   "name": "m-deepseek_v2_236b",
+   "profile": "deepseek_v2_236b",
+   "partition": "gpu",
+   "gpus": 2,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.52
+  },
+  {
+   "job": "2729476",
+   "name": "m-llama4_scout",
+   "profile": "llama4_scout",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.59
+  },
+  {
+   "job": "2729859",
+   "name": "m-llama31_8b",
+   "profile": "llama31_8b",
+   "partition": "gpu-mig",
+   "gpus": 1,
+   "gpu": "MIG 1g.10gb",
+   "state": "CANCELLED by 1253523",
+   "elapsed_h": 0.35
+  },
+  {
+   "job": "2729860",
+   "name": "m-granite42_8b",
+   "profile": "granite42_8b",
+   "partition": "gpu-mig",
+   "gpus": 1,
+   "gpu": "MIG 1g.10gb",
+   "state": "CANCELLED by 1253523",
+   "elapsed_h": 0.35
+  },
+  {
+   "job": "2729902",
+   "name": "m-llama31_8b",
+   "profile": "llama31_8b",
+   "partition": "gpu-mig",
+   "gpus": 1,
+   "gpu": "MIG 1g.10gb",
+   "state": "CANCELLED by 1253523",
+   "elapsed_h": 15.32
+  },
+  {
+   "job": "2729903",
+   "name": "m-llama31_8b",
+   "profile": "llama31_8b",
+   "partition": "gpu-mig",
+   "gpus": 1,
+   "gpu": "MIG 1g.10gb",
+   "state": "CANCELLED by 1253523",
+   "elapsed_h": 15.32
+  },
+  {
+   "job": "2729908",
+   "name": "m-llama31_8b",
+   "profile": "llama31_8b",
+   "partition": "gpu-mig",
+   "gpus": 1,
+   "gpu": "MIG 1g.10gb",
+   "state": "CANCELLED by 1253523",
+   "elapsed_h": 15.31
+  },
+  {
+   "job": "2729910",
+   "name": "m-llama31_8b",
+   "profile": "llama31_8b",
+   "partition": "gpu-mig",
+   "gpus": 1,
+   "gpu": "MIG 1g.10gb",
+   "state": "CANCELLED by 1253523",
+   "elapsed_h": 15.3
+  },
+  {
+   "job": "2729911",
+   "name": "m-llama31_8b",
+   "profile": "llama31_8b",
+   "partition": "gpu-mig",
+   "gpus": 1,
+   "gpu": "MIG 1g.10gb",
+   "state": "CANCELLED by 1253523",
+   "elapsed_h": 15.3
+  },
+  {
+   "job": "2729914",
+   "name": "m-llama31_8b",
+   "profile": "llama31_8b",
+   "partition": "gpu-mig",
+   "gpus": 1,
+   "gpu": "MIG 1g.10gb",
+   "state": "CANCELLED by 1253523",
+   "elapsed_h": 15.3
+  },
+  {
+   "job": "2729916",
+   "name": "m-llama31_8b",
+   "profile": "llama31_8b",
+   "partition": "gpu-mig",
+   "gpus": 1,
+   "gpu": "MIG 1g.10gb",
+   "state": "CANCELLED by 1253523",
+   "elapsed_h": 15.29
+  },
+  {
+   "job": "2729917",
+   "name": "m-llama31_8b",
+   "profile": "llama31_8b",
+   "partition": "gpu-mig",
+   "gpus": 1,
+   "gpu": "MIG 1g.10gb",
+   "state": "CANCELLED by 1253523",
+   "elapsed_h": 15.29
+  },
+  {
+   "job": "2729921",
+   "name": "m-llama31_8b",
+   "profile": "llama31_8b",
+   "partition": "gpu-mig",
+   "gpus": 1,
+   "gpu": "MIG 1g.10gb",
+   "state": "CANCELLED by 1253523",
+   "elapsed_h": 15.28
+  },
+  {
+   "job": "2729923",
+   "name": "m-llama31_8b",
+   "profile": "llama31_8b",
+   "partition": "gpu-mig",
+   "gpus": 1,
+   "gpu": "MIG 1g.10gb",
+   "state": "CANCELLED by 1253523",
+   "elapsed_h": 15.27
+  },
+  {
+   "job": "2729924",
+   "name": "m-llama31_8b",
+   "profile": "llama31_8b",
+   "partition": "gpu-mig",
+   "gpus": 1,
+   "gpu": "MIG 1g.10gb",
+   "state": "CANCELLED by 1253523",
+   "elapsed_h": 15.27
+  },
+  {
+   "job": "2729927",
+   "name": "m-llama31_8b",
+   "profile": "llama31_8b",
+   "partition": "gpu-mig",
+   "gpus": 1,
+   "gpu": "MIG 1g.10gb",
+   "state": "CANCELLED by 1253523",
+   "elapsed_h": 15.26
+  },
+  {
+   "job": "2729929",
+   "name": "m-llama31_8b",
+   "profile": "llama31_8b",
+   "partition": "gpu-mig",
+   "gpus": 1,
+   "gpu": "MIG 1g.10gb",
+   "state": "CANCELLED by 1253523",
+   "elapsed_h": 15.25
+  },
+  {
+   "job": "2729931",
+   "name": "m-llama31_8b",
+   "profile": "llama31_8b",
+   "partition": "gpu-mig",
+   "gpus": 1,
+   "gpu": "MIG 1g.10gb",
+   "state": "CANCELLED by 1253523",
+   "elapsed_h": 15.25
+  },
+  {
+   "job": "2729935",
+   "name": "m-llama31_8b",
+   "profile": "llama31_8b",
+   "partition": "gpu-mig",
+   "gpus": 1,
+   "gpu": "MIG 1g.10gb",
+   "state": "CANCELLED by 1253523",
+   "elapsed_h": 15.25
+  },
+  {
+   "job": "2729986",
+   "name": "m-llama31_8b",
+   "profile": "llama31_8b",
+   "partition": "gpu-mig",
+   "gpus": 1,
+   "gpu": "MIG 1g.10gb",
+   "state": "CANCELLED by 1253523",
+   "elapsed_h": 15.24
+  },
+  {
+   "job": "2729987",
+   "name": "m-llama31_8b",
+   "profile": "llama31_8b",
+   "partition": "gpu-mig",
+   "gpus": 1,
+   "gpu": "MIG 1g.10gb",
+   "state": "CANCELLED by 1253523",
+   "elapsed_h": 15.24
+  },
+  {
+   "job": "2729990",
+   "name": "m-llama31_8b",
+   "profile": "llama31_8b",
+   "partition": "gpu-mig",
+   "gpus": 1,
+   "gpu": "MIG 1g.10gb",
+   "state": "CANCELLED by 1253523",
+   "elapsed_h": 15.23
+  },
+  {
+   "job": "2730143",
+   "name": "m-gemma3_12b",
+   "profile": "gemma3_12b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.52
+  },
+  {
+   "job": "2730144",
+   "name": "m-gemma3_12b",
+   "profile": "gemma3_12b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "CANCELLED by 1253523",
+   "elapsed_h": 4.23
+  },
+  {
+   "job": "2730145",
+   "name": "m-gemma3_12b",
+   "profile": "gemma3_12b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.52
+  },
+  {
+   "job": "2730146",
+   "name": "m-gemma3_12b",
+   "profile": "gemma3_12b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.57
+  },
+  {
+   "job": "2730147",
+   "name": "m-gemma3_12b",
+   "profile": "gemma3_12b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.59
+  },
+  {
+   "job": "2730148",
+   "name": "m-gemma3_12b",
+   "profile": "gemma3_12b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "CANCELLED by 1253523",
+   "elapsed_h": 3.72
+  },
+  {
+   "job": "2730149",
+   "name": "m-gemma3_12b",
+   "profile": "gemma3_12b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.55
+  },
+  {
+   "job": "2730152",
+   "name": "m-gemma3_12b",
+   "profile": "gemma3_12b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.56
+  },
+  {
+   "job": "2730153",
+   "name": "m-gemma3_12b",
+   "profile": "gemma3_12b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.52
+  },
+  {
+   "job": "2730154",
+   "name": "m-gemma3_12b",
+   "profile": "gemma3_12b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.56
+  },
+  {
+   "job": "2730155",
+   "name": "m-gemma3_12b",
+   "profile": "gemma3_12b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.53
+  },
+  {
+   "job": "2730156",
+   "name": "m-gemma3_12b",
+   "profile": "gemma3_12b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.54
+  },
+  {
+   "job": "2730158",
+   "name": "m-gemma3_12b",
+   "profile": "gemma3_12b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.54
+  },
+  {
+   "job": "2730160",
+   "name": "m-gemma3_12b",
+   "profile": "gemma3_12b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.51
+  },
+  {
+   "job": "2730165",
+   "name": "m-gemma3_12b",
+   "profile": "gemma3_12b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.55
+  },
+  {
+   "job": "2730167",
+   "name": "m-gemma3_12b",
+   "profile": "gemma3_12b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.54
+  },
+  {
+   "job": "2730168",
+   "name": "m-gemma3_12b",
+   "profile": "gemma3_12b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.51
+  },
+  {
+   "job": "2730169",
+   "name": "m-gemma3_12b",
+   "profile": "gemma3_12b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.55
+  },
+  {
+   "job": "2730171",
+   "name": "m-gemma3_12b",
+   "profile": "gemma3_12b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.54
+  },
+  {
+   "job": "2730172",
+   "name": "m-gemma3_12b",
+   "profile": "gemma3_12b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.59
+  },
+  {
+   "job": "2730173",
+   "name": "m-gemma3_12b",
+   "profile": "gemma3_12b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.54
+  },
+  {
+   "job": "2730175",
+   "name": "m-gemma3_12b",
+   "profile": "gemma3_12b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.55
+  },
+  {
+   "job": "2730177",
+   "name": "m-gemma3_12b",
+   "profile": "gemma3_12b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.54
+  },
+  {
+   "job": "2730178",
+   "name": "m-gemma3_12b",
+   "profile": "gemma3_12b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.53
+  },
+  {
+   "job": "2730179",
+   "name": "m-gemma3_12b",
+   "profile": "gemma3_12b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.51
+  },
+  {
+   "job": "2730180",
+   "name": "m-gemma3_12b",
+   "profile": "gemma3_12b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.52
+  },
+  {
+   "job": "2730181",
+   "name": "m-gemma3_12b",
+   "profile": "gemma3_12b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.57
+  },
+  {
+   "job": "2730183",
+   "name": "m-gemma3_12b",
+   "profile": "gemma3_12b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.54
+  },
+  {
+   "job": "2730185",
+   "name": "m-gemma3_12b",
+   "profile": "gemma3_12b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.53
+  },
+  {
+   "job": "2730315",
+   "name": "m-refsens",
+   "profile": "refsens",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.37
+  },
+  {
+   "job": "2730389",
+   "name": "m-gpt_oss_120b",
+   "profile": "gpt_oss_120b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.69
+  },
+  {
+   "job": "2730415",
+   "name": "m-llama4_scout",
+   "profile": "llama4_scout",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.7
+  },
+  {
+   "job": "2731102",
+   "name": "m-gemma3_12b",
+   "profile": "gemma3_12b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.64
+  },
+  {
+   "job": "2732050",
+   "name": "m-llama31_8b",
+   "profile": "llama31_8b",
+   "partition": "gpu-mig",
+   "gpus": 1,
+   "gpu": "MIG 1g.10gb",
+   "state": "TIMEOUT",
+   "elapsed_h": 23.84
+  },
+  {
+   "job": "2732051",
+   "name": "m-llama31_8b",
+   "profile": "llama31_8b",
+   "partition": "gpu-mig",
+   "gpus": 1,
+   "gpu": "MIG 1g.10gb",
+   "state": "TIMEOUT",
+   "elapsed_h": 23.84
+  },
+  {
+   "job": "2732052",
+   "name": "m-llama31_8b",
+   "profile": "llama31_8b",
+   "partition": "gpu-mig",
+   "gpus": 1,
+   "gpu": "MIG 1g.10gb",
+   "state": "TIMEOUT",
+   "elapsed_h": 23.84
+  },
+  {
+   "job": "2732054",
+   "name": "m-llama31_8b",
+   "profile": "llama31_8b",
+   "partition": "gpu-mig",
+   "gpus": 1,
+   "gpu": "MIG 1g.10gb",
+   "state": "TIMEOUT",
+   "elapsed_h": 23.84
+  },
+  {
+   "job": "2732056",
+   "name": "m-granite42_8b",
+   "profile": "granite42_8b",
+   "partition": "gpu-mig",
+   "gpus": 1,
+   "gpu": "MIG 1g.10gb",
+   "state": "CANCELLED by 1253523",
+   "elapsed_h": 9.69
+  },
+  {
+   "job": "2732058",
+   "name": "m-granite42_8b",
+   "profile": "granite42_8b",
+   "partition": "gpu-mig",
+   "gpus": 1,
+   "gpu": "MIG 1g.10gb",
+   "state": "CANCELLED by 1253523",
+   "elapsed_h": 9.69
+  },
+  {
+   "job": "2732060",
+   "name": "m-granite42_8b",
+   "profile": "granite42_8b",
+   "partition": "gpu-mig",
+   "gpus": 1,
+   "gpu": "MIG 1g.10gb",
+   "state": "CANCELLED by 1253523",
+   "elapsed_h": 9.68
+  },
+  {
+   "job": "2732061",
+   "name": "m-llama31_8b",
+   "profile": "llama31_8b",
+   "partition": "gpu-mig",
+   "gpus": 1,
+   "gpu": "MIG 1g.10gb",
+   "state": "CANCELLED by 1253523",
+   "elapsed_h": 0.02
+  },
+  {
+   "job": "2732062",
+   "name": "m-llama31_8b",
+   "profile": "llama31_8b",
+   "partition": "gpu-mig",
+   "gpus": 1,
+   "gpu": "MIG 1g.10gb",
+   "state": "CANCELLED by 1253523",
+   "elapsed_h": 0.04
+  },
+  {
+   "job": "2732063",
+   "name": "m-llama31_8b",
+   "profile": "llama31_8b",
+   "partition": "gpu-mig",
+   "gpus": 1,
+   "gpu": "MIG 1g.10gb",
+   "state": "CANCELLED by 1253523",
+   "elapsed_h": 0.03
+  },
+  {
+   "job": "2732064",
+   "name": "m-llama31_8b",
+   "profile": "llama31_8b",
+   "partition": "gpu-mig",
+   "gpus": 1,
+   "gpu": "MIG 1g.10gb",
+   "state": "CANCELLED by 1253523",
+   "elapsed_h": 0.03
+  },
+  {
+   "job": "2732066",
+   "name": "m-granite42_8b",
+   "profile": "granite42_8b",
+   "partition": "gpu-mig",
+   "gpus": 1,
+   "gpu": "MIG 1g.10gb",
+   "state": "CANCELLED by 1253523",
+   "elapsed_h": 9.68
+  },
+  {
+   "job": "2732120",
+   "name": "m-gemma3_12b",
+   "profile": "gemma3_12b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.9
+  },
+  {
+   "job": "2732122",
+   "name": "m-gemma3_12b",
+   "profile": "gemma3_12b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.89
+  },
+  {
+   "job": "2732123",
+   "name": "m-gemma3_12b",
+   "profile": "gemma3_12b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.9
+  },
+  {
+   "job": "2732124",
+   "name": "m-gemma3_12b",
+   "profile": "gemma3_12b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.93
+  },
+  {
+   "job": "2732125",
+   "name": "m-gemma4_31b",
+   "profile": "gemma4_31b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.86
+  },
+  {
+   "job": "2732126",
+   "name": "m-gemma4_31b",
+   "profile": "gemma4_31b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.87
+  },
+  {
+   "job": "2732127",
+   "name": "m-gemma4_31b",
+   "profile": "gemma4_31b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.91
+  },
+  {
+   "job": "2732128",
+   "name": "m-gemma4_31b",
+   "profile": "gemma4_31b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "TIMEOUT",
+   "elapsed_h": 23.84
+  },
+  {
+   "job": "2732129",
+   "name": "m-gpt_oss_120b",
+   "profile": "gpt_oss_120b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.89
+  },
+  {
+   "job": "2732130",
+   "name": "m-gpt_oss_120b",
+   "profile": "gpt_oss_120b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.95
+  },
+  {
+   "job": "2732133",
+   "name": "m-gpt_oss_120b",
+   "profile": "gpt_oss_120b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.96
+  },
+  {
+   "job": "2732137",
+   "name": "m-gpt_oss_120b",
+   "profile": "gpt_oss_120b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.9
+  },
+  {
+   "job": "2732138",
+   "name": "m-qwen35_122b",
+   "profile": "qwen35_122b",
+   "partition": "gpu",
+   "gpus": 2,
+   "gpu": "A100 80GB",
+   "state": "TIMEOUT",
+   "elapsed_h": 23.84
+  },
+  {
+   "job": "2732139",
+   "name": "m-deepseek_v2_236b",
+   "profile": "deepseek_v2_236b",
+   "partition": "gpu",
+   "gpus": 2,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.97
+  },
+  {
+   "job": "2732242",
+   "name": "m-gemma3_12b",
+   "profile": "gemma3_12b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 1.07
+  },
+  {
+   "job": "2732291",
+   "name": "m-gemma3_12b",
+   "profile": "gemma3_12b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 1.14
+  },
+  {
+   "job": "2732363",
+   "name": "m-gemma3_12b",
+   "profile": "gemma3_12b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.87
+  },
+  {
+   "job": "2732403",
+   "name": "m-deepseek_v2_236b",
+   "profile": "deepseek_v2_236b",
+   "partition": "gpu",
+   "gpus": 2,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.88
+  },
+  {
+   "job": "2732411",
+   "name": "m-gemma3_12b",
+   "profile": "gemma3_12b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.88
+  },
+  {
+   "job": "2732419",
+   "name": "m-gemma4_31b",
+   "profile": "gemma4_31b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.93
+  },
+  {
+   "job": "2732420",
+   "name": "m-gemma4_31b",
+   "profile": "gemma4_31b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 1.12
+  },
+  {
+   "job": "2732465",
+   "name": "m-gemma4_31b",
+   "profile": "gemma4_31b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.87
+  },
+  {
+   "job": "2732470",
+   "name": "m-gemma4_31b",
+   "profile": "gemma4_31b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "COMPLETED",
+   "elapsed_h": 0.5
+  },
+  {
+   "job": "2732501",
+   "name": "m-gemma3_12b",
+   "profile": "gemma3_12b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 1.08
+  },
+  {
+   "job": "2732547",
+   "name": "m-gpt_oss_120b",
+   "profile": "gpt_oss_120b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "TIMEOUT",
+   "elapsed_h": 23.84
+  },
+  {
+   "job": "2732574",
+   "name": "m-gemma3_12b",
+   "profile": "gemma3_12b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "TIMEOUT",
+   "elapsed_h": 23.84
+  },
+  {
+   "job": "2732595",
+   "name": "m-gpt_oss_120b",
+   "profile": "gpt_oss_120b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "TIMEOUT",
+   "elapsed_h": 23.84
+  },
+  {
+   "job": "2732596",
+   "name": "m-gpt_oss_120b",
+   "profile": "gpt_oss_120b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "TIMEOUT",
+   "elapsed_h": 23.84
+  },
+  {
+   "job": "2732600",
+   "name": "m-gpt_oss_120b",
+   "profile": "gpt_oss_120b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.93
+  },
+  {
+   "job": "2732605",
+   "name": "m-gemma3_12b",
+   "profile": "gemma3_12b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 1.1
+  },
+  {
+   "job": "2732608",
+   "name": "m-gemma3_12b",
+   "profile": "gemma3_12b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 1.08
+  },
+  {
+   "job": "2732859",
+   "name": "m-gemma4_31b",
+   "profile": "gemma4_31b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 1.01
+  },
+  {
+   "job": "2732917",
+   "name": "m-gemma4_31b",
+   "profile": "gemma4_31b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 1.1
+  },
+  {
+   "job": "2732945",
+   "name": "m-gemma4_31b",
+   "profile": "gemma4_31b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 1.1
+  },
+  {
+   "job": "2732952",
+   "name": "m-gemma3_12b",
+   "profile": "gemma3_12b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 1.12
+  },
+  {
+   "job": "2732956",
+   "name": "m-deepseek_v2_236b",
+   "profile": "deepseek_v2_236b",
+   "partition": "gpu",
+   "gpus": 2,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 1.05
+  },
+  {
+   "job": "2732957",
+   "name": "m-gpt_oss_120b",
+   "profile": "gpt_oss_120b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.91
+  },
+  {
+   "job": "2732968",
+   "name": "m-gpt_oss_120b",
+   "profile": "gpt_oss_120b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "COMPLETED",
+   "elapsed_h": 0.49
+  },
+  {
+   "job": "2732972",
+   "name": "m-gemma3_12b",
+   "profile": "gemma3_12b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 1.06
+  },
+  {
+   "job": "2733047",
+   "name": "m-gpt_oss_120b",
+   "profile": "gpt_oss_120b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.98
+  },
+  {
+   "job": "2733111",
+   "name": "m-gpt_oss_120b",
+   "profile": "gpt_oss_120b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 1.01
+  },
+  {
+   "job": "2733227",
+   "name": "m-gemma3_12b",
+   "profile": "gemma3_12b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 1.1
+  },
+  {
+   "job": "2733267",
+   "name": "m-gemma3_12b",
+   "profile": "gemma3_12b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 1.09
+  },
+  {
+   "job": "2733419",
+   "name": "m-deepseek_v2_236b",
+   "profile": "deepseek_v2_236b",
+   "partition": "gpu",
+   "gpus": 2,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.93
+  },
+  {
+   "job": "2733457",
+   "name": "m-gemma4_31b",
+   "profile": "gemma4_31b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.99
+  },
+  {
+   "job": "2733579",
+   "name": "m-gemma4_31b",
+   "profile": "gemma4_31b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 1.11
+  },
+  {
+   "job": "2733589",
+   "name": "m-gemma4_31b",
+   "profile": "gemma4_31b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 1.14
+  },
+  {
+   "job": "2734019",
+   "name": "m-refsens",
+   "profile": "refsens",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.54
+  },
+  {
+   "job": "2737991",
+   "name": "m-llama31_8b",
+   "profile": "llama31_8b",
+   "partition": "gpu-mig",
+   "gpus": 1,
+   "gpu": "MIG 1g.10gb",
+   "state": "TIMEOUT",
+   "elapsed_h": 23.83
+  },
+  {
+   "job": "2737992",
+   "name": "m-llama31_8b",
+   "profile": "llama31_8b",
+   "partition": "gpu-mig",
+   "gpus": 1,
+   "gpu": "MIG 1g.10gb",
+   "state": "TIMEOUT",
+   "elapsed_h": 23.83
+  },
+  {
+   "job": "2737993",
+   "name": "m-llama31_8b",
+   "profile": "llama31_8b",
+   "partition": "gpu-mig",
+   "gpus": 1,
+   "gpu": "MIG 1g.10gb",
+   "state": "TIMEOUT",
+   "elapsed_h": 23.83
+  },
+  {
+   "job": "2737994",
+   "name": "m-llama31_8b",
+   "profile": "llama31_8b",
+   "partition": "gpu-mig",
+   "gpus": 1,
+   "gpu": "MIG 1g.10gb",
+   "state": "TIMEOUT",
+   "elapsed_h": 23.83
+  },
+  {
+   "job": "2738000",
+   "name": "m-llama31_8b",
+   "profile": "llama31_8b",
+   "partition": "gpu-mig",
+   "gpus": 1,
+   "gpu": "MIG 1g.10gb",
+   "state": "CANCELLED by 1253523",
+   "elapsed_h": 1.32
+  },
+  {
+   "job": "2738001",
+   "name": "m-llama31_8b",
+   "profile": "llama31_8b",
+   "partition": "gpu-mig",
+   "gpus": 1,
+   "gpu": "MIG 1g.10gb",
+   "state": "CANCELLED by 1253523",
+   "elapsed_h": 1.31
+  },
+  {
+   "job": "2738002",
+   "name": "m-llama31_8b",
+   "profile": "llama31_8b",
+   "partition": "gpu-mig",
+   "gpus": 1,
+   "gpu": "MIG 1g.10gb",
+   "state": "CANCELLED by 1253523",
+   "elapsed_h": 1.31
+  },
+  {
+   "job": "2738004",
+   "name": "m-llama31_8b",
+   "profile": "llama31_8b",
+   "partition": "gpu-mig",
+   "gpus": 1,
+   "gpu": "MIG 1g.10gb",
+   "state": "COMPLETED",
+   "elapsed_h": 0.01
+  },
+  {
+   "job": "2738005",
+   "name": "m-llama31_8b",
+   "profile": "llama31_8b",
+   "partition": "gpu-mig",
+   "gpus": 1,
+   "gpu": "MIG 1g.10gb",
+   "state": "TIMEOUT",
+   "elapsed_h": 23.83
+  },
+  {
+   "job": "2738006",
+   "name": "m-llama31_8b",
+   "profile": "llama31_8b",
+   "partition": "gpu-mig",
+   "gpus": 1,
+   "gpu": "MIG 1g.10gb",
+   "state": "TIMEOUT",
+   "elapsed_h": 23.83
+  },
+  {
+   "job": "2738007",
+   "name": "m-llama31_8b",
+   "profile": "llama31_8b",
+   "partition": "gpu-mig",
+   "gpus": 1,
+   "gpu": "MIG 1g.10gb",
+   "state": "TIMEOUT",
+   "elapsed_h": 23.83
+  },
+  {
+   "job": "2738009",
+   "name": "m-llama31_8b",
+   "profile": "llama31_8b",
+   "partition": "gpu-mig",
+   "gpus": 1,
+   "gpu": "MIG 1g.10gb",
+   "state": "CANCELLED by 1253523",
+   "elapsed_h": 1.3
+  },
+  {
+   "job": "2738011",
+   "name": "m-granite42_8b",
+   "profile": "granite42_8b",
+   "partition": "gpu-mig",
+   "gpus": 1,
+   "gpu": "MIG 1g.10gb",
+   "state": "CANCELLED by 1253523",
+   "elapsed_h": 4.2
+  },
+  {
+   "job": "2738012",
+   "name": "m-granite42_8b",
+   "profile": "granite42_8b",
+   "partition": "gpu-mig",
+   "gpus": 1,
+   "gpu": "MIG 1g.10gb",
+   "state": "CANCELLED by 1253523",
+   "elapsed_h": 4.2
+  },
+  {
+   "job": "2738014",
+   "name": "m-granite42_8b",
+   "profile": "granite42_8b",
+   "partition": "gpu-mig",
+   "gpus": 1,
+   "gpu": "MIG 1g.10gb",
+   "state": "CANCELLED by 1253523",
+   "elapsed_h": 4.19
+  },
+  {
+   "job": "2738018",
+   "name": "m-granite42_8b",
+   "profile": "granite42_8b",
+   "partition": "gpu-mig",
+   "gpus": 1,
+   "gpu": "MIG 1g.10gb",
+   "state": "CANCELLED by 1253523",
+   "elapsed_h": 4.18
+  },
+  {
+   "job": "2738582",
+   "name": "m-granite42_8b",
+   "profile": "granite42_8b",
+   "partition": "gpu-mig",
+   "gpus": 1,
+   "gpu": "MIG 1g.10gb",
+   "state": "TIMEOUT",
+   "elapsed_h": 23.83
+  },
+  {
+   "job": "2738583",
+   "name": "m-granite42_8b",
+   "profile": "granite42_8b",
+   "partition": "gpu-mig",
+   "gpus": 1,
+   "gpu": "MIG 1g.10gb",
+   "state": "TIMEOUT",
+   "elapsed_h": 23.83
+  },
+  {
+   "job": "2738584",
+   "name": "m-granite42_8b",
+   "profile": "granite42_8b",
+   "partition": "gpu-mig",
+   "gpus": 1,
+   "gpu": "MIG 1g.10gb",
+   "state": "TIMEOUT",
+   "elapsed_h": 23.84
+  },
+  {
+   "job": "2738586",
+   "name": "m-granite42_8b",
+   "profile": "granite42_8b",
+   "partition": "gpu-mig",
+   "gpus": 1,
+   "gpu": "MIG 1g.10gb",
+   "state": "TIMEOUT",
+   "elapsed_h": 23.83
+  },
+  {
+   "job": "2738587",
+   "name": "m-granite42_8b",
+   "profile": "granite42_8b",
+   "partition": "gpu-mig",
+   "gpus": 1,
+   "gpu": "MIG 1g.10gb",
+   "state": "TIMEOUT",
+   "elapsed_h": 23.83
+  },
+  {
+   "job": "2738588",
+   "name": "m-granite42_8b",
+   "profile": "granite42_8b",
+   "partition": "gpu-mig",
+   "gpus": 1,
+   "gpu": "MIG 1g.10gb",
+   "state": "TIMEOUT",
+   "elapsed_h": 23.84
+  },
+  {
+   "job": "2738590",
+   "name": "m-granite42_8b",
+   "profile": "granite42_8b",
+   "partition": "gpu-mig",
+   "gpus": 1,
+   "gpu": "MIG 1g.10gb",
+   "state": "TIMEOUT",
+   "elapsed_h": 23.84
+  },
+  {
+   "job": "2738591",
+   "name": "m-granite42_8b",
+   "profile": "granite42_8b",
+   "partition": "gpu-mig",
+   "gpus": 1,
+   "gpu": "MIG 1g.10gb",
+   "state": "TIMEOUT",
+   "elapsed_h": 23.84
+  },
+  {
+   "job": "2741062",
+   "name": "m-gpt_oss_120b",
+   "profile": "gpt_oss_120b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.99
+  },
+  {
+   "job": "2741671",
+   "name": "m-gpt_oss_120b",
+   "profile": "gpt_oss_120b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.98
+  },
+  {
+   "job": "2741714",
+   "name": "m-gpt_oss_120b",
+   "profile": "gpt_oss_120b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.89
+  },
+  {
+   "job": "2743151",
+   "name": "m-gemma3_12b",
+   "profile": "gemma3_12b",
+   "partition": "gpu-mig",
+   "gpus": 1,
+   "gpu": "MIG 1g.10gb",
+   "state": "CANCELLED by 1253523",
+   "elapsed_h": 3.7
+  },
+  {
+   "job": "2743152",
+   "name": "m-gemma3_12b",
+   "profile": "gemma3_12b",
+   "partition": "gpu-mig",
+   "gpus": 1,
+   "gpu": "MIG 1g.10gb",
+   "state": "CANCELLED by 1253523",
+   "elapsed_h": 3.69
+  },
+  {
+   "job": "2743153",
+   "name": "m-gemma3_12b",
+   "profile": "gemma3_12b",
+   "partition": "gpu-mig",
+   "gpus": 1,
+   "gpu": "MIG 1g.10gb",
+   "state": "CANCELLED by 1253523",
+   "elapsed_h": 3.69
+  },
+  {
+   "job": "2743155",
+   "name": "m-gemma3_12b",
+   "profile": "gemma3_12b",
+   "partition": "gpu-mig",
+   "gpus": 1,
+   "gpu": "MIG 1g.10gb",
+   "state": "CANCELLED by 1253523",
+   "elapsed_h": 3.68
+  },
+  {
+   "job": "2743159",
+   "name": "m-gemma3_12b",
+   "profile": "gemma3_12b",
+   "partition": "gpu-mig",
+   "gpus": 1,
+   "gpu": "MIG 1g.10gb",
+   "state": "CANCELLED by 1253523",
+   "elapsed_h": 3.68
+  },
+  {
+   "job": "2743161",
+   "name": "m-gemma3_12b",
+   "profile": "gemma3_12b",
+   "partition": "gpu-mig",
+   "gpus": 1,
+   "gpu": "MIG 1g.10gb",
+   "state": "CANCELLED by 1253523",
+   "elapsed_h": 3.67
+  },
+  {
+   "job": "2743163",
+   "name": "m-gemma3_12b",
+   "profile": "gemma3_12b",
+   "partition": "gpu-mig",
+   "gpus": 1,
+   "gpu": "MIG 1g.10gb",
+   "state": "CANCELLED by 1253523",
+   "elapsed_h": 3.66
+  },
+  {
+   "job": "2743166",
+   "name": "m-gemma3_12b",
+   "profile": "gemma3_12b",
+   "partition": "gpu-mig",
+   "gpus": 1,
+   "gpu": "MIG 1g.10gb",
+   "state": "CANCELLED by 1253523",
+   "elapsed_h": 3.66
+  },
+  {
+   "job": "2743168",
+   "name": "m-gpt_oss_120b",
+   "profile": "gpt_oss_120b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "COMPLETED",
+   "elapsed_h": 0.5
+  },
+  {
+   "job": "2743169",
+   "name": "m-gpt_oss_120b",
+   "profile": "gpt_oss_120b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.95
+  },
+  {
+   "job": "2743170",
+   "name": "m-gpt_oss_120b",
+   "profile": "gpt_oss_120b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.91
+  },
+  {
+   "job": "2743171",
+   "name": "m-gpt_oss_120b",
+   "profile": "gpt_oss_120b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.83
+  },
+  {
+   "job": "2743173",
+   "name": "m-gemma4_31b",
+   "profile": "gemma4_31b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.89
+  },
+  {
+   "job": "2743174",
+   "name": "m-gemma4_31b",
+   "profile": "gemma4_31b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "TIMEOUT",
+   "elapsed_h": 23.84
+  },
+  {
+   "job": "2743176",
+   "name": "m-gemma4_31b",
+   "profile": "gemma4_31b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.91
+  },
+  {
+   "job": "2743177",
+   "name": "m-gemma4_31b",
+   "profile": "gemma4_31b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "COMPLETED",
+   "elapsed_h": 0.49
+  },
+  {
+   "job": "2743178",
+   "name": "m-refsens-9b",
+   "profile": "m-refsens-9b",
+   "partition": "gpu-mig",
+   "gpus": 1,
+   "gpu": "MIG 1g.10gb",
+   "state": "TIMEOUT",
+   "elapsed_h": 6.01
+  },
+  {
+   "job": "2743179",
+   "name": "m-refsens-27b",
+   "profile": "m-refsens-27b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "COMPLETED",
+   "elapsed_h": 1.56
+  },
+  {
+   "job": "2743192",
+   "name": "m-gpt_oss_120b",
+   "profile": "gpt_oss_120b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 1.01
+  },
+  {
+   "job": "2743194",
+   "name": "m-gemma4_31b",
+   "profile": "gemma4_31b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 1.14
+  },
+  {
+   "job": "2743197",
+   "name": "m-gemma4_31b",
+   "profile": "gemma4_31b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "TIMEOUT",
+   "elapsed_h": 23.83
+  },
+  {
+   "job": "2743198",
+   "name": "m-gpt_oss_120b",
+   "profile": "gpt_oss_120b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 1.11
+  },
+  {
+   "job": "2743201",
+   "name": "m-gemma4_31b",
+   "profile": "gemma4_31b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 1.09
+  },
+  {
+   "job": "2743202",
+   "name": "m-gpt_oss_120b",
+   "profile": "gpt_oss_120b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.93
+  },
+  {
+   "job": "2743244",
+   "name": "m-gemma4_31b",
+   "profile": "gemma4_31b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "COMPLETED",
+   "elapsed_h": 0.62
+  },
+  {
+   "job": "2743361",
+   "name": "m-gpt_oss_120b",
+   "profile": "gpt_oss_120b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.96
+  },
+  {
+   "job": "2743376",
+   "name": "m-gpt_oss_120b",
+   "profile": "gpt_oss_120b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.94
+  },
+  {
+   "job": "2743402",
+   "name": "m-gemma4_31b",
+   "profile": "gemma4_31b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 1.1
+  },
+  {
+   "job": "2743403",
+   "name": "m-gpt_oss_120b",
+   "profile": "gpt_oss_120b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 1.09
+  },
+  {
+   "job": "2743492",
+   "name": "m-gpt_oss_120b",
+   "profile": "gpt_oss_120b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 1.01
+  },
+  {
+   "job": "2743493",
+   "name": "m-gpt_oss_120b",
+   "profile": "gpt_oss_120b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.95
+  },
+  {
+   "job": "2743520",
+   "name": "m-gpt_oss_120b",
+   "profile": "gpt_oss_120b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 1.15
+  },
+  {
+   "job": "2743522",
+   "name": "m-gemma4_31b",
+   "profile": "gemma4_31b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.92
+  },
+  {
+   "job": "2743939",
+   "name": "m-gemma3_12b",
+   "profile": "gemma3_12b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "TIMEOUT",
+   "elapsed_h": 23.84
+  },
+  {
+   "job": "2743975",
+   "name": "m-gemma3_12b",
+   "profile": "gemma3_12b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "TIMEOUT",
+   "elapsed_h": 23.84
+  },
+  {
+   "job": "2743984",
+   "name": "m-gemma3_12b",
+   "profile": "gemma3_12b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.95
+  },
+  {
+   "job": "2743985",
+   "name": "m-gemma3_12b",
+   "profile": "gemma3_12b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "COMPLETED",
+   "elapsed_h": 0.02
+  },
+  {
+   "job": "2744033",
+   "name": "m-gemma3_12b",
+   "profile": "gemma3_12b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.9
+  },
+  {
+   "job": "2744912",
+   "name": "m-gemma3_12b",
+   "profile": "gemma3_12b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "COMPLETED",
+   "elapsed_h": 0.51
+  },
+  {
+   "job": "2744925",
+   "name": "m-gemma3_12b",
+   "profile": "gemma3_12b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 1.13
+  },
+  {
+   "job": "2744929",
+   "name": "m-gemma3_12b",
+   "profile": "gemma3_12b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.95
+  },
+  {
+   "job": "2744944",
+   "name": "m-gemma4_31b",
+   "profile": "gemma4_31b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.91
+  },
+  {
+   "job": "2744945",
+   "name": "m-gpt_oss_120b",
+   "profile": "gpt_oss_120b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.95
+  },
+  {
+   "job": "2744980",
+   "name": "m-gemma4_31b",
+   "profile": "gemma4_31b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 1.07
+  },
+  {
+   "job": "2744985",
+   "name": "m-gpt_oss_120b",
+   "profile": "gpt_oss_120b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.89
+  },
+  {
+   "job": "2744992",
+   "name": "m-gemma3_12b",
+   "profile": "gemma3_12b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "CANCELLED by 1253523",
+   "elapsed_h": 23.63
+  },
+  {
+   "job": "2744995",
+   "name": "m-granite42_8b",
+   "profile": "granite42_8b",
+   "partition": "gpu-mig",
+   "gpus": 1,
+   "gpu": "MIG 1g.10gb",
+   "state": "COMPLETED",
+   "elapsed_h": 0.02
+  },
+  {
+   "job": "2744996",
+   "name": "m-granite42_8b",
+   "profile": "granite42_8b",
+   "partition": "gpu-mig",
+   "gpus": 1,
+   "gpu": "MIG 1g.10gb",
+   "state": "CANCELLED by 1253523",
+   "elapsed_h": 0.16
+  },
+  {
+   "job": "2744997",
+   "name": "m-granite42_8b",
+   "profile": "granite42_8b",
+   "partition": "gpu-mig",
+   "gpus": 1,
+   "gpu": "MIG 1g.10gb",
+   "state": "COMPLETED",
+   "elapsed_h": 0.01
+  },
+  {
+   "job": "2744998",
+   "name": "m-gemma3_12b",
+   "profile": "gemma3_12b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 1.09
+  },
+  {
+   "job": "2744999",
+   "name": "m-granite42_8b",
+   "profile": "granite42_8b",
+   "partition": "gpu-mig",
+   "gpus": 1,
+   "gpu": "MIG 1g.10gb",
+   "state": "CANCELLED by 1253523",
+   "elapsed_h": 0.15
+  },
+  {
+   "job": "2745041",
+   "name": "m-gpt_oss_120b",
+   "profile": "gpt_oss_120b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.92
+  },
+  {
+   "job": "2745055",
+   "name": "m-gemma4_31b",
+   "profile": "gemma4_31b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 1.06
+  },
+  {
+   "job": "2745074",
+   "name": "m-gemma3_12b",
+   "profile": "gemma3_12b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 1.07
+  },
+  {
+   "job": "2745110",
+   "name": "m-gpt_oss_120b",
+   "profile": "gpt_oss_120b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 0.89
+  },
+  {
+   "job": "2745133",
+   "name": "m-gemma4_31b",
+   "profile": "gemma4_31b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 1.08
+  },
+  {
+   "job": "2746001",
+   "name": "m-gemma4_31b",
+   "profile": "gemma4_31b",
+   "partition": "gpu",
+   "gpus": 1,
+   "gpu": "A100 80GB",
+   "state": "CANCELLED by 1253523",
+   "elapsed_h": 3.56
+  },
+  {
+   "job": "2771490",
+   "name": "m-deepseek_v2_236b",
+   "profile": "deepseek_v2_236b",
+   "partition": "gpu",
+   "gpus": 2,
+   "gpu": "A100 80GB",
+   "state": "TIMEOUT",
+   "elapsed_h": 23.84
+  },
+  {
+   "job": "2771491",
+   "name": "m-deepseek_v2_236b",
+   "profile": "deepseek_v2_236b",
+   "partition": "gpu",
+   "gpus": 2,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 1.14
+  },
+  {
+   "job": "2771496",
+   "name": "m-deepseek_v2_236b",
+   "profile": "deepseek_v2_236b",
+   "partition": "gpu",
+   "gpus": 2,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 1.05
+  },
+  {
+   "job": "2771499",
+   "name": "m-deepseek_v2_236b",
+   "profile": "deepseek_v2_236b",
+   "partition": "gpu",
+   "gpus": 2,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 1.0
+  },
+  {
+   "job": "2772048",
+   "name": "m-deepseek_v2_236b",
+   "profile": "deepseek_v2_236b",
+   "partition": "gpu",
+   "gpus": 2,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 1.0
+  },
+  {
+   "job": "2772049",
+   "name": "m-deepseek_v2_236b",
+   "profile": "deepseek_v2_236b",
+   "partition": "gpu",
+   "gpus": 2,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 1.02
+  },
+  {
+   "job": "2772051",
+   "name": "m-deepseek_v2_236b",
+   "profile": "deepseek_v2_236b",
+   "partition": "gpu",
+   "gpus": 2,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 1.07
+  },
+  {
+   "job": "2772285",
+   "name": "m-deepseek_v2_236b",
+   "profile": "deepseek_v2_236b",
+   "partition": "gpu",
+   "gpus": 2,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 1.02
+  },
+  {
+   "job": "2772288",
+   "name": "m-deepseek_v2_236b",
+   "profile": "deepseek_v2_236b",
+   "partition": "gpu",
+   "gpus": 2,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 1.03
+  },
+  {
+   "job": "2772290",
+   "name": "m-deepseek_v2_236b",
+   "profile": "deepseek_v2_236b",
+   "partition": "gpu",
+   "gpus": 2,
+   "gpu": "A100 80GB",
+   "state": "FAILED",
+   "elapsed_h": 1.07
+  },
+  {
+   "job": "2772413",
+   "name": "m-deepseek_v2_236b",
+   "profile": "deepseek_v2_236b",
+   "partition": "gpu",
+   "gpus": 2,
+   "gpu": "A100 80GB",
+   "state": "CANCELLED by 1253523",
+   "elapsed_h": 0.22
+  },
+  {
+   "job": "2772420",
+   "name": "m-deepseek_v2_236b",
+   "profile": "deepseek_v2_236b",
+   "partition": "gpu",
+   "gpus": 2,
+   "gpu": "A100 80GB",
+   "state": "CANCELLED by 1253523",
+   "elapsed_h": 0.17
+  },
+  {
+   "job": "2772432",
+   "name": "m-deepseek_v2_236b",
+   "profile": "deepseek_v2_236b",
+   "partition": "gpu",
+   "gpus": 2,
+   "gpu": "A100 80GB",
+   "state": "CANCELLED by 1253523",
+   "elapsed_h": 0.08
+  },
+  {
+   "job": "2774598",
+   "name": "m-deepseek_v2_236b",
+   "profile": "deepseek_v2_236b",
+   "partition": "gpu",
+   "gpus": 2,
+   "gpu": "A100 80GB",
+   "state": "CANCELLED by 1253523",
+   "elapsed_h": 22.17
+  },
+  {
+   "job": "2777320",
+   "name": "m-deepseek_v2_236b",
+   "profile": "deepseek_v2_236b",
+   "partition": "gpu",
+   "gpus": 2,
+   "gpu": "A100 80GB",
+   "state": "CANCELLED by 1253523",
+   "elapsed_h": 1.65
+  },
+  {
+   "job": "2777417",
+   "name": "m-deepseek_v2_236b",
+   "profile": "deepseek_v2_236b",
+   "partition": "gpu",
+   "gpus": 2,
+   "gpu": "A100 80GB",
+   "state": "CANCELLED by 1253523",
+   "elapsed_h": 2.04
+  }
+ ]
+}
