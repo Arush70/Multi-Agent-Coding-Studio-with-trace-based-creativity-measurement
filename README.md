@@ -9,60 +9,167 @@ and its [synthetic benchmark](https://doi.org/10.5281/zenodo.18114909) (CC-BY).
 
 ## Prerequisites and requirements
 
-To check and rescore the results (no GPU, no model server):
+**To look at the results and rescore them** (no GPU, no model server, no internet after setup):
 
-| Requirement | Detail |
+| What you need | Details |
 |---|---|
-| Computer | Windows 10/11, Linux or macOS; 8 GB RAM or more; about 3 GB free disk after unzipping |
-| Python | 3.10 or later (tested on 3.10 and 3.11), with `pip` and `venv` |
-| Python packages | `pip install -e ".[dev,ui]"` installs everything needed (NumPy, SciPy, scikit-learn, statsmodels, pandas, PyYAML, jsonschema, radon, black, Streamlit, python-docx, openpyxl) |
-| Optional | `pip install matplotlib` for the frontier chart; `pip install -e ".[embed]"` (PyTorch, transformers) for the UniXcoder check |
+| Computer | Windows 10/11, macOS or Linux, with 8 GB of RAM or more |
+| Disk space | about 4 GB free: the zip is 0.7 GB and it unzips to 3.2 GB (about 144,000 files) |
+| Python | version 3.10 or 3.11 (both tested), from [python.org](https://www.python.org/downloads/) |
+| Internet | only once, during setup, to download the Python packages |
+| Python packages | installed by one command in Step 5 below (NumPy, SciPy, scikit-learn, statsmodels, pandas, PyYAML, jsonschema, radon, black, Streamlit, python-docx, openpyxl, matplotlib, pytest) |
+| Optional | PyTorch and transformers, only for the extra UniXcoder check (Step 10) |
 
-Only to generate new traces with the models (not needed to check the results): Ollama, a GPU
+**Only to generate new traces with the models** (not needed to check the results): Ollama, a GPU
 (NVIDIA A100 80 GB for the larger models; full list in `REPRODUCE.md`, section 2), about 200 GB
 of disk for the model weights, and internet access to download the models.
 
-## Checking and rescoring the results without rerunning the models
+## Tutorial: set up, look at the results, and rescore everything
 
-The package contains all 12,909 analysed traces (plus the archived ones), every model's reference
-sets, the response cache and every result, so no traces or references have to be generated
-again.
+The zip already contains everything: all 12,909 analysed session traces (plus the archived
+ones), every model's reference sets, the cache of every model response, the 65,928 stored test
+results, and every result file. Nothing has to be generated again, and no model is run.
 
-**Setup (once):**
+### Step 1. Install Python
 
-    cd MACS_dissertation-submission-v1.0
+Download Python 3.11 from [python.org](https://www.python.org/downloads/) and install it.
+On Windows, tick **"Add python.exe to PATH"** on the first screen of the installer.
+
+To check it worked, open a terminal (Windows: press the Windows key, type `cmd`, press Enter;
+Mac: open the **Terminal** app) and type:
+
+    python --version
+
+It should print `Python 3.10.x` or `Python 3.11.x`. (On Windows, if it says "python is not
+recognized", type `py` instead of `python` in every command below. On a Mac, use `python3`.)
+
+### Step 2. Unzip the package
+
+Unzip `MACS_dissertation-submission-v1.0.zip` into a folder with a **short path**, for example
+`C:\MACS` on Windows (right-click the zip, **Extract All...**, type `C:\MACS`). A short path
+matters on Windows because some file names inside are long. Unzipping 144,000 files can take
+several minutes.
+
+You now have a folder `C:\MACS\MACS_dissertation-submission-v1.0` containing `README.md`,
+`macs`, `scripts`, `data` and so on.
+
+### Step 3. Open a terminal in that folder
+
+- **Windows:** open the folder `MACS_dissertation-submission-v1.0` in File Explorer, click the
+  address bar at the top, type `cmd` and press Enter. A black window opens in that folder.
+- **Mac/Linux:** open Terminal and type `cd ` followed by the folder path, for example
+  `cd ~/Downloads/MACS_dissertation-submission-v1.0`.
+
+### Step 4. Create a private Python environment (once)
+
+This keeps the project's packages separate from the rest of your computer.
+
     python -m venv .venv
-    .venv\Scripts\activate                 (Linux/Mac: source .venv/bin/activate)
-    pip install -e ".[dev,ui]"
-    pytest                                  (all tests should pass)
 
-**From the dashboard:** run `streamlit run macs/ui/app.py`, open the **Overview** tab and click
-**Rescore everything (all models, all results)**. It rescores every stored trace of every model
-against the stored reference sets (families, novelty, held-out tests) and rebuilds every file in
-`data/results/`: per-model results and statistics, the meta-analysis across models, the
-contamination check, the frontier and the mutation test. It runs in the background with a
-progress bar; the tabs then show the rescored results. **Re-analyse <model>'s traces** does the
-same for the one model shown. The rescored files are identical to the submitted ones (the optional
-UniXcoder check can differ in the last digits on other hardware; see `REPRODUCE.md`, section 0).
+Then switch it on:
 
-Whether a proposal passes its tests (and its Tier 3 score) was decided on the ISCA cluster by
-running the code under a CPU-time limit. These 65,928 verdicts are stored in
-`data/results/execution/`, and rescoring reuses them, so the results do not depend on how fast
-your machine is. To run every proposal's code again instead, add `--reexecute`
-(`python scripts/rescore_all.py --reexecute`); a few programs that finish close to the time limit
-can then pass on one machine and time out on another.
+- Windows: `.venv\Scripts\activate`
+- Mac/Linux: `source .venv/bin/activate`
 
-**From the terminal**, the same in one command:
+You will see `(.venv)` at the start of the line. Do this "switch on" step every time you open a
+new terminal for this project.
+
+### Step 5. Install the packages (once, needs internet)
+
+    pip install -e ".[dev,ui]" matplotlib
+
+This takes a few minutes. When it finishes without a red error, you are ready.
+
+### Step 6. Check that everything works
+
+    pytest
+
+At the end it should say `135 passed`.
+
+### Step 7. Open the dashboard
+
+    streamlit run macs/ui/app.py
+
+Your web browser opens the dashboard at `http://localhost:8501` (if it does not, open that
+address yourself). The first time, Streamlit may ask for an email address in the terminal: just
+press Enter. **Keep the terminal window open** while you use the dashboard.
+
+### Step 8. Look at the submitted results
+
+Nothing needs to be run to see the results:
+
+- **Overview** tab: Studio vs Tutor for each model. Choose the model in **Model shown**
+  (Qwen3.5-27B is the main model).
+- **Statistics** tab: the planned comparisons, confidence intervals and the comparison across
+  the eight models.
+- **Traces** tab: read any session, message by message.
+
+### Step 9. Rescore everything from the traces
+
+On the **Overview** tab, click **Rescore everything (all models, all results)**.
+
+- A panel appears: **⏳ Rescore everything: running**, with a progress bar that counts 23 steps.
+- It rescores every stored trace of every model against the stored reference sets (families,
+  novelty, held-out tests) and rebuilds every file in `data/results/`: per-model results and
+  statistics, the meta-analysis across models, the contamination check, the frontier and the
+  mutation test.
+- It took **84 minutes on a 2-core computer**; a computer with more cores is faster. You can
+  switch to other tabs or close the browser tab, but keep the terminal window open.
+- When the panel shows **✅ Rescore everything: finished**, refresh the page. The tabs now show the
+  rescored results, which are identical to the submitted ones.
+
+**Re-analyse <model>'s traces** (the button above it) does the same for just the one model shown.
+
+**Why the results come out identical on any computer:** whether a program passes its tests was
+decided on the ISCA cluster by running it under a CPU-time limit. Those 65,928 verdicts are stored
+in `data/results/execution/` and rescoring reuses them, so a slower or faster computer gives the
+same numbers. To run every program again instead, use `python scripts/rescore_all.py --reexecute`
+in the terminal; then a few programs that finish close to the time limit can pass on one computer
+and time out on another.
+
+### Step 10 (optional). The UniXcoder check
+
+This repeats the main model's novelty measure with a neural code model instead of the code
+structure. It needs PyTorch (a large download) and downloads `microsoft/unixcoder-base` from
+Hugging Face the first time:
+
+    pip install -e ".[embed]"
+
+After this, **Rescore everything** includes the UniXcoder check as its last step (it took 61
+minutes more on a 2-core computer). Because it uses a neural network, its numbers can differ in
+the last digits on different hardware; every other file is identical.
+
+### Step 11. Stop, and start again later
+
+To stop the dashboard, click the terminal window and press `Ctrl+C`. To start again later:
+open a terminal in the folder (Step 3), switch the environment on (Step 4), and run
+`streamlit run macs/ui/app.py` (Step 7). Steps 5 and 6 are needed only once.
+
+### The same from the terminal, without the dashboard
+
+With the environment switched on (Step 4):
 
     python scripts/rescore_all.py
 
-**Only the statistics** (about 5 minutes, from the stored per-session results):
+This rescores everything, exactly like the dashboard button, and prints its progress.
+
+To recompute **only the statistics** from the stored per-session results (about 5 minutes):
 
     python scripts/stats_report.py --tasks 24 --seeds 6
     python scripts/model_consistency.py
     python scripts/rating_study.py analyse
 
 Which file holds which result, and what each level recomputes: `REPRODUCE.md`, section 0.
+
+### If something goes wrong
+
+- **"python is not recognized":** use `py` (Windows) or `python3` (Mac) instead of `python`.
+- **"pip is not recognized" or packages missing:** the environment is not switched on; repeat
+  Step 4 and look for `(.venv)`.
+- **Errors while unzipping on Windows:** unzip again into a shorter folder such as `C:\MACS`.
+- **The browser does not open:** go to `http://localhost:8501` yourself.
+- **"already running" message:** a rescore is still in progress; wait for it to finish, or press
+  **Stop** in its panel.
 
 ## Documentation
 
