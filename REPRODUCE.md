@@ -10,6 +10,76 @@ Author: Arush Kumar Vishwakarma. Supervisor: Prof. Solomon S. Oyelere. Code MIT,
 
 ---
 
+## 0. Checking the results without rerunning anything
+
+The package contains every trace, reference set and intermediate result, so none of the model
+runs (GPU) has to be repeated. There are three levels; each needs less than the next.
+
+### Level A: read the results (no installation)
+
+Unzip the package and open these files. Every number in the dissertation comes from one of them.
+
+| Result in the dissertation | File |
+|---|---|
+| Main model (Qwen3.5-27B): measures per condition | `data/results/summary.json` |
+| Main model: planned contrasts, 95% CIs, Holm-corrected tests | `data/results/stats.json` |
+| Every model: measures and contrasts | `data/results/models/<model>/summary.json`, `stats.json` |
+| Meta-analysis across the 8 models | `data/results/model_consistency.json` |
+| Contamination-check tasks | `data/results/stats_contamination.json` |
+| UniXcoder representation (check) | `data/results/summary_unixcoder.json` |
+| Quality-diversity frontier | `data/results/frontier.json`, `frontier.png` |
+| Strength of the held-out tests | `data/results/mutation.json` |
+| Reference-size sensitivity | `data/results/reference_sensitivity_qwen3.5_27b.json` |
+| Open-problem search | `data/results/search_report.json` |
+| Human validation of the novelty measure | `data/rating/results.json` |
+| Family check against labels (SC3): labels and agreement | `data/calibration/labels.jsonl`, `data/rating/ai_raters/answers/README.txt` |
+| Sessions per model and GPU time | `docs/COMPUTE_TIME.md` |
+| Every frozen decision, amendment and result, dated | `docs/PREREGISTRATION.md` |
+
+### Level B: recompute the statistics (about 5 minutes, ordinary laptop, no GPU, no model)
+
+Recomputes every table from the stored per-session measures and the stored ratings and labels.
+
+    cd MACS_dissertation-submission-v1.0
+    python -m venv .venv
+    .venv\Scripts\activate                 (Linux/Mac: source .venv/bin/activate)
+    pip install -e ".[dev]"
+
+    python scripts/stats_report.py --tasks 24 --seeds 6                       # main model contrasts
+    python scripts/stats_report.py --task-set contamination_check --out data/results/stats_contamination.json
+    python scripts/stats_report.py --summary data/results/models/gemma3_12b/summary.json --tasks 24 --seeds 3 \
+        --out data/results/models/gemma3_12b/stats.json                     # any other model (6 seeds for qwen3.5_9b)
+    python scripts/model_consistency.py                                      # meta-analysis across models
+    python scripts/frontier.py                                               # frontier (--plot needs matplotlib)
+    python scripts/rating_study.py analyse                                   # human validation
+    python scripts/calibrate_clustering.py                                   # family check (SC3) from the labels
+        # prints the ARI sweep (best 0.22 at 5.5); no value reaches 0.60, so the pre-registered 3.0
+        # is kept (docs/PREREGISTRATION.md, 2026-11-15)
+    python scripts/compute_time.py --sacct data/jobs/sacct_all.txt           # sessions and GPU time
+
+Each command rewrites its file in `data/results/` (or `data/rating/`, `docs/`). The outputs are
+identical to the files in the package (checked: `frontier.json` differs only in the 17th
+significant digit of two values, from floating-point summation order). To compare, copy
+`data/results/` and `data/rating/results.json` somewhere else first.
+
+### Level C: recompute the measures from the stored traces (several hours, CPU only, no GPU, no model)
+
+Scores every stored session again (normalisation, AST features, families, novelty against the
+stored reference sets, held-out tests in the sandbox), then runs Level B on the result:
+
+    python scripts/analyze.py --model qwen3.5:27b --out data/results/models/qwen3.5_27b/summary.json
+    copy data\results\models\qwen3.5_27b\summary.json data\results\summary.json     (Linux/Mac: cp)
+
+Repeat `analyze.py` for each model: `--model` is one of `qwen3.5:27b`, `qwen3.5:9b`,
+`qwen3.5:122b`, `gpt-oss:120b`, `gemma4:31b`, `gemma3:12b`, `llama3.1:8b`, `granite4.2:8b`, and
+`--out` is `data/results/models/<name with ":" replaced by "_">/summary.json`. On a Slurm cluster,
+`sbatch isca/analyze_all.sbatch` does all models and Level B in one job. The UniXcoder check
+(`--representation unixcoder`) also needs `pip install -e ".[embed]"`.
+
+Only to generate new traces with the models (GPU) are sections 3 and 4 needed.
+
+---
+
 ## 1. What the system does
 
 MACS compares two ways an AI model can help with a programming task:

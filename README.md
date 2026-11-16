@@ -7,6 +7,20 @@ trace for novelty, diversity and correctness. Builds on
 [ASTRA](https://github.com/solex2006/ASTRA-social-multi-agent-tutor) (Oyelere, 2026; MIT)
 and its [synthetic benchmark](https://doi.org/10.5281/zenodo.18114909) (CC-BY).
 
+## Checking the results without rerunning
+
+Every trace, reference set and result is included, so no model run has to be repeated. The
+results are in `data/results/` and `data/rating/results.json`; recomputing all statistics takes
+about 5 minutes on a laptop without a GPU:
+
+    pip install -e ".[dev]"
+    python scripts/stats_report.py --tasks 24 --seeds 6
+    python scripts/model_consistency.py
+    python scripts/rating_study.py analyse
+
+Full instructions (which file holds which result, and how to recompute the measures from the
+stored traces): `REPRODUCE.md`, section 0.
+
 ## Documentation
 
 **Prerequisites, how everything works, how to rerun each part and the compute time: see
