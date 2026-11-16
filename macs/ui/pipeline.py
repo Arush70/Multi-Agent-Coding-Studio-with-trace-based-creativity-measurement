@@ -26,8 +26,11 @@ OTHER, UNSURE = "other", "unsure"
 def list_profiles(config: Path = CONFIG) -> list[dict]:
     """Profiles in config/models.yaml without their API keys."""
     import yaml
+    config = Path(config)
+    if not config.exists() and config.with_name("models.example.yaml").exists():
+        config = config.with_name("models.example.yaml")      # fresh copy: the example profiles
     try:
-        cfg = yaml.safe_load(Path(config).read_text(encoding="utf-8"))
+        cfg = yaml.safe_load(config.read_text(encoding="utf-8"))
     except OSError:
         return []
     out = []

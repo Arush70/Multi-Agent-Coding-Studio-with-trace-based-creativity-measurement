@@ -62,19 +62,21 @@ identical to the files in the package (checked: `frontier.json` differs only in 
 significant digit of two values, from floating-point summation order). To compare, copy
 `data/results/` and `data/rating/results.json` somewhere else first.
 
-### Level C: recompute the measures from the stored traces (several hours, CPU only, no GPU, no model)
+### Level C: rescore every stored trace (CPU only, no GPU, no model)
 
 Scores every stored session again (normalisation, AST features, families, novelty against the
-stored reference sets, held-out tests in the sandbox), then runs Level B on the result:
+stored reference sets, held-out tests in the sandbox) for every model, then rebuilds every result
+file (per-model statistics, meta-analysis, contamination check, frontier, mutation test).
 
-    python scripts/analyze.py --model qwen3.5:27b --out data/results/models/qwen3.5_27b/summary.json
-    copy data\results\models\qwen3.5_27b\summary.json data\results\summary.json     (Linux/Mac: cp)
+- **Dashboard:** `pip install -e ".[dev,ui]"`, then `streamlit run macs/ui/app.py`, tab
+  **Overview**, button **Rescore everything (all models, all results)**. It runs in the
+  background with progress; the tabs show the rescored results when it finishes.
+  **Re-analyse <model>'s traces** rescores only the model shown.
+- **Terminal:** `python scripts/rescore_all.py` (`--workers N` sets how many models are scored in
+  parallel; `--skip-mutation` leaves out the mutation test).
+- **Slurm cluster:** `sbatch isca/analyze_all.sbatch` does the same in one job.
 
-Repeat `analyze.py` for each model: `--model` is one of `qwen3.5:27b`, `qwen3.5:9b`,
-`qwen3.5:122b`, `gpt-oss:120b`, `gemma4:31b`, `gemma3:12b`, `llama3.1:8b`, `granite4.2:8b`, and
-`--out` is `data/results/models/<name with ":" replaced by "_">/summary.json`. On a Slurm cluster,
-`sbatch isca/analyze_all.sbatch` does all models and Level B in one job. The UniXcoder check
-(`--representation unixcoder`) also needs `pip install -e ".[embed]"`.
+The UniXcoder check is included when `pip install -e ".[embed]"` has been run.
 
 Only to generate new traces with the models (GPU) are sections 3 and 4 needed.
 

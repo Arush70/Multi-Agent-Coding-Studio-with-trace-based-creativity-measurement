@@ -325,7 +325,8 @@ def main() -> None:  # pragma: no cover - layout isn't unit-tested
         st.markdown("**Background jobs**")
         any_job = False
         for kind, label in [("references", "References"), ("multirun", "Multi-run"), ("analyze", "Analysis"),
-                            ("stats", "Statistics"), ("tau", "Facilitator check"), ("calibrate", "SC3 calibration")]:
+                            ("stats", "Statistics"), ("tau", "Facilitator check"), ("calibrate", "SC3 calibration"),
+                            ("rescore", "Rescore everything")]:
             s_ = jobs.status(kind)["state"]
             if s_ != "none":
                 any_job = True
@@ -380,6 +381,16 @@ def main() -> None:  # pragma: no cover - layout isn't unit-tested
             except RuntimeError as ex:
                 st.warning(str(ex))
         _live(st, "analyze", lambda: _job_panel(st, "analyze", "Analysis"))
+        if st.button("Rescore everything (all models, all results)", key="rescore_btn",
+                     help="Rescores every stored trace of every model against the stored reference sets and "
+                          "rebuilds every file in data/results/ (statistics, meta-analysis, frontier, mutation "
+                          "test). No GPU or model server needed; runs in the background."):
+            try:
+                jobs.start("rescore", "rescore_all.py", ["--sandbox", sandbox])
+                st.rerun()
+            except RuntimeError as ex:
+                st.warning(str(ex))
+        _live(st, "rescore", lambda: _job_panel(st, "rescore", "Rescore everything"))
         scored = None
         if results_file.exists():
             data = json.loads(results_file.read_text(encoding="utf-8"))
