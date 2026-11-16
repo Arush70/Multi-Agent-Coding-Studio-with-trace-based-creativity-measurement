@@ -58,8 +58,7 @@ Recomputes every table from the stored per-session measures and the stored ratin
     python scripts/compute_time.py --sacct data/jobs/sacct_all.txt           # sessions and GPU time
 
 Each command rewrites its file in `data/results/` (or `data/rating/`, `docs/`). The outputs are
-identical to the files in the package (checked: `frontier.json` differs only in the 17th
-significant digit of two values, from floating-point summation order). To compare, copy
+identical to the files in the package. To compare, copy
 `data/results/` and `data/rating/results.json` somewhere else first.
 
 ### Level C: rescore every stored trace (CPU only, no GPU, no model)
@@ -73,10 +72,24 @@ file (per-model statistics, meta-analysis, contamination check, frontier, mutati
   background with progress; the tabs show the rescored results when it finishes.
   **Re-analyse <model>'s traces** rescores only the model shown.
 - **Terminal:** `python scripts/rescore_all.py` (`--workers N` sets how many models are scored in
-  parallel; `--skip-mutation` leaves out the mutation test).
+  parallel; `--skip-mutation` leaves out the mutation test; `--reexecute` runs every proposal's
+  code again, see below).
 - **Slurm cluster:** `sbatch isca/analyze_all.sbatch` does the same in one job.
 
-The UniXcoder check is included when `pip install -e ".[embed]"` has been run.
+The UniXcoder check is included when `pip install -e ".[embed]"` has been run (it downloads
+`microsoft/unixcoder-base` from Hugging Face on first use and took 61 minutes on a 2-core CPU).
+Its embeddings are float32 neural-network outputs, so on different hardware (CPU or GPU) its
+numbers in `summary_unixcoder.json` can differ in the last digits; every other file is identical.
+
+The rebuilt files are identical to the submitted ones. Correctness (Tier 1/2: all held-out tests
+pass) and the Tier 3 heuristic score come from running each proposal's code under a CPU-time
+limit, and a program that finishes close to the limit can pass on one machine and time out on
+another. The verdicts of the submitted analysis run on ISCA (65,928 proposals, one line each with
+the session, the proposal index and a SHA-256 of the code) are stored in
+`data/results/execution/<model>.jsonl` (written by `scripts/record_execution.py`), and the analysis
+reuses a verdict whenever the code hash matches; anything else, such as a new trace, is executed.
+With `--reexecute` (on `scripts/analyze.py` or `scripts/rescore_all.py`) every proposal is executed
+again, and a few verdicts near the time limit can then differ from the stored ones.
 
 Only to generate new traces with the models (GPU) are sections 3 and 4 needed.
 
@@ -371,3 +384,4 @@ its size and SHA-256), so any change to the package can be detected.
 | `search_report.json` | open-problem search |
 | `tau_diagnostics*.json` | Facilitator threshold diagnostics |
 | `compute_time.json` | sessions, busy time and GPU-hours per model (see section 5) |
+| `execution/<model>.jsonl` | the test / Tier 3 verdict of every proposal (reused when rescoring) |

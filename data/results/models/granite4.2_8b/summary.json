@@ -134,7 +134,7 @@
       "families_first10": 1,
       "entropy": -0.0,
       "diversity_scale": "single",
-      "mean_novelty": 0.1316544572872602,
+      "mean_novelty": 0.13165445728725983,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -148,7 +148,7 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": 0.1316544572872602,
+          "novelty": 0.13165445728725983,
           "heuristic_score": null
         }
       ]
@@ -169,7 +169,7 @@
       "families_first10": 1,
       "entropy": -0.0,
       "diversity_scale": "single",
-      "mean_novelty": 1.5186381583621706,
+      "mean_novelty": 1.5186381583621702,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -183,7 +183,7 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": 1.5186381583621706,
+          "novelty": 1.5186381583621702,
           "heuristic_score": null
         }
       ]
@@ -204,7 +204,7 @@
       "families_first10": 1,
       "entropy": -0.0,
       "diversity_scale": "single",
-      "mean_novelty": 0.6240077253295718,
+      "mean_novelty": 0.6240077253295715,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -218,7 +218,7 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": 0.6240077253295718,
+          "novelty": 0.6240077253295715,
           "heuristic_score": null
         }
       ]
@@ -239,7 +239,7 @@
       "families_first10": 1,
       "entropy": -0.0,
       "diversity_scale": "single",
-      "mean_novelty": 1.4620851831124053,
+      "mean_novelty": 1.4620851831124049,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -253,7 +253,7 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": 1.4620851831124053,
+          "novelty": 1.4620851831124049,
           "heuristic_score": null
         }
       ]
@@ -303,7 +303,7 @@
       "families_first10": 2,
       "entropy": 1.0,
       "diversity_scale": "within-sample",
-      "mean_novelty": 0.6013703676628427,
+      "mean_novelty": 0.6013703676628424,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -317,12 +317,12 @@
       "proposals": [
         {
           "correct": false,
-          "novelty": 0.021347348807031725,
+          "novelty": 0.021347348807031378,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": 1.1813933865186537,
+          "novelty": 1.1813933865186532,
           "heuristic_score": null
         }
       ]
@@ -343,7 +343,7 @@
       "families_first10": 1,
       "entropy": -0.0,
       "diversity_scale": "single",
-      "mean_novelty": 0.021347348807031725,
+      "mean_novelty": 0.021347348807031378,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -357,7 +357,7 @@
       "proposals": [
         {
           "correct": false,
-          "novelty": 0.021347348807031725,
+          "novelty": 0.021347348807031378,
           "heuristic_score": null
         }
       ]
@@ -378,7 +378,7 @@
       "families_first10": 3,
       "entropy": 1.584962500721156,
       "diversity_scale": "within-sample",
-      "mean_novelty": 0.30427144752077423,
+      "mean_novelty": 0.3042714475207738,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -392,17 +392,17 @@
       "proposals": [
         {
           "correct": false,
-          "novelty": 0.021347348807031725,
+          "novelty": 0.021347348807031378,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.1027228181051515,
+          "novelty": -0.10272281810515185,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": 0.9941898118604424,
+          "novelty": 0.9941898118604418,
           "heuristic_score": null
         }
       ]
@@ -454,7 +454,7 @@
       "families_first10": 1,
       "entropy": -0.0,
       "diversity_scale": "single",
-      "mean_novelty": 1.7758656175296983,
+      "mean_novelty": 1.7758656175296976,
       "correct_and_novel_rate": 1.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -470,7 +470,7 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": 1.7758656175296983,
+          "novelty": 1.7758656175296976,
           "heuristic_score": null
         }
       ]
@@ -580,7 +580,7 @@
       "families_first10": 1,
       "entropy": -0.0,
       "diversity_scale": "single",
-      "mean_novelty": -0.8071452524650937,
+      "mean_novelty": -0.807145252465094,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -594,7 +594,7 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": -0.8071452524650937,
+          "novelty": -0.807145252465094,
           "heuristic_score": null
         }
       ]
@@ -681,7 +681,7 @@
       "families_first10": 1,
       "entropy": -0.0,
       "diversity_scale": "single",
-      "mean_novelty": -0.8235112787654515,
+      "mean_novelty": -0.8235112787654519,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -695,7 +695,7 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": -0.8235112787654515,
+          "novelty": -0.8235112787654519,
           "heuristic_score": null
         }
       ]
@@ -811,7 +811,7 @@
       "families_first10": 1,
       "entropy": -0.0,
       "diversity_scale": "single",
-      "mean_novelty": 1.2866637949827935,
+      "mean_novelty": 1.286663794982793,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -827,7 +827,7 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": 1.2866637949827935,
+          "novelty": 1.286663794982793,
           "heuristic_score": null
         }
       ]
@@ -879,7 +879,7 @@
       "families_first10": 1,
       "entropy": -0.0,
       "diversity_scale": "single",
-      "mean_novelty": 0.021347348807031725,
+      "mean_novelty": 0.021347348807031378,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -893,7 +893,7 @@
       "proposals": [
         {
           "correct": false,
-          "novelty": 0.021347348807031725,
+          "novelty": 0.021347348807031378,
           "heuristic_score": null
         }
       ]
@@ -914,7 +914,7 @@
       "families_first10": 1,
       "entropy": -0.0,
       "diversity_scale": "single",
-      "mean_novelty": 0.021347348807031725,
+      "mean_novelty": 0.021347348807031378,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -928,7 +928,7 @@
       "proposals": [
         {
           "correct": false,
-          "novelty": 0.021347348807031725,
+          "novelty": 0.021347348807031378,
           "heuristic_score": null
         }
       ]
@@ -949,7 +949,7 @@
       "families_first10": 1,
       "entropy": -0.0,
       "diversity_scale": "single",
-      "mean_novelty": 0.021347348807031725,
+      "mean_novelty": 0.021347348807031378,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -965,7 +965,7 @@
       "proposals": [
         {
           "correct": false,
-          "novelty": 0.021347348807031725,
+          "novelty": 0.021347348807031378,
           "heuristic_score": null
         }
       ]
@@ -986,7 +986,7 @@
       "families_first10": 1,
       "entropy": -0.0,
       "diversity_scale": "single",
-      "mean_novelty": 0.021347348807031725,
+      "mean_novelty": 0.021347348807031378,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -1000,7 +1000,7 @@
       "proposals": [
         {
           "correct": false,
-          "novelty": 0.021347348807031725,
+          "novelty": 0.021347348807031378,
           "heuristic_score": null
         }
       ]
@@ -1021,7 +1021,7 @@
       "families_first10": 1,
       "entropy": -0.0,
       "diversity_scale": "single",
-      "mean_novelty": 0.6240077253295718,
+      "mean_novelty": 0.6240077253295715,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -1037,7 +1037,7 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": 0.6240077253295718,
+          "novelty": 0.6240077253295715,
           "heuristic_score": null
         }
       ]
@@ -1058,7 +1058,7 @@
       "families_first10": 2,
       "entropy": 1.0,
       "diversity_scale": "within-sample",
-      "mean_novelty": 0.35422838580489446,
+      "mean_novelty": 0.35422838580489413,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -1072,12 +1072,12 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": 0.6240077253295718,
+          "novelty": 0.6240077253295715,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": 0.08444904628021707,
+          "novelty": 0.08444904628021672,
           "heuristic_score": null
         }
       ]
@@ -1098,7 +1098,7 @@
       "families_first10": 1,
       "entropy": -0.0,
       "diversity_scale": "single",
-      "mean_novelty": 0.021347348807031725,
+      "mean_novelty": 0.021347348807031378,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -1112,7 +1112,7 @@
       "proposals": [
         {
           "correct": false,
-          "novelty": 0.021347348807031725,
+          "novelty": 0.021347348807031378,
           "heuristic_score": null
         }
       ]
@@ -1133,7 +1133,7 @@
       "families_first10": 1,
       "entropy": -0.0,
       "diversity_scale": "single",
-      "mean_novelty": 0.021347348807031725,
+      "mean_novelty": 0.021347348807031378,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -1147,7 +1147,7 @@
       "proposals": [
         {
           "correct": false,
-          "novelty": 0.021347348807031725,
+          "novelty": 0.021347348807031378,
           "heuristic_score": null
         }
       ]
@@ -1168,7 +1168,7 @@
       "families_first10": 1,
       "entropy": -0.0,
       "diversity_scale": "single",
-      "mean_novelty": 0.021347348807031725,
+      "mean_novelty": 0.021347348807031378,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -1184,7 +1184,7 @@
       "proposals": [
         {
           "correct": false,
-          "novelty": 0.021347348807031725,
+          "novelty": 0.021347348807031378,
           "heuristic_score": null
         }
       ]
@@ -1205,7 +1205,7 @@
       "families_first10": 1,
       "entropy": -0.0,
       "diversity_scale": "single",
-      "mean_novelty": 0.6240077253295718,
+      "mean_novelty": 0.6240077253295715,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -1219,7 +1219,7 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": 0.6240077253295718,
+          "novelty": 0.6240077253295715,
           "heuristic_score": null
         }
       ]
@@ -1240,7 +1240,7 @@
       "families_first10": 1,
       "entropy": -0.0,
       "diversity_scale": "single",
-      "mean_novelty": 1.2866637949827935,
+      "mean_novelty": 1.286663794982793,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -1256,7 +1256,7 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": 1.2866637949827935,
+          "novelty": 1.286663794982793,
           "heuristic_score": null
         }
       ]
@@ -1277,7 +1277,7 @@
       "families_first10": 1,
       "entropy": -0.0,
       "diversity_scale": "single",
-      "mean_novelty": 1.2866637949827935,
+      "mean_novelty": 1.286663794982793,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -1293,7 +1293,7 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": 1.2866637949827935,
+          "novelty": 1.286663794982793,
           "heuristic_score": null
         }
       ]
@@ -1314,7 +1314,7 @@
       "families_first10": 1,
       "entropy": -0.0,
       "diversity_scale": "single",
-      "mean_novelty": 0.021347348807031725,
+      "mean_novelty": 0.021347348807031378,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -1328,7 +1328,7 @@
       "proposals": [
         {
           "correct": false,
-          "novelty": 0.021347348807031725,
+          "novelty": 0.021347348807031378,
           "heuristic_score": null
         }
       ]
@@ -1378,7 +1378,7 @@
       "families_first10": 1,
       "entropy": -0.0,
       "diversity_scale": "single",
-      "mean_novelty": 0.021347348807031725,
+      "mean_novelty": 0.021347348807031378,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -1394,7 +1394,7 @@
       "proposals": [
         {
           "correct": false,
-          "novelty": 0.021347348807031725,
+          "novelty": 0.021347348807031378,
           "heuristic_score": null
         }
       ]
@@ -1415,7 +1415,7 @@
       "families_first10": 1,
       "entropy": -0.0,
       "diversity_scale": "single",
-      "mean_novelty": 0.021347348807031725,
+      "mean_novelty": 0.021347348807031378,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -1429,7 +1429,7 @@
       "proposals": [
         {
           "correct": false,
-          "novelty": 0.021347348807031725,
+          "novelty": 0.021347348807031378,
           "heuristic_score": null
         }
       ]
@@ -1450,7 +1450,7 @@
       "families_first10": 1,
       "entropy": -0.0,
       "diversity_scale": "within-sample",
-      "mean_novelty": 0.11513998977311163,
+      "mean_novelty": 0.11513998977311128,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -1466,12 +1466,12 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": 0.11624920890175196,
+          "novelty": 0.11624920890175161,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": 0.1140307706444713,
+          "novelty": 0.11403077064447095,
           "heuristic_score": null
         }
       ]
@@ -1552,7 +1552,7 @@
       "families_first10": 1,
       "entropy": -0.0,
       "diversity_scale": "single",
-      "mean_novelty": -0.7943345956292381,
+      "mean_novelty": -0.7943345956292386,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -1566,7 +1566,7 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": -0.7943345956292381,
+          "novelty": -0.7943345956292386,
           "heuristic_score": null
         }
       ]
@@ -1647,7 +1647,7 @@
       "families_first10": 1,
       "entropy": -0.0,
       "diversity_scale": "within-sample",
-      "mean_novelty": 0.11513998977311163,
+      "mean_novelty": 0.11513998977311128,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -1663,12 +1663,12 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": 0.11624920890175196,
+          "novelty": 0.11624920890175161,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": 0.1140307706444713,
+          "novelty": 0.11403077064447095,
           "heuristic_score": null
         }
       ]
@@ -1749,7 +1749,7 @@
       "families_first10": 1,
       "entropy": -0.0,
       "diversity_scale": "single",
-      "mean_novelty": -0.7943345956292381,
+      "mean_novelty": -0.7943345956292386,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -1763,7 +1763,7 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": -0.7943345956292381,
+          "novelty": -0.7943345956292386,
           "heuristic_score": null
         }
       ]
@@ -8667,7 +8667,7 @@
       "families_first10": 4,
       "entropy": 1.9219280948873623,
       "diversity_scale": "within-sample",
-      "mean_novelty": 0.032366630519977756,
+      "mean_novelty": 0.032366630519978255,
       "correct_and_novel_rate": 0.2,
       "scoring": "tests",
       "heuristic_score": null,
@@ -8701,7 +8701,7 @@
         },
         {
           "correct": true,
-          "novelty": -0.37124690290686707,
+          "novelty": -0.3712469029068646,
           "heuristic_score": null
         }
       ]
@@ -9184,7 +9184,7 @@
       "families_first10": 3,
       "entropy": 1.5219280948873621,
       "diversity_scale": "within-sample",
-      "mean_novelty": -0.32580566901644736,
+      "mean_novelty": -0.3258056690164476,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -9220,7 +9220,7 @@
         },
         {
           "correct": true,
-          "novelty": -0.28036443512602804,
+          "novelty": -0.28036443512602904,
           "heuristic_score": null
         }
       ]
@@ -9552,7 +9552,7 @@
       "families_first10": 3,
       "entropy": 1.584962500721156,
       "diversity_scale": "within-sample",
-      "mean_novelty": -0.3409527469799216,
+      "mean_novelty": -0.3409527469799219,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -9576,7 +9576,7 @@
         },
         {
           "correct": true,
-          "novelty": -0.28036443512602804,
+          "novelty": -0.28036443512602904,
           "heuristic_score": null
         }
       ]
@@ -9809,7 +9809,7 @@
       "families_first10": 3,
       "entropy": 1.5219280948873621,
       "diversity_scale": "within-sample",
-      "mean_novelty": -0.32580566901644736,
+      "mean_novelty": -0.3258056690164476,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -9845,7 +9845,7 @@
         },
         {
           "correct": true,
-          "novelty": -0.28036443512602804,
+          "novelty": -0.28036443512602904,
           "heuristic_score": null
         }
       ]
@@ -13789,7 +13789,7 @@
       "families_first10": 1,
       "entropy": -0.0,
       "diversity_scale": "within-sample",
-      "mean_novelty": 0.0036066056371738485,
+      "mean_novelty": 0.003606605637174276,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -13825,7 +13825,7 @@
         },
         {
           "correct": true,
-          "novelty": 0.16535484248831891,
+          "novelty": 0.16535484248832105,
           "heuristic_score": null
         }
       ]
@@ -16724,7 +16724,7 @@
       "families_first10": 2,
       "entropy": 0.9182958340544896,
       "diversity_scale": "within-sample",
-      "mean_novelty": 0.401331162569853,
+      "mean_novelty": 0.4013311625698531,
       "correct_and_novel_rate": 0.3333333333333333,
       "scoring": "tests",
       "heuristic_score": null,
@@ -16748,7 +16748,7 @@
         },
         {
           "correct": true,
-          "novelty": -0.6804506671919097,
+          "novelty": -0.6804506671919095,
           "heuristic_score": null
         }
       ]
@@ -16769,7 +16769,7 @@
       "families_first10": 1,
       "entropy": -0.0,
       "diversity_scale": "within-sample",
-      "mean_novelty": -0.7122844242904017,
+      "mean_novelty": -0.7122844242904018,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -16793,7 +16793,7 @@
         },
         {
           "correct": true,
-          "novelty": -0.7282013028396477,
+          "novelty": -0.7282013028396482,
           "heuristic_score": null
         }
       ]
@@ -16925,7 +16925,7 @@
         },
         {
           "correct": true,
-          "novelty": -0.6804506671919097,
+          "novelty": -0.6804506671919095,
           "heuristic_score": null
         }
       ]
@@ -17050,7 +17050,7 @@
         },
         {
           "correct": true,
-          "novelty": -0.6804506671919097,
+          "novelty": -0.6804506671919095,
           "heuristic_score": null
         }
       ]
@@ -17540,7 +17540,7 @@
       "families_first10": 3,
       "entropy": 1.5219280948873621,
       "diversity_scale": "within-sample",
-      "mean_novelty": -0.38756331297996394,
+      "mean_novelty": -0.38756331297996416,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -17574,7 +17574,7 @@
         },
         {
           "correct": true,
-          "novelty": -0.3875633129799628,
+          "novelty": -0.38756331297996416,
           "heuristic_score": null
         }
       ]
@@ -17595,7 +17595,7 @@
       "families_first10": 3,
       "entropy": 1.584962500721156,
       "diversity_scale": "within-sample",
-      "mean_novelty": -0.2596432363238935,
+      "mean_novelty": -0.25964323632389397,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -17619,7 +17619,7 @@
         },
         {
           "correct": true,
-          "novelty": -0.0038030830117522043,
+          "novelty": -0.0038030830117535296,
           "heuristic_score": null
         }
       ]
@@ -17832,7 +17832,7 @@
       "families_first10": 3,
       "entropy": 1.584962500721156,
       "diversity_scale": "within-sample",
-      "mean_novelty": -0.38756331297996366,
+      "mean_novelty": -0.3875633129799641,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -17856,7 +17856,7 @@
         },
         {
           "correct": true,
-          "novelty": -0.3875633129799628,
+          "novelty": -0.38756331297996416,
           "heuristic_score": null
         }
       ]
@@ -17974,7 +17974,7 @@
       "families_first10": 3,
       "entropy": 1.584962500721156,
       "diversity_scale": "within-sample",
-      "mean_novelty": -0.38756331297996366,
+      "mean_novelty": -0.3875633129799641,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -17998,7 +17998,7 @@
         },
         {
           "correct": true,
-          "novelty": -0.3875633129799628,
+          "novelty": -0.38756331297996416,
           "heuristic_score": null
         }
       ]
@@ -18074,7 +18074,7 @@
       "families_first10": 2,
       "entropy": 0.7219280948873623,
       "diversity_scale": "within-sample",
-      "mean_novelty": 0.6428405195678135,
+      "mean_novelty": 0.6428405195678134,
       "correct_and_novel_rate": 0.8,
       "scoring": "tests",
       "heuristic_score": null,
@@ -18110,7 +18110,7 @@
         },
         {
           "correct": true,
-          "novelty": 0.9004414777047581,
+          "novelty": 0.9004414777047578,
           "heuristic_score": null
         }
       ]
@@ -18262,7 +18262,7 @@
         },
         {
           "correct": true,
-          "novelty": 0.9004414777047581,
+          "novelty": 0.9004414777047578,
           "heuristic_score": null
         }
       ]
@@ -19452,7 +19452,7 @@
       "families_first10": 1,
       "entropy": -0.0,
       "diversity_scale": "single",
-      "mean_novelty": -0.17586311452624784,
+      "mean_novelty": -0.1758631145262478,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -19466,7 +19466,7 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         }
       ]
@@ -19487,7 +19487,7 @@
       "families_first10": 1,
       "entropy": -0.0,
       "diversity_scale": "single",
-      "mean_novelty": -0.17586311452624784,
+      "mean_novelty": -0.1758631145262478,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -19501,7 +19501,7 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         }
       ]
@@ -19522,7 +19522,7 @@
       "families_first10": 1,
       "entropy": -0.0,
       "diversity_scale": "single",
-      "mean_novelty": -0.17586311452624784,
+      "mean_novelty": -0.1758631145262478,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -19536,7 +19536,7 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         }
       ]
@@ -19557,7 +19557,7 @@
       "families_first10": 1,
       "entropy": -0.0,
       "diversity_scale": "single",
-      "mean_novelty": -0.17586311452624784,
+      "mean_novelty": -0.1758631145262478,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -19571,7 +19571,7 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         }
       ]
@@ -19592,7 +19592,7 @@
       "families_first10": 1,
       "entropy": -0.0,
       "diversity_scale": "single",
-      "mean_novelty": -0.17586311452624784,
+      "mean_novelty": -0.1758631145262478,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -19606,7 +19606,7 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         }
       ]
@@ -19627,7 +19627,7 @@
       "families_first10": 1,
       "entropy": -0.0,
       "diversity_scale": "single",
-      "mean_novelty": -0.17586311452624784,
+      "mean_novelty": -0.1758631145262478,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -19641,7 +19641,7 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         }
       ]
@@ -19676,7 +19676,7 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
@@ -19686,7 +19686,7 @@
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         }
       ]
@@ -19721,12 +19721,12 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
@@ -19741,12 +19741,12 @@
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         }
       ]
@@ -19767,7 +19767,7 @@
       "families_first10": 3,
       "entropy": 1.4591479170272448,
       "diversity_scale": "within-sample",
-      "mean_novelty": 1.011247196412356,
+      "mean_novelty": 1.0112471964123562,
       "correct_and_novel_rate": 0.16666666666666666,
       "scoring": "tests",
       "heuristic_score": null,
@@ -19781,17 +19781,17 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
@@ -19801,12 +19801,12 @@
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         }
       ]
@@ -19841,7 +19841,7 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
@@ -19856,17 +19856,17 @@
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         }
       ]
@@ -19916,17 +19916,17 @@
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         }
       ]
@@ -19961,7 +19961,7 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
@@ -19981,12 +19981,12 @@
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         }
       ]
@@ -20007,7 +20007,7 @@
       "families_first10": 1,
       "entropy": -0.0,
       "diversity_scale": "single",
-      "mean_novelty": -0.17586311452624784,
+      "mean_novelty": -0.1758631145262478,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -20021,7 +20021,7 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         }
       ]
@@ -20042,7 +20042,7 @@
       "families_first10": 1,
       "entropy": -0.0,
       "diversity_scale": "single",
-      "mean_novelty": -0.17586311452624784,
+      "mean_novelty": -0.1758631145262478,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -20056,7 +20056,7 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         }
       ]
@@ -20077,7 +20077,7 @@
       "families_first10": 1,
       "entropy": -0.0,
       "diversity_scale": "single",
-      "mean_novelty": -0.17586311452624784,
+      "mean_novelty": -0.1758631145262478,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -20091,7 +20091,7 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         }
       ]
@@ -20112,7 +20112,7 @@
       "families_first10": 1,
       "entropy": -0.0,
       "diversity_scale": "single",
-      "mean_novelty": -0.17586311452624784,
+      "mean_novelty": -0.1758631145262478,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -20126,7 +20126,7 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         }
       ]
@@ -20147,7 +20147,7 @@
       "families_first10": 1,
       "entropy": -0.0,
       "diversity_scale": "single",
-      "mean_novelty": -0.17586311452624784,
+      "mean_novelty": -0.1758631145262478,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -20161,7 +20161,7 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         }
       ]
@@ -20182,7 +20182,7 @@
       "families_first10": 1,
       "entropy": -0.0,
       "diversity_scale": "single",
-      "mean_novelty": -0.17586311452624784,
+      "mean_novelty": -0.1758631145262478,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -20196,7 +20196,7 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         }
       ]
@@ -20217,7 +20217,7 @@
       "families_first10": 1,
       "entropy": -0.0,
       "diversity_scale": "single",
-      "mean_novelty": -0.17586311452624784,
+      "mean_novelty": -0.1758631145262478,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -20231,7 +20231,7 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         }
       ]
@@ -20252,7 +20252,7 @@
       "families_first10": 1,
       "entropy": -0.0,
       "diversity_scale": "single",
-      "mean_novelty": -0.17586311452624784,
+      "mean_novelty": -0.1758631145262478,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -20266,7 +20266,7 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         }
       ]
@@ -20287,7 +20287,7 @@
       "families_first10": 1,
       "entropy": -0.0,
       "diversity_scale": "single",
-      "mean_novelty": -0.17586311452624784,
+      "mean_novelty": -0.1758631145262478,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -20301,7 +20301,7 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         }
       ]
@@ -20322,7 +20322,7 @@
       "families_first10": 1,
       "entropy": -0.0,
       "diversity_scale": "single",
-      "mean_novelty": -0.17586311452624784,
+      "mean_novelty": -0.1758631145262478,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -20336,7 +20336,7 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         }
       ]
@@ -20357,7 +20357,7 @@
       "families_first10": 1,
       "entropy": -0.0,
       "diversity_scale": "single",
-      "mean_novelty": -0.17586311452624784,
+      "mean_novelty": -0.1758631145262478,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -20371,7 +20371,7 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         }
       ]
@@ -20392,7 +20392,7 @@
       "families_first10": 1,
       "entropy": -0.0,
       "diversity_scale": "single",
-      "mean_novelty": -0.17586311452624784,
+      "mean_novelty": -0.1758631145262478,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -20406,7 +20406,7 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         }
       ]
@@ -20441,22 +20441,22 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
@@ -20466,7 +20466,7 @@
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         }
       ]
@@ -20487,7 +20487,7 @@
       "families_first10": 2,
       "entropy": 1.0,
       "diversity_scale": "within-sample",
-      "mean_novelty": 0.0330666974140234,
+      "mean_novelty": 0.033066697414023405,
       "correct_and_novel_rate": 0.16666666666666666,
       "scoring": "tests",
       "heuristic_score": null,
@@ -20501,7 +20501,7 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
@@ -20511,22 +20511,22 @@
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         }
       ]
@@ -20561,7 +20561,7 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
@@ -20576,17 +20576,17 @@
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         }
       ]
@@ -20621,12 +20621,12 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
@@ -20636,17 +20636,17 @@
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         }
       ]
@@ -20681,12 +20681,12 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
@@ -20736,7 +20736,7 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
@@ -20751,7 +20751,7 @@
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         }
       ]
@@ -20786,12 +20786,12 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
@@ -20801,7 +20801,7 @@
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         }
       ]
@@ -20836,7 +20836,7 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
@@ -20891,7 +20891,7 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
@@ -20906,12 +20906,12 @@
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         }
       ]
@@ -20932,7 +20932,7 @@
       "families_first10": 2,
       "entropy": 1.0,
       "diversity_scale": "within-sample",
-      "mean_novelty": -0.17586311452624784,
+      "mean_novelty": -0.1758631145262478,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -20946,22 +20946,22 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         }
       ]
@@ -20996,7 +20996,7 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
@@ -21006,7 +21006,7 @@
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
@@ -21016,7 +21016,7 @@
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         }
       ]
@@ -21051,7 +21051,7 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
@@ -21071,12 +21071,12 @@
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         }
       ]
@@ -21097,7 +21097,7 @@
       "families_first10": 2,
       "entropy": 1.0,
       "diversity_scale": "within-sample",
-      "mean_novelty": -0.17586311452624784,
+      "mean_novelty": -0.1758631145262478,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -21111,32 +21111,32 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         }
       ]
@@ -21157,7 +21157,7 @@
       "families_first10": 2,
       "entropy": 1.0,
       "diversity_scale": "within-sample",
-      "mean_novelty": 0.0330666974140234,
+      "mean_novelty": 0.033066697414023405,
       "correct_and_novel_rate": 0.16666666666666666,
       "scoring": "tests",
       "heuristic_score": null,
@@ -21171,7 +21171,7 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
@@ -21181,22 +21181,22 @@
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         }
       ]
@@ -21231,7 +21231,7 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
@@ -21246,17 +21246,17 @@
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         }
       ]
@@ -21291,12 +21291,12 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
@@ -21306,17 +21306,17 @@
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         }
       ]
@@ -21351,12 +21351,12 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
@@ -21406,7 +21406,7 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
@@ -21421,7 +21421,7 @@
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         }
       ]
@@ -21442,7 +21442,7 @@
       "families_first10": 2,
       "entropy": 0.9182958340544896,
       "diversity_scale": "within-sample",
-      "mean_novelty": -0.17586311452624784,
+      "mean_novelty": -0.1758631145262478,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -21456,32 +21456,32 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         }
       ]
@@ -21516,22 +21516,22 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
@@ -21541,7 +21541,7 @@
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         }
       ]
@@ -21562,7 +21562,7 @@
       "families_first10": 2,
       "entropy": 0.9182958340544896,
       "diversity_scale": "within-sample",
-      "mean_novelty": -0.17586311452624784,
+      "mean_novelty": -0.1758631145262478,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -21576,32 +21576,32 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         }
       ]
@@ -21636,17 +21636,17 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
@@ -21656,7 +21656,7 @@
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
@@ -21701,22 +21701,22 @@
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
@@ -21726,7 +21726,7 @@
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         }
       ]
@@ -21747,7 +21747,7 @@
       "families_first10": 2,
       "entropy": 0.9182958340544896,
       "diversity_scale": "within-sample",
-      "mean_novelty": -0.17586311452624784,
+      "mean_novelty": -0.1758631145262478,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -21761,32 +21761,32 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         }
       ]
@@ -21807,7 +21807,7 @@
       "families_first10": 2,
       "entropy": 0.6500224216483541,
       "diversity_scale": "within-sample",
-      "mean_novelty": -0.17586311452624784,
+      "mean_novelty": -0.1758631145262478,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -21821,32 +21821,32 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         }
       ]
@@ -21867,7 +21867,7 @@
       "families_first10": 2,
       "entropy": 0.6500224216483541,
       "diversity_scale": "within-sample",
-      "mean_novelty": -0.17586311452624784,
+      "mean_novelty": -0.1758631145262478,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -21881,32 +21881,32 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         }
       ]
@@ -21927,7 +21927,7 @@
       "families_first10": 2,
       "entropy": 0.6500224216483541,
       "diversity_scale": "within-sample",
-      "mean_novelty": -0.17586311452624784,
+      "mean_novelty": -0.1758631145262478,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -21941,32 +21941,32 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         }
       ]
@@ -21987,7 +21987,7 @@
       "families_first10": 1,
       "entropy": -0.0,
       "diversity_scale": "within-sample",
-      "mean_novelty": -0.17586311452624784,
+      "mean_novelty": -0.1758631145262478,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -22001,32 +22001,32 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         }
       ]
@@ -22066,27 +22066,27 @@
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         }
       ]
@@ -22107,7 +22107,7 @@
       "families_first10": 2,
       "entropy": 0.6500224216483541,
       "diversity_scale": "within-sample",
-      "mean_novelty": -0.17586311452624784,
+      "mean_novelty": -0.1758631145262478,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -22121,32 +22121,32 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         }
       ]
@@ -22341,7 +22341,7 @@
       "families_first10": 1,
       "entropy": -0.0,
       "diversity_scale": "within-sample",
-      "mean_novelty": -0.17586311452624784,
+      "mean_novelty": -0.1758631145262478,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -22355,47 +22355,47 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         }
       ]
@@ -22416,7 +22416,7 @@
       "families_first10": 1,
       "entropy": -0.0,
       "diversity_scale": "within-sample",
-      "mean_novelty": -0.17586311452624784,
+      "mean_novelty": -0.1758631145262478,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -22430,32 +22430,32 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         }
       ]
@@ -22476,7 +22476,7 @@
       "families_first10": 1,
       "entropy": -0.0,
       "diversity_scale": "within-sample",
-      "mean_novelty": -0.17586311452624787,
+      "mean_novelty": -0.17586311452624784,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -22490,37 +22490,37 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         }
       ]
@@ -22541,7 +22541,7 @@
       "families_first10": 1,
       "entropy": -0.0,
       "diversity_scale": "within-sample",
-      "mean_novelty": -0.17586311452624784,
+      "mean_novelty": -0.1758631145262478,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -22555,27 +22555,27 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         }
       ]
@@ -22596,7 +22596,7 @@
       "families_first10": 1,
       "entropy": -0.0,
       "diversity_scale": "within-sample",
-      "mean_novelty": -0.17586311452624787,
+      "mean_novelty": -0.17586311452624784,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -22610,37 +22610,37 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         }
       ]
@@ -22661,7 +22661,7 @@
       "families_first10": 1,
       "entropy": -0.0,
       "diversity_scale": "within-sample",
-      "mean_novelty": -0.17586311452624784,
+      "mean_novelty": -0.1758631145262478,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -22675,27 +22675,27 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.17586311452624784,
+          "novelty": -0.1758631145262478,
           "heuristic_score": null
         }
       ]
@@ -26312,7 +26312,7 @@
       "families_first10": 3,
       "entropy": 1.3709505944546687,
       "diversity_scale": "within-sample",
-      "mean_novelty": -0.2374185281087108,
+      "mean_novelty": -0.23741852810871053,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -26346,7 +26346,7 @@
         },
         {
           "correct": true,
-          "novelty": 0.0713958853282493,
+          "novelty": 0.07139588532825047,
           "heuristic_score": null
         }
       ]
@@ -26993,7 +26993,7 @@
       "families_first10": 2,
       "entropy": 0.9182958340544896,
       "diversity_scale": "within-sample",
-      "mean_novelty": -0.3146221314679512,
+      "mean_novelty": -0.31462213146795087,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -27025,7 +27025,7 @@
         },
         {
           "correct": true,
-          "novelty": -0.31462213146795154,
+          "novelty": -0.31462213146795054,
           "heuristic_score": null
         }
       ]
@@ -27634,7 +27634,7 @@
       "families_first10": 2,
       "entropy": 0.9182958340544896,
       "diversity_scale": "within-sample",
-      "mean_novelty": -0.3146221314679512,
+      "mean_novelty": -0.31462213146795087,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -27666,7 +27666,7 @@
         },
         {
           "correct": true,
-          "novelty": -0.31462213146795154,
+          "novelty": -0.31462213146795054,
           "heuristic_score": null
         }
       ]
@@ -28901,7 +28901,7 @@
       "families_first10": 1,
       "entropy": -0.0,
       "diversity_scale": "within-sample",
-      "mean_novelty": -0.31462213146795087,
+      "mean_novelty": -0.31462213146795054,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -28928,7 +28928,7 @@
         },
         {
           "correct": true,
-          "novelty": -0.31462213146795154,
+          "novelty": -0.31462213146795054,
           "heuristic_score": null
         }
       ]
@@ -29030,7 +29030,7 @@
       "families_first10": 1,
       "entropy": -0.0,
       "diversity_scale": "within-sample",
-      "mean_novelty": -0.31462213146795087,
+      "mean_novelty": -0.31462213146795054,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -29057,7 +29057,7 @@
         },
         {
           "correct": true,
-          "novelty": -0.31462213146795154,
+          "novelty": -0.31462213146795054,
           "heuristic_score": null
         }
       ]
@@ -29172,7 +29172,7 @@
       "entropy": -0.0,
       "diversity_scale": "single",
       "mean_novelty": -0.23385781334437708,
-      "correct_and_novel_rate": 1.0,
+      "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
       "heuristic_best": null,
@@ -29207,7 +29207,7 @@
       "entropy": -0.0,
       "diversity_scale": "single",
       "mean_novelty": -0.23385781334437708,
-      "correct_and_novel_rate": 1.0,
+      "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
       "heuristic_best": null,
@@ -29242,7 +29242,7 @@
       "entropy": -0.0,
       "diversity_scale": "single",
       "mean_novelty": -0.23385781334437708,
-      "correct_and_novel_rate": 1.0,
+      "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
       "heuristic_best": null,
@@ -29695,7 +29695,7 @@
       "entropy": -0.0,
       "diversity_scale": "single",
       "mean_novelty": -0.23385781334437708,
-      "correct_and_novel_rate": 1.0,
+      "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
       "heuristic_best": null,
@@ -29730,7 +29730,7 @@
       "entropy": -0.0,
       "diversity_scale": "single",
       "mean_novelty": -0.23385781334437708,
-      "correct_and_novel_rate": 1.0,
+      "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
       "heuristic_best": null,
@@ -29765,7 +29765,7 @@
       "entropy": -0.0,
       "diversity_scale": "single",
       "mean_novelty": -0.23385781334437708,
-      "correct_and_novel_rate": 1.0,
+      "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
       "heuristic_best": null,
@@ -29901,7 +29901,7 @@
       "entropy": -0.0,
       "diversity_scale": "single",
       "mean_novelty": -0.23385781334437708,
-      "correct_and_novel_rate": 1.0,
+      "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
       "heuristic_best": null,
@@ -29936,7 +29936,7 @@
       "entropy": -0.0,
       "diversity_scale": "single",
       "mean_novelty": -0.23385781334437708,
-      "correct_and_novel_rate": 1.0,
+      "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
       "heuristic_best": null,
@@ -29976,7 +29976,7 @@
       "entropy": -0.0,
       "diversity_scale": "single",
       "mean_novelty": -0.23385781334437708,
-      "correct_and_novel_rate": 1.0,
+      "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
       "heuristic_best": null,
@@ -30216,7 +30216,7 @@
       "entropy": -0.0,
       "diversity_scale": "single",
       "mean_novelty": -0.23385781334437708,
-      "correct_and_novel_rate": 1.0,
+      "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
       "heuristic_best": null,
@@ -30413,7 +30413,7 @@
       "entropy": -0.0,
       "diversity_scale": "single",
       "mean_novelty": -0.23385781334437708,
-      "correct_and_novel_rate": 1.0,
+      "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
       "heuristic_best": null,
@@ -30453,7 +30453,7 @@
       "entropy": -0.0,
       "diversity_scale": "single",
       "mean_novelty": -0.23385781334437708,
-      "correct_and_novel_rate": 1.0,
+      "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
       "heuristic_best": null,
@@ -30653,7 +30653,7 @@
       "entropy": -0.0,
       "diversity_scale": "single",
       "mean_novelty": -0.23385781334437708,
-      "correct_and_novel_rate": 1.0,
+      "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
       "heuristic_best": null,
@@ -30928,7 +30928,7 @@
       "entropy": -0.0,
       "diversity_scale": "single",
       "mean_novelty": -0.23385781334437708,
-      "correct_and_novel_rate": 1.0,
+      "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
       "heuristic_best": null,
@@ -31422,7 +31422,7 @@
       "entropy": -0.0,
       "diversity_scale": "single",
       "mean_novelty": -0.23385781334437708,
-      "correct_and_novel_rate": 1.0,
+      "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
       "heuristic_best": null,
@@ -31582,7 +31582,7 @@
       "entropy": -0.0,
       "diversity_scale": "single",
       "mean_novelty": -0.23385781334437708,
-      "correct_and_novel_rate": 1.0,
+      "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
       "heuristic_best": null,
@@ -32773,7 +32773,7 @@
       "families_first10": 3,
       "entropy": 1.584962500721156,
       "diversity_scale": "within-sample",
-      "mean_novelty": 0.44045091007020004,
+      "mean_novelty": 0.4404509100701999,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -32797,7 +32797,7 @@
         },
         {
           "correct": false,
-          "novelty": 2.0590688932454286,
+          "novelty": 2.059068893245428,
           "heuristic_score": null
         }
       ]
@@ -32868,7 +32868,7 @@
       "families_first10": 2,
       "entropy": 0.9182958340544896,
       "diversity_scale": "within-sample",
-      "mean_novelty": -0.3854759435005681,
+      "mean_novelty": -0.38547594350056835,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -32892,7 +32892,7 @@
         },
         {
           "correct": true,
-          "novelty": -0.31900449556795124,
+          "novelty": -0.31900449556795213,
           "heuristic_score": null
         }
       ]
@@ -33347,7 +33347,7 @@
       "families_first10": 3,
       "entropy": 1.584962500721156,
       "diversity_scale": "within-sample",
-      "mean_novelty": 0.44045091007020004,
+      "mean_novelty": 0.4404509100701999,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -33371,7 +33371,7 @@
         },
         {
           "correct": false,
-          "novelty": 2.0590688932454286,
+          "novelty": 2.059068893245428,
           "heuristic_score": null
         }
       ]
@@ -33921,7 +33921,7 @@
       "families_first10": 2,
       "entropy": 0.7219280948873623,
       "diversity_scale": "within-sample",
-      "mean_novelty": 2.5408741435181605,
+      "mean_novelty": 2.540874143518161,
       "correct_and_novel_rate": 1.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -33955,7 +33955,7 @@
         },
         {
           "correct": true,
-          "novelty": 2.5196240841619226,
+          "novelty": 2.519624084161923,
           "heuristic_score": null
         }
       ]
@@ -34518,7 +34518,7 @@
       "families_first10": 2,
       "entropy": 0.9182958340544896,
       "diversity_scale": "within-sample",
-      "mean_novelty": 0.20153909341246348,
+      "mean_novelty": 0.20153909341246337,
       "correct_and_novel_rate": 0.6666666666666666,
       "scoring": "tests",
       "heuristic_score": null,
@@ -34542,7 +34542,7 @@
         },
         {
           "correct": true,
-          "novelty": 0.408349960864913,
+          "novelty": 0.4083499608649126,
           "heuristic_score": null
         }
       ]
@@ -35611,7 +35611,7 @@
       "families_first10": 2,
       "entropy": 0.9182958340544896,
       "diversity_scale": "within-sample",
-      "mean_novelty": -0.32672912834595225,
+      "mean_novelty": -0.3267291283459523,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -35635,7 +35635,7 @@
         },
         {
           "correct": true,
-          "novelty": -0.6715633181601167,
+          "novelty": -0.6715633181601169,
           "heuristic_score": null
         }
       ]
@@ -38431,7 +38431,7 @@
       "families_first10": 2,
       "entropy": 0.9182958340544896,
       "diversity_scale": "within-sample",
-      "mean_novelty": 0.40774785929625995,
+      "mean_novelty": 0.40774785929626023,
       "correct_and_novel_rate": 0.6666666666666666,
       "scoring": "tests",
       "heuristic_score": null,
@@ -38458,7 +38458,7 @@
         },
         {
           "correct": true,
-          "novelty": 1.1537625759890426,
+          "novelty": 1.1537625759890435,
           "heuristic_score": null
         }
       ]
@@ -39060,7 +39060,7 @@
       "families_first10": 2,
       "entropy": 0.9182958340544896,
       "diversity_scale": "within-sample",
-      "mean_novelty": 0.40774785929625995,
+      "mean_novelty": 0.40774785929626023,
       "correct_and_novel_rate": 0.6666666666666666,
       "scoring": "tests",
       "heuristic_score": null,
@@ -39087,7 +39087,7 @@
         },
         {
           "correct": true,
-          "novelty": 1.1537625759890426,
+          "novelty": 1.1537625759890435,
           "heuristic_score": null
         }
       ]
@@ -39440,7 +39440,7 @@
       "families_first10": 2,
       "entropy": 0.7219280948873623,
       "diversity_scale": "within-sample",
-      "mean_novelty": 1.6546093179590393,
+      "mean_novelty": 1.6546093179590398,
       "correct_and_novel_rate": 1.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -39477,7 +39477,7 @@
         },
         {
           "correct": true,
-          "novelty": 1.1537625759890426,
+          "novelty": 1.1537625759890435,
           "heuristic_score": null
         }
       ]
@@ -40725,7 +40725,7 @@
       "families_first10": 2,
       "entropy": 0.9182958340544896,
       "diversity_scale": "within-sample",
-      "mean_novelty": -0.24074212313100807,
+      "mean_novelty": -0.24074212313100826,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -40749,7 +40749,7 @@
         },
         {
           "correct": true,
-          "novelty": -0.5206043262245261,
+          "novelty": -0.5206043262245267,
           "heuristic_score": null
         }
       ]
@@ -41683,7 +41683,7 @@
       "families_first10": 2,
       "entropy": 0.9182958340544896,
       "diversity_scale": "within-sample",
-      "mean_novelty": -0.3806732246777673,
+      "mean_novelty": -0.3806732246777675,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -41714,7 +41714,7 @@
         },
         {
           "correct": true,
-          "novelty": -0.5206043262245261,
+          "novelty": -0.5206043262245267,
           "heuristic_score": null
         }
       ]
@@ -42340,7 +42340,7 @@
       "families_first10": 2,
       "entropy": 0.9182958340544896,
       "diversity_scale": "within-sample",
-      "mean_novelty": -0.5206043262245265,
+      "mean_novelty": -0.5206043262245267,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -42366,7 +42366,7 @@
         },
         {
           "correct": true,
-          "novelty": -0.5206043262245261,
+          "novelty": -0.5206043262245267,
           "heuristic_score": null
         }
       ]
@@ -42640,7 +42640,7 @@
       "families_first10": 2,
       "entropy": 0.9182958340544896,
       "diversity_scale": "within-sample",
-      "mean_novelty": -0.5206043262245265,
+      "mean_novelty": -0.5206043262245267,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -42666,7 +42666,7 @@
         },
         {
           "correct": true,
-          "novelty": -0.5206043262245261,
+          "novelty": -0.5206043262245267,
           "heuristic_score": null
         }
       ]
@@ -46621,12 +46621,12 @@
         },
         {
           "correct": false,
-          "novelty": 1.4695759647219162,
+          "novelty": 1.4695759647219164,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": 1.8335494007390116,
+          "novelty": 1.8335494007390118,
           "heuristic_score": null
         }
       ]
@@ -46673,7 +46673,7 @@
         },
         {
           "correct": true,
-          "novelty": 0.7628012882960746,
+          "novelty": 0.7628012882960747,
           "heuristic_score": null
         }
       ]
@@ -46694,7 +46694,7 @@
       "families_first10": 3,
       "entropy": 1.3709505944546687,
       "diversity_scale": "within-sample",
-      "mean_novelty": -0.19761259062141043,
+      "mean_novelty": -0.19761259062141012,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -46708,7 +46708,7 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": 0.19743124835011353,
+          "novelty": 0.19743124835011358,
           "heuristic_score": null
         },
         {
@@ -46728,7 +46728,7 @@
         },
         {
           "correct": true,
-          "novelty": -0.2963735503642914,
+          "novelty": -0.2963735503642899,
           "heuristic_score": null
         }
       ]
@@ -46763,7 +46763,7 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": 1.5009849602781993,
+          "novelty": 1.5009849602781995,
           "heuristic_score": null
         },
         {
@@ -46823,7 +46823,7 @@
         },
         {
           "correct": true,
-          "novelty": -0.29637355036429,
+          "novelty": -0.2963735503642899,
           "heuristic_score": null
         },
         {
@@ -46849,7 +46849,7 @@
       "families_first10": 3,
       "entropy": 1.584962500721156,
       "diversity_scale": "within-sample",
-      "mean_novelty": -0.2963735503642904,
+      "mean_novelty": -0.29637355036429097,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -46868,7 +46868,7 @@
         },
         {
           "correct": true,
-          "novelty": -0.29637355036429,
+          "novelty": -0.2963735503642899,
           "heuristic_score": null
         },
         {
@@ -46878,7 +46878,7 @@
         },
         {
           "correct": true,
-          "novelty": -0.29637355036429,
+          "novelty": -0.2963735503642914,
           "heuristic_score": null
         }
       ]
@@ -47362,7 +47362,7 @@
         },
         {
           "correct": true,
-          "novelty": -0.29637355036429,
+          "novelty": -0.2963735503642899,
           "heuristic_score": null
         },
         {
@@ -47555,7 +47555,7 @@
         },
         {
           "correct": true,
-          "novelty": -0.29637355036429,
+          "novelty": -0.2963735503642899,
           "heuristic_score": null
         }
       ]
@@ -47602,7 +47602,7 @@
         },
         {
           "correct": true,
-          "novelty": -0.29637355036429,
+          "novelty": -0.2963735503642899,
           "heuristic_score": null
         },
         {
@@ -47644,7 +47644,7 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": -0.29637355036429,
+          "novelty": -0.2963735503642899,
           "heuristic_score": null
         },
         {
@@ -47811,7 +47811,7 @@
       "families_first10": 3,
       "entropy": 1.3709505944546687,
       "diversity_scale": "within-sample",
-      "mean_novelty": 1.9344904778732221,
+      "mean_novelty": 1.9344904778732217,
       "correct_and_novel_rate": 0.2,
       "scoring": "tests",
       "heuristic_score": null,
@@ -47832,12 +47832,12 @@
         },
         {
           "correct": true,
-          "novelty": 1.5614118838722695,
+          "novelty": 1.5614118838722697,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": -0.29637355036429,
+          "novelty": -0.2963735503642899,
           "heuristic_score": null
         },
         {
@@ -47847,7 +47847,7 @@
         },
         {
           "correct": true,
-          "novelty": -0.29637355036429,
+          "novelty": -0.2963735503642914,
           "heuristic_score": null
         }
       ]
@@ -47897,7 +47897,7 @@
         },
         {
           "correct": true,
-          "novelty": -0.29637355036429,
+          "novelty": -0.2963735503642914,
           "heuristic_score": null
         }
       ]
@@ -47939,7 +47939,7 @@
         },
         {
           "correct": true,
-          "novelty": -0.29637355036429,
+          "novelty": -0.2963735503642899,
           "heuristic_score": null
         },
         {
@@ -48132,7 +48132,7 @@
         },
         {
           "correct": true,
-          "novelty": -0.29637355036429,
+          "novelty": -0.2963735503642899,
           "heuristic_score": null
         }
       ]
@@ -48179,7 +48179,7 @@
         },
         {
           "correct": true,
-          "novelty": -0.29637355036429,
+          "novelty": -0.2963735503642899,
           "heuristic_score": null
         },
         {
@@ -48221,7 +48221,7 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": 0.19743124835011353,
+          "novelty": 0.19743124835011358,
           "heuristic_score": null
         },
         {
@@ -48231,7 +48231,7 @@
         },
         {
           "correct": true,
-          "novelty": 0.19743124835011353,
+          "novelty": 0.19743124835011358,
           "heuristic_score": null
         },
         {
@@ -48241,7 +48241,7 @@
         },
         {
           "correct": true,
-          "novelty": 0.19743124835011353,
+          "novelty": 0.19743124835011358,
           "heuristic_score": null
         }
       ]
@@ -48283,7 +48283,7 @@
         },
         {
           "correct": true,
-          "novelty": 0.19743124835011353,
+          "novelty": 0.19743124835011358,
           "heuristic_score": null
         },
         {
@@ -48350,7 +48350,7 @@
         },
         {
           "correct": true,
-          "novelty": 0.19743124835011353,
+          "novelty": 0.19743124835011358,
           "heuristic_score": null
         }
       ]
@@ -48444,7 +48444,7 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": 0.19743124835011353,
+          "novelty": 0.19743124835011358,
           "heuristic_score": null
         },
         {
@@ -48480,7 +48480,7 @@
       "families_first10": 3,
       "entropy": 1.584962500721156,
       "diversity_scale": "within-sample",
-      "mean_novelty": 3.018597409173589,
+      "mean_novelty": 3.0185974091735894,
       "correct_and_novel_rate": 0.6666666666666666,
       "scoring": "tests",
       "heuristic_score": null,
@@ -48511,7 +48511,7 @@
         },
         {
           "correct": true,
-          "novelty": 7.356401190496445,
+          "novelty": 7.356401190496447,
           "heuristic_score": null
         }
       ]
@@ -48548,7 +48548,7 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": 0.19743124835011353,
+          "novelty": 0.19743124835011358,
           "heuristic_score": null
         },
         {
@@ -48558,12 +48558,12 @@
         },
         {
           "correct": true,
-          "novelty": 0.19743124835011353,
+          "novelty": 0.19743124835011358,
           "heuristic_score": null
         },
         {
           "correct": true,
-          "novelty": 0.19743124835011353,
+          "novelty": 0.19743124835011358,
           "heuristic_score": null
         }
       ]
@@ -48605,7 +48605,7 @@
         },
         {
           "correct": true,
-          "novelty": 0.19743124835011353,
+          "novelty": 0.19743124835011358,
           "heuristic_score": null
         },
         {
@@ -48677,7 +48677,7 @@
         },
         {
           "correct": true,
-          "novelty": 0.19743124835011353,
+          "novelty": 0.19743124835011358,
           "heuristic_score": null
         }
       ]
@@ -48771,7 +48771,7 @@
       "proposals": [
         {
           "correct": true,
-          "novelty": 0.19743124835011353,
+          "novelty": 0.19743124835011358,
           "heuristic_score": null
         },
         {
@@ -48848,7 +48848,7 @@
         },
         {
           "correct": true,
-          "novelty": 0.7628012882960746,
+          "novelty": 0.7628012882960747,
           "heuristic_score": null
         }
       ]
@@ -49149,7 +49149,7 @@
       "families_first10": 2,
       "entropy": 0.9182958340544896,
       "diversity_scale": "within-sample",
-      "mean_novelty": 2.254551363255954,
+      "mean_novelty": 2.254551363255955,
       "correct_and_novel_rate": 0.3333333333333333,
       "scoring": "tests",
       "heuristic_score": null,
@@ -49175,7 +49175,7 @@
         },
         {
           "correct": true,
-          "novelty": 7.356401190496445,
+          "novelty": 7.356401190496447,
           "heuristic_score": null
         }
       ]
@@ -49802,7 +49802,7 @@
       "families_first10": 3,
       "entropy": 1.584962500721156,
       "diversity_scale": "within-sample",
-      "mean_novelty": 0.6257249663638749,
+      "mean_novelty": 0.6257249663638748,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -49831,7 +49831,7 @@
         },
         {
           "correct": true,
-          "novelty": 0.35158611535724993,
+          "novelty": 0.3515861153572496,
           "heuristic_score": null
         }
       ]
@@ -50540,7 +50540,7 @@
         },
         {
           "correct": true,
-          "novelty": 0.35158611535724993,
+          "novelty": 0.3515861153572496,
           "heuristic_score": null
         }
       ]
@@ -50847,7 +50847,7 @@
         },
         {
           "correct": true,
-          "novelty": 0.35158611535724993,
+          "novelty": 0.3515861153572496,
           "heuristic_score": null
         }
       ]
@@ -51144,7 +51144,7 @@
         },
         {
           "correct": true,
-          "novelty": 0.35158611535724993,
+          "novelty": 0.3515861153572496,
           "heuristic_score": null
         }
       ]
@@ -51270,7 +51270,7 @@
       "families_first10": 2,
       "entropy": 0.7219280948873623,
       "diversity_scale": "within-sample",
-      "mean_novelty": 0.04646564577615375,
+      "mean_novelty": 0.046465645776153794,
       "correct_and_novel_rate": 0.2,
       "scoring": "tests",
       "heuristic_score": null,
@@ -51304,7 +51304,7 @@
         },
         {
           "correct": true,
-          "novelty": 0.47667571190980607,
+          "novelty": 0.4766757119098063,
           "heuristic_score": null
         }
       ]
@@ -51577,7 +51577,7 @@
       "families_first10": 2,
       "entropy": 0.7219280948873623,
       "diversity_scale": "within-sample",
-      "mean_novelty": 0.04646564577615375,
+      "mean_novelty": 0.046465645776153794,
       "correct_and_novel_rate": 0.2,
       "scoring": "tests",
       "heuristic_score": null,
@@ -51611,7 +51611,7 @@
         },
         {
           "correct": true,
-          "novelty": 0.47667571190980607,
+          "novelty": 0.4766757119098063,
           "heuristic_score": null
         }
       ]
@@ -51679,7 +51679,7 @@
       "families_first10": 2,
       "entropy": 0.7219280948873623,
       "diversity_scale": "within-sample",
-      "mean_novelty": 1.286126636651351,
+      "mean_novelty": 1.2861266366513513,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -51713,7 +51713,7 @@
         },
         {
           "correct": true,
-          "novelty": 0.8110291445409956,
+          "novelty": 0.8110291445409963,
           "heuristic_score": null
         }
       ]
@@ -51960,7 +51960,7 @@
       "families_first10": 1,
       "entropy": -0.0,
       "diversity_scale": "within-sample",
-      "mean_novelty": 0.8110291445409961,
+      "mean_novelty": 0.8110291445409962,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -51984,7 +51984,7 @@
         },
         {
           "correct": true,
-          "novelty": 0.8110291445409956,
+          "novelty": 0.8110291445409963,
           "heuristic_score": null
         }
       ]
@@ -52127,7 +52127,7 @@
       "families_first10": 1,
       "entropy": -0.0,
       "diversity_scale": "within-sample",
-      "mean_novelty": 0.8110291445409961,
+      "mean_novelty": 0.8110291445409962,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -52151,7 +52151,7 @@
         },
         {
           "correct": true,
-          "novelty": 0.8110291445409956,
+          "novelty": 0.8110291445409963,
           "heuristic_score": null
         }
       ]
@@ -54148,7 +54148,7 @@
       "families_first10": 3,
       "entropy": 1.3709505944546687,
       "diversity_scale": "within-sample",
-      "mean_novelty": -0.30500937516939625,
+      "mean_novelty": -0.3050093751693961,
       "correct_and_novel_rate": 0.0,
       "scoring": "tests",
       "heuristic_score": null,
@@ -54182,7 +54182,7 @@
         },
         {
           "correct": true,
-          "novelty": -0.14070494298010064,
+          "novelty": -0.14070494298009967,
           "heuristic_score": null
         }
       ]
@@ -54729,7 +54729,7 @@
       "families_first10": 3,
       "entropy": 1.3787834934861753,
       "diversity_scale": "within-sample",
-      "mean_novelty": 0.00926559749662654,
+      "mean_novelty": 0.009265597496626603,
       "correct_and_novel_rate": 0.14285714285714285,
       "scoring": "tests",
       "heuristic_score": null,
@@ -54773,7 +54773,7 @@
         },
         {
           "correct": true,
-          "novelty": 2.1413720817767103,
+          "novelty": 2.141372081776711,
           "heuristic_score": null
         }
       ]
@@ -64659,7 +64659,7 @@
       "families_first10": 3,
       "entropy": 1.584962500721156,
       "diversity_scale": "within-sample",
-      "mean_novelty": 2.2392481561296433,
+      "mean_novelty": 2.239248156129643,
       "correct_and_novel_rate": 0.6666666666666666,
       "scoring": "heuristic",
       "heuristic_score": 1.0,
@@ -64685,7 +64685,7 @@
         },
         {
           "correct": true,
-          "novelty": 3.5889694152530733,
+          "novelty": 3.5889694152530724,
           "heuristic_score": 1.0
         }
       ]
@@ -64748,7 +64748,7 @@
       "families_first10": 3,
       "entropy": 1.584962500721156,
       "diversity_scale": "within-sample",
-      "mean_novelty": 0.9964111924251702,
+      "mean_novelty": 0.9964111924251698,
       "correct_and_novel_rate": 0.3333333333333333,
       "scoring": "heuristic",
       "heuristic_score": 1.0,
@@ -64774,7 +64774,7 @@
         },
         {
           "correct": true,
-          "novelty": 3.5889694152530733,
+          "novelty": 3.5889694152530724,
           "heuristic_score": 1.0
         }
       ]
@@ -65241,7 +65241,7 @@
       "families_first10": 3,
       "entropy": 1.584962500721156,
       "diversity_scale": "within-sample",
-      "mean_novelty": 2.2392481561296433,
+      "mean_novelty": 2.239248156129643,
       "correct_and_novel_rate": 0.6666666666666666,
       "scoring": "heuristic",
       "heuristic_score": 1.0,
@@ -65267,7 +65267,7 @@
         },
         {
           "correct": true,
-          "novelty": 3.5889694152530733,
+          "novelty": 3.5889694152530724,
           "heuristic_score": 1.0
         }
       ]
@@ -65330,7 +65330,7 @@
       "families_first10": 3,
       "entropy": 1.584962500721156,
       "diversity_scale": "within-sample",
-      "mean_novelty": 0.9964111924251702,
+      "mean_novelty": 0.9964111924251698,
       "correct_and_novel_rate": 0.3333333333333333,
       "scoring": "heuristic",
       "heuristic_score": 1.0,
@@ -65356,7 +65356,7 @@
         },
         {
           "correct": true,
-          "novelty": 3.5889694152530733,
+          "novelty": 3.5889694152530724,
           "heuristic_score": 1.0
         }
       ]
@@ -65567,7 +65567,7 @@
       "families_first10": 3,
       "entropy": 1.4488156357251847,
       "diversity_scale": "within-sample",
-      "mean_novelty": 0.015548391523644654,
+      "mean_novelty": 0.015548391523644733,
       "correct_and_novel_rate": 0.42857142857142855,
       "scoring": "heuristic",
       "heuristic_score": 0.8103176754736428,
@@ -65613,7 +65613,7 @@
         },
         {
           "correct": true,
-          "novelty": 0.3350022750804025,
+          "novelty": 0.33500227508040303,
           "heuristic_score": 0.33611186415774935
         }
       ]
@@ -65691,7 +65691,7 @@
       "families_first10": 2,
       "entropy": 0.7219280948873623,
       "diversity_scale": "within-sample",
-      "mean_novelty": -0.2998679189887812,
+      "mean_novelty": -0.2998679189887809,
       "correct_and_novel_rate": 0.0,
       "scoring": "heuristic",
       "heuristic_score": 1.0,
@@ -65728,7 +65728,7 @@
         },
         {
           "correct": true,
-          "novelty": -0.29986791898878007,
+          "novelty": -0.2998679189887787,
           "heuristic_score": 1.0
         }
       ]
@@ -65801,7 +65801,7 @@
       "families_first10": 3,
       "entropy": 1.1488348542809166,
       "diversity_scale": "within-sample",
-      "mean_novelty": -0.29986791898878123,
+      "mean_novelty": -0.299867918988781,
       "correct_and_novel_rate": 0.0,
       "scoring": "heuristic",
       "heuristic_score": 1.0,
@@ -65848,7 +65848,7 @@
         },
         {
           "correct": true,
-          "novelty": -0.29986791898878007,
+          "novelty": -0.2998679189887787,
           "heuristic_score": 1.0
         }
       ]
@@ -66045,7 +66045,7 @@
       "families_first10": 2,
       "entropy": 0.7219280948873623,
       "diversity_scale": "within-sample",
-      "mean_novelty": -0.2998679189887812,
+      "mean_novelty": -0.2998679189887809,
       "correct_and_novel_rate": 0.0,
       "scoring": "heuristic",
       "heuristic_score": 1.0,
@@ -66082,7 +66082,7 @@
         },
         {
           "correct": true,
-          "novelty": -0.29986791898878007,
+          "novelty": -0.2998679189887787,
           "heuristic_score": 1.0
         }
       ]
@@ -66604,7 +66604,7 @@
       "avg_entropy": 0.0,
       "avg_correct": 0.644,
       "avg_mean_novelty": 0.19,
-      "avg_correct_and_novel": 0.131,
+      "avg_correct_and_novel": 0.101,
       "avg_heuristic_score": 1.0,
       "avg_heuristic_best": 1.0,
       "avg_tokens": 3865.168,
@@ -66640,7 +66640,7 @@
       "avg_entropy": 0.0,
       "avg_correct": 0.651,
       "avg_mean_novelty": 0.608,
-      "avg_correct_and_novel": 0.182,
+      "avg_correct_and_novel": 0.172,
       "avg_heuristic_score": 1.0,
       "avg_heuristic_best": 1.0,
       "avg_tokens": 13739.174,
@@ -66658,7 +66658,7 @@
       "avg_entropy": 0.0,
       "avg_correct": 0.642,
       "avg_mean_novelty": 0.621,
-      "avg_correct_and_novel": 0.193,
+      "avg_correct_and_novel": 0.159,
       "avg_heuristic_score": 1.0,
       "avg_heuristic_best": 1.0,
       "avg_tokens": 9519.058,
@@ -66676,7 +66676,7 @@
       "avg_entropy": 0.809,
       "avg_correct": 2.671,
       "avg_mean_novelty": 0.518,
-      "avg_correct_and_novel": 0.178,
+      "avg_correct_and_novel": 0.162,
       "avg_heuristic_score": 0.946,
       "avg_heuristic_best": 0.946,
       "avg_tokens": 40147.389,
@@ -66694,7 +66694,7 @@
       "avg_entropy": 0.882,
       "avg_correct": 2.838,
       "avg_mean_novelty": 0.622,
-      "avg_correct_and_novel": 0.156,
+      "avg_correct_and_novel": 0.146,
       "avg_heuristic_score": 0.9,
       "avg_heuristic_best": 0.91,
       "avg_tokens": 39897.875,
@@ -66712,7 +66712,7 @@
       "avg_entropy": 0.816,
       "avg_correct": 2.658,
       "avg_mean_novelty": 0.514,
-      "avg_correct_and_novel": 0.174,
+      "avg_correct_and_novel": 0.158,
       "avg_heuristic_score": 1.0,
       "avg_heuristic_best": 1.0,
       "avg_tokens": 40167.013,
@@ -66730,7 +66730,7 @@
       "avg_entropy": 0.618,
       "avg_correct": 3.588,
       "avg_mean_novelty": 0.712,
-      "avg_correct_and_novel": 0.255,
+      "avg_correct_and_novel": 0.247,
       "avg_heuristic_score": 0.99,
       "avg_heuristic_best": 1.0,
       "avg_tokens": 38732.473,
@@ -66748,7 +66748,7 @@
       "avg_entropy": 0.475,
       "avg_correct": 3.75,
       "avg_mean_novelty": 0.495,
-      "avg_correct_and_novel": 0.23,
+      "avg_correct_and_novel": 0.221,
       "avg_heuristic_score": 1.0,
       "avg_heuristic_best": 1.0,
       "avg_tokens": 38428.426,
@@ -66783,7 +66783,7 @@
       "avg_entropy": 0.114,
       "avg_correct": 2.474,
       "avg_mean_novelty": 0.345,
-      "avg_correct_and_novel": 0.146,
+      "avg_correct_and_novel": 0.126,
       "avg_heuristic_score": 1.0,
       "avg_heuristic_best": 1.0,
       "avg_tokens": 18143.321,

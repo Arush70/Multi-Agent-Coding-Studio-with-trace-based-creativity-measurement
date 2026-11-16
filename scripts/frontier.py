@@ -63,7 +63,7 @@ def main() -> None:
         tier3[c] = {"best": float(max(p["heuristic_score"] for p in h)),
                     "mean": float(np.mean([p["heuristic_score"] for p in h])),
                     "beats_baseline": float(np.mean([p["heuristic_score"] > 1.0 for p in h])),
-                    "rho_novelty_score": float(np.mean(rho_parts)) if rho_parts else None, "n": len(h)}
+                    "rho_novelty_score": round(float(np.mean(rho_parts)), 12) if rho_parts else None, "n": len(h)}
     if tier3:
         print("\nTier 3 payoff (score 1.0 = standard baseline heuristic)")
         print(f"  {'cond':<9}{'best':>8}{'mean':>8}{'> base':>8}{'rho(nov,score)':>16}{'n':>6}")

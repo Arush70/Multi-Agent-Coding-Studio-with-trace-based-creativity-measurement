@@ -34,7 +34,13 @@ def main() -> None:
     ap.add_argument("--model", default=None,
                     help="analyse traces from this model only (name or name@revision); default: the "
                          "model of the most recent trace")
+    ap.add_argument("--reexecute", action="store_true",
+                    help="run every proposal's code again instead of using the verdicts recorded in "
+                         "data/results/execution/ (programs near the time limit can then differ by machine)")
     args = ap.parse_args()
+    if args.reexecute:
+        from macs.analysis import execution_record
+        execution_record.USE_RECORD = False
     if args.all_models:
         from macs.analysis.aggregate import trace_models
         from macs.metrics.reference import model_slug

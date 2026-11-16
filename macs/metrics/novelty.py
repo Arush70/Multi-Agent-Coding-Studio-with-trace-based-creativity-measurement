@@ -18,7 +18,8 @@ from sklearn.metrics.pairwise import cosine_distances
 from sklearn.preprocessing import StandardScaler
 
 K_DEFAULT = 5
-DEGENERATE_STD = 1e-6     # below this the reference LOO kNN distances have no usable spread
+DEGENERATE_STD = 1e-6
+TIE_TOL = 1e-9          # distances closer than this are treated as equal in the percentile     # below this the reference LOO kNN distances have no usable spread
 
 
 @dataclass
@@ -66,7 +67,10 @@ class ReferenceStats:
         np.fill_diagonal(D, np.inf)
         loo = np.sort(D, axis=1)[:, :self.k].mean(axis=1)
         raw = self.raw_knn(X)
-        return np.array([(loo < r).mean() for r in raw])
+        # A solution identical to reference solutions gives a distance exactly equal to some LOO
+        # distances; floating-point rounding (which differs between BLAS libraries and CPUs) would
+        # then decide the comparison. Distances within TIE_TOL count as equal (not rarer).
+        return np.array([(loo < r - TIE_TOL).mean() for r in raw])
 
 
 def above_percentile(novelty_pct: np.ndarray, threshold: float = 0.90) -> np.ndarray:

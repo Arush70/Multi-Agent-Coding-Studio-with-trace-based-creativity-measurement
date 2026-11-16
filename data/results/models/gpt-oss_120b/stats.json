@@ -224,24 +224,24 @@
   },
   {
    "label": "correct_and_novel_rate: D4 - C4",
-   "estimate": 0.271611,
-   "se": 0.045403,
-   "ci_low": 0.181996,
-   "ci_high": 0.361226,
-   "t": 5.982259,
+   "estimate": 0.292524,
+   "se": 0.045736,
+   "ci_low": 0.202252,
+   "ci_high": 0.382797,
+   "t": 6.395942,
    "df": 173,
    "p": 0.0,
    "p_holm": null
   },
   {
    "label": "correct_and_novel_rate: per extra learner (tutor: A, C4, C)",
-   "estimate": 0.002591,
-   "se": 0.009413,
-   "ci_low": -0.015935,
-   "ci_high": 0.021117,
-   "t": 0.275256,
+   "estimate": 0.002116,
+   "se": 0.009527,
+   "ci_low": -0.016635,
+   "ci_high": 0.020866,
+   "t": 0.222067,
    "df": 294,
-   "p": 0.783313,
+   "p": 0.824416,
    "p_holm": null
   },
   {
@@ -929,30 +929,30 @@
  ],
  "mde": {
   "correct_and_novel_rate": {
-   "sigma2_residual": 0.08951847948728257,
-   "sigma2_task": 0.0779183603051635,
-   "mde": 0.18194406718150535
+   "sigma2_residual": 0.08951847948801284,
+   "sigma2_task": 0.07791836029223954,
+   "mde": 0.18194406718224748
   },
   "families_matched": {
-   "sigma2_residual": 0.805445116098893,
-   "sigma2_task": 1.078248480155385,
-   "mde": 0.9452793134258937
+   "sigma2_residual": 0.8054451161016833,
+   "sigma2_task": 1.0782484801415424,
+   "mde": 0.945279313427531
   },
   "families_matched (D - D_minus)": {
-   "sigma2_residual": 0.001925271146963891,
-   "mde": 0.046215550314497554
+   "sigma2_residual": 0.001925271146922542,
+   "mde": 0.046215550314001264
   },
   "families_matched (E - E_minus)": {
-   "sigma2_residual": 0.034011209052171955,
-   "mde": 0.19424650480431693
+   "sigma2_residual": 0.03401120905148099,
+   "mde": 0.1942465048023438
   },
   "families_matched (D - S)": {
-   "sigma2_residual": 0.9183742694962731,
-   "mde": 1.0093738084329935
+   "sigma2_residual": 0.9183742695075294,
+   "mde": 1.0093738084391792
   },
   "families_matched (D - P)": {
-   "sigma2_residual": 0.16630051890713882,
-   "mde": 0.4295255274392217
+   "sigma2_residual": 0.16630051890628483,
+   "mde": 0.42952552743811884
   }
  },
  "design": {

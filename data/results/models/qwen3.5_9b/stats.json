@@ -929,30 +929,30 @@
  ],
  "mde": {
   "correct_and_novel_rate": {
-   "sigma2_residual": 0.08826694700985334,
-   "sigma2_task": 0.04555153555963264,
-   "mde": 0.12775138145759113
+   "sigma2_residual": 0.08826694700947187,
+   "sigma2_task": 0.04555153556465873,
+   "mde": 0.12775138145731507
   },
   "families_matched": {
-   "sigma2_residual": 0.4993007065332265,
-   "sigma2_task": 0.04996701515867334,
-   "mde": 0.744257582484774
+   "sigma2_residual": 0.4993007065342984,
+   "sigma2_task": 0.04996701515727958,
+   "mde": 0.7442575824855729
   },
   "families_matched (D - D_minus)": {
-   "sigma2_residual": 0.004900339672364208,
-   "mde": 0.0737318736104999
+   "sigma2_residual": 0.004900339672235125,
+   "mde": 0.07373187360952879
   },
   "families_matched (E - E_minus)": {
-   "sigma2_residual": 0.03743620628787962,
-   "mde": 0.2037924514314931
+   "sigma2_residual": 0.03743620628778597,
+   "mde": 0.2037924514312382
   },
   "families_matched (D - S)": {
    "sigma2_residual": 0.5565118294622547,
    "mde": 0.785740932238537
   },
   "families_matched (D - P)": {
-   "sigma2_residual": 0.13986519585395216,
-   "mde": 0.39391000032946477
+   "sigma2_residual": 0.13986519585538507,
+   "mde": 0.3939100003314826
   }
  },
  "design": {

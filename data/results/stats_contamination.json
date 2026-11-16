@@ -503,9 +503,9 @@
    "se": 0.0,
    "ci_low": -0.0,
    "ci_high": 0.0,
-   "t": 0.158653,
+   "t": 0.121308,
    "df": 50,
-   "p": 0.874581,
+   "p": 0.903933,
    "p_holm": null
   },
   {
@@ -929,22 +929,22 @@
  ],
  "mde": {
   "correct_and_novel_rate": {
-   "sigma2_residual": 0.14640391996679333,
+   "sigma2_residual": 0.1464039199667933,
    "sigma2_task": 1.2173976576455827e-07,
-   "mde": 0.17588908047743748
+   "mde": 0.17588908047743745
   },
   "families_matched": {
-   "sigma2_residual": 0.9812229104000553,
-   "sigma2_task": 0.1552041759069274,
-   "mde": 1.1153777867542312
+   "sigma2_residual": 0.9812229103941601,
+   "sigma2_task": 0.1552041759156203,
+   "mde": 1.1153777867508805
   },
   "families_matched (D - D_minus)": {
-   "sigma2_residual": 0.0017541658687363244,
-   "mde": 0.04715996557465
+   "sigma2_residual": 0.0017541658687318731,
+   "mde": 0.04715996557459016
   },
   "families_matched (E - E_minus)": {
-   "sigma2_residual": 0.0356541634023151,
-   "mde": 0.21261469431858426
+   "sigma2_residual": 0.035654163402420405,
+   "mde": 0.21261469431889826
   },
   "families_matched (D - S)": {
    "sigma2_residual": 0.6200788601396716,

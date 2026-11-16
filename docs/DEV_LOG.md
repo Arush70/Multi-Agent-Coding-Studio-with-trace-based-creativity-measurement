@@ -7,6 +7,25 @@ what changed, why, and which files. Pre-registration changes are also logged, da
 
 ---
 
+## 2026-11-16 - rescoring gives identical results on any machine
+
+- Rescoring the stored traces on a fresh copy of the package (`scripts/rescore_all.py`) did not
+  reproduce the cluster results exactly, for two reasons: (1) proposals are executed under a
+  CPU-time limit, and a few programs near the limit passed on one machine and timed out on the
+  other (Tier 3 scores also moved); (2) in the novelty percentile, solutions identical to the
+  reference tie exactly with reference distances, and floating-point rounding decided the strict
+  comparison.
+- Fix (1): `macs/analysis/execution_record.py` and `scripts/record_execution.py` store the verdict
+  of every proposal from the cluster run (65,928 lines in `data/results/execution/`, keyed by
+  session, proposal index and SHA-256 of the code); the analysis reuses them, `--reexecute` runs
+  the code again.
+- Fix (2): `TIE_TOL = 1e-9` in `macs/metrics/novelty.py`. Changes only the correct-and-novel rate
+  (numbers in PREREGISTRATION.md, 16 Nov).
+- `scripts/frontier.py` rounds the novelty-score correlation to 12 decimals (summation order
+  changed the 17th digit between runs).
+- All results rebuilt; a second rebuild gave byte-identical files. The UniXcoder check was rerun
+  on CPU.
+
 ## 2026-11-02 (Week 6) - runs stopped at the cut-off, final analysis
 
 - Meeting moved to 3 Nov. Remaining model jobs cancelled; the 235 traces written after the

@@ -24,6 +24,7 @@ from macs.metrics.represent import ast_features, normalise
 from macs.metrics.diversity import cluster_families, n_families, family_entropy, rarefaction
 from macs.metrics.usefulness import correct_and_novel_rate
 from macs.analysis.score import implementations, task_by_id, score_code_heldout
+from macs.analysis import execution_record
 
 # Euclidean distance in the standardised AST space, i.e. how many per-feature standard deviations
 # apart two solutions must be to count as different families. 3.0 is provisional; the frozen value
@@ -100,14 +101,21 @@ def session_metrics(path, *, backend="subprocess", reference=None, cluster_thres
     correct_flags = []
     heur_scores: list[float | None] = []
     heur_mean = heur_best = None
+    # A verdict recorded from the submitted analysis run is used when the code matches (see
+    # macs/analysis/execution_record.py); otherwise the code is executed.
+    sid = start["session_id"]
     if task.scoring == "tests":
-        for c in codes:
-            correct_flags.append(bool(score_code_heldout(task, c, backend=backend).get("passed_all")))
+        for i, c in enumerate(codes):
+            rec = execution_record.lookup(sid, i, task.id, c)
+            ok = rec["correct"] if rec is not None else score_code_heldout(task, c, backend=backend).get("passed_all")
+            correct_flags.append(bool(ok))
     elif task.scoring == "heuristic":
         from macs.analysis.heuristic_score import score_heuristic_code
         scores = []
-        for c in codes:
-            r = score_heuristic_code(task, c, backend=backend)
+        for i, c in enumerate(codes):
+            rec = execution_record.lookup(sid, i, task.id, c)
+            r = ({"valid": rec["correct"], "score": rec["heuristic_score"]} if rec is not None
+                 else score_heuristic_code(task, c, backend=backend))
             correct_flags.append(bool(r["valid"]))
             heur_scores.append(r["score"])
             if r["valid"] and r["score"] is not None:

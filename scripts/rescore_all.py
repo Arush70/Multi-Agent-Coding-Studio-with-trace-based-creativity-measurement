@@ -41,9 +41,13 @@ def main():
     ap.add_argument("--workers", type=int, default=max(1, min(8, os.cpu_count() or 1)))
     ap.add_argument("--sandbox", default="subprocess", choices=["subprocess", "docker"])
     ap.add_argument("--skip-mutation", action="store_true", help="leave out the mutation test (slowest extra)")
+    ap.add_argument("--reexecute", action="store_true",
+                    help="run every proposal's code again instead of using the verdicts recorded in "
+                         "data/results/execution/ (programs near the time limit can then differ by machine)")
     a = ap.parse_args()
     from macs.analysis.aggregate import trace_models
     from macs.metrics.reference import model_slug
+    rx = ["--reexecute"] if a.reexecute else []
     t0 = time.time()
     res = ROOT / "data" / "results"
     (res / "models").mkdir(parents=True, exist_ok=True)
@@ -60,7 +64,7 @@ def main():
 
     def analyse(m):
         s = model_slug(m); d = res / "models" / s; d.mkdir(parents=True, exist_ok=True)
-        rc = run(["scripts/analyze.py", "--model", m, "--sandbox", a.sandbox, "--out", str(d / "summary.json")],
+        rc = run(["scripts/analyze.py", "--model", m, "--sandbox", a.sandbox, "--out", str(d / "summary.json")] + rx,
                  log=d / "analyze.log")
         return m, rc
 
@@ -88,7 +92,7 @@ def main():
     run(["scripts/search_open.py", "report"], log=res / "search_report.log"); step("open-problem report")
     if importlib.util.find_spec("torch") and importlib.util.find_spec("transformers"):
         run(["scripts/analyze.py", "--model", MAIN, "--representation", "unixcoder", "--sandbox", a.sandbox,
-             "--out", "data/results/summary_unixcoder.json"], log=res / "analyze_unixcoder.log")
+             "--out", "data/results/summary_unixcoder.json"] + rx, log=res / "analyze_unixcoder.log")
         step("UniXcoder check")
     else:
         step("UniXcoder check skipped (install torch and transformers: pip install -e \".[embed]\")")

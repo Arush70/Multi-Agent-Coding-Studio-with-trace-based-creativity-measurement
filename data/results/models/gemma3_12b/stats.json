@@ -934,25 +934,25 @@
    "mde": 0.1818279392174702
   },
   "families_matched": {
-   "sigma2_residual": 0.5027859596827744,
-   "sigma2_task": 0.4104711685873953,
-   "mde": 0.746850624317062
+   "sigma2_residual": 0.5027859596824436,
+   "sigma2_task": 0.41047116858853633,
+   "mde": 0.7468506243168164
   },
   "families_matched (D - D_minus)": {
-   "sigma2_residual": 0.01175207757909649,
-   "mde": 0.11418248814871611
+   "sigma2_residual": 0.011752077578983364,
+   "mde": 0.11418248814816656
   },
   "families_matched (E - E_minus)": {
-   "sigma2_residual": 0.04512388763978382,
-   "mde": 0.22374092652954936
+   "sigma2_residual": 0.04512388763957086,
+   "mde": 0.22374092652902142
   },
   "families_matched (D - S)": {
-   "sigma2_residual": 0.6656277146994768,
-   "mde": 0.8593258489854257
+   "sigma2_residual": 0.6656277146968496,
+   "mde": 0.8593258489837299
   },
   "families_matched (D - P)": {
-   "sigma2_residual": 0.5606545507263402,
-   "mde": 0.7886600708070883
+   "sigma2_residual": 0.5606545507264552,
+   "mde": 0.7886600708071693
   }
  },
  "design": {

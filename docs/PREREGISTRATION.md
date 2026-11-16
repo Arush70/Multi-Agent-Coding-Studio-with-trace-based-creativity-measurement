@@ -415,3 +415,22 @@ and never edited to match results.
   "original" rho 0.26 (95% CI 0.14 to 0.50), "creative" rho 0.18 (0.04 to 0.43). Agreement with the
   human majority: 35 of 40 (87.5%) and 36 of 40 (90%). Reported separately from the humans and from
   the pre-registered DeepSeek-Coder-V2 Lite judge. Results: `data/rating/ai_judge/fable_5_2.json`.
+- _2026-11-16_: **Novelty percentile: exact ties no longer decided by rounding; execution verdicts
+  recorded.** A solution counts as novel when its kNN distance to the reference is above the
+  reference's own leave-one-out kNN distances at the 90th percentile. When a solution is identical
+  to reference solutions (typically where the model wrote nearly the same code every time, so the
+  reference distances are 0), the solution's distance equals reference distances exactly, and the
+  strict comparison was decided by floating-point rounding (about 1e-16), which differs between
+  CPUs and libraries; on the cluster such solutions were often counted as novel. Distances within
+  1e-9 now count as equal, so a solution identical to the reference is never novel
+  (`macs/metrics/novelty.py`, `TIE_TOL`). This is a numerical correction, not a new rule; it changes
+  only the correct-and-novel rate and its contrasts (families, mean novelty, pass rate and tokens
+  are unchanged). Main model: B - A +0.348 -> +0.368, D - C +0.285 -> +0.306, D - S +0.304 ->
+  +0.304 (all Holm p < 0.001). Pooled over 8 models: B - A +0.147 -> +0.157 [0.06, 0.25],
+  p = 0.001; D - C +0.083 (p = 0.087) -> +0.101 [0.00, 0.20], p = 0.045; D4 - C4 +0.117 (p = 0.065)
+  -> +0.131, p = 0.047; D - S +0.120 -> +0.119; D - P -0.020 -> -0.021. Gemma 4 31B, D - C: +0.041
+  (n.s.) -> +0.167, Holm p < 0.001. In the same step, the test and Tier 3 verdict of every proposal
+  from the cluster analysis (65,928 proposals) was stored in `data/results/execution/`, because a
+  program finishing close to the CPU-time limit can pass on one machine and time out on another;
+  rescoring reuses the stored verdicts (`--reexecute` runs the code again). All results in
+  `data/results/` were rebuilt with `scripts/rescore_all.py`; a second rebuild gave identical files.

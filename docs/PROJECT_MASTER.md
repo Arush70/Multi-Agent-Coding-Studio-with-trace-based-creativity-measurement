@@ -400,12 +400,12 @@ Details: PREREGISTRATION.md log, 15 Nov.
 
 ---
 
-## 16. Results (main model Qwen3.5-27B unless stated; 24 main tasks; final 2 Nov)
+## 16. Results (main model Qwen3.5-27B unless stated; 24 main tasks; final 2 Nov, correct-and-novel updated 16 Nov)
 
 | Question | Result |
 |---|---|
 | Studio vs tutor, distinct approaches (matched) | +2.76 (1 learner), +2.63 (6 learners), Holm p < 0.001; pooled over 8 models +1.66 [1.02, 2.30], significant in 8/8 |
-| Studio vs tutor, correct-and-novel rate | +0.35 / +0.28, Holm p < 0.001; pooled B - A +0.15 [0.05, 0.24], p = 0.002, significant in 5/8 (not Gemma 3, Granite, Llama 3.1; I2 = 92%); pooled D - C +0.08 (n.s.) |
+| Studio vs tutor, correct-and-novel rate | +0.37 / +0.31, Holm p < 0.001; pooled B - A +0.16 [0.06, 0.25], p = 0.001, significant in 5/8 (not Gemma 3, Granite, Llama 3.1; I2 = 93%); pooled D - C +0.10 [0.00, 0.20], p = 0.045, significant in 6/8 (not Gemma 3, Granite) |
 | Equal token budget (D vs S) | +2.63 approaches, +0.30 correct-and-novel, Holm p < 0.001; pooled +1.73 approaches (8/8), +0.12 correct-and-novel |
 | Facilitator where ideas can converge (E vs E_minus) | +0.25 approaches, Holm p = 0.003; pooled +0.19 [0.14, 0.23], 8/8, I2 = 31% (the most consistent effect) |
 | Facilitator when the Innovator is told to differ (D vs D_minus) | about 0 in every model |

@@ -42,7 +42,15 @@ against the stored reference sets (families, novelty, held-out tests) and rebuil
 `data/results/`: per-model results and statistics, the meta-analysis across models, the
 contamination check, the frontier and the mutation test. It runs in the background with a
 progress bar; the tabs then show the rescored results. **Re-analyse <model>'s traces** does the
-same for the one model shown.
+same for the one model shown. The rescored files are identical to the submitted ones (the optional
+UniXcoder check can differ in the last digits on other hardware; see `REPRODUCE.md`, section 0).
+
+Whether a proposal passes its tests (and its Tier 3 score) was decided on the ISCA cluster by
+running the code under a CPU-time limit. These 65,928 verdicts are stored in
+`data/results/execution/`, and rescoring reuses them, so the results do not depend on how fast
+your machine is. To run every proposal's code again instead, add `--reexecute`
+(`python scripts/rescore_all.py --reexecute`); a few programs that finish close to the time limit
+can then pass on one machine and time out on another.
 
 **From the terminal**, the same in one command:
 

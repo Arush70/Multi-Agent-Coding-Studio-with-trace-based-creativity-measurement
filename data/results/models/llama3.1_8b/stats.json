@@ -929,30 +929,30 @@
  ],
  "mde": {
   "correct_and_novel_rate": {
-   "sigma2_residual": 0.09415949413003061,
-   "sigma2_task": 0.05599281541367589,
-   "mde": 0.1866008460746642
+   "sigma2_residual": 0.09415949413003145,
+   "sigma2_task": 0.05599281541366261,
+   "mde": 0.18660084607466504
   },
   "families_matched": {
-   "sigma2_residual": 0.6489202743884895,
-   "sigma2_task": 0.3336390051013686,
-   "mde": 0.8484726530073502
+   "sigma2_residual": 0.6489202743865277,
+   "sigma2_task": 0.33363900510635713,
+   "mde": 0.8484726530060677
   },
   "families_matched (D - D_minus)": {
-   "sigma2_residual": 0.002822622293685462,
-   "mde": 0.05595882171763161
+   "sigma2_residual": 0.0028226222937571778,
+   "mde": 0.0559588217183425
   },
   "families_matched (E - E_minus)": {
-   "sigma2_residual": 0.025697825967067513,
-   "mde": 0.16884584171896833
+   "sigma2_residual": 0.025697825967587292,
+   "mde": 0.1688458417206759
   },
   "families_matched (D - S)": {
-   "sigma2_residual": 0.5024648489848268,
-   "mde": 0.746612093363527
+   "sigma2_residual": 0.5024648489863647,
+   "mde": 0.7466120933646696
   },
   "families_matched (D - P)": {
-   "sigma2_residual": 0.2934121238940594,
-   "mde": 0.5705335725247286
+   "sigma2_residual": 0.2934121238948696,
+   "mde": 0.5705335725255163
   }
  },
  "design": {
