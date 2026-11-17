@@ -156,13 +156,15 @@ def read_events(path: Path) -> list[dict]:
 def trace_header(events: list[dict]) -> dict:
     start = next((e for e in events if e.get("event") == "session_start"), {})
     return {"task_id": start.get("task_id", "?"), "condition": start.get("condition", "?"),
-            "session_id": start.get("session_id", "?"), "n_events": len(events)}
+            "session_id": start.get("session_id", "?"), "n_events": len(events),
+            "model": (start.get("header") or {}).get("model")}
 
 
 def _parse_strategy(text: str) -> str:
     for line in (text or "").splitlines():
-        if "Strategy" in line:
-            return line.split("Strategy", 1)[1].lstrip("*: ").strip()
+        for key in ("Strategy", "Approach"):        # "Strategy: ..." or "Proposed Approach: ..."
+            if key in line:
+                return line.split(key, 1)[1].lstrip("*: ").strip()
     return ""
 
 
@@ -183,10 +185,10 @@ def event_rows(events: list[dict]) -> list[dict]:
     return rows
 
 
-def _reference_for(task_id: str):
+def _reference_for(task_id: str, model: str | None = None):
     try:
         from macs.metrics.reference import build_reference_stats
-        return build_reference_stats(task_id)
+        return build_reference_stats(task_id, model=model)   # the session model's own reference
     except Exception:  # noqa: BLE001 - no/empty reference -> novelty simply unavailable
         return None
 
@@ -199,7 +201,7 @@ def proposal_table(path: Path, backend: str = "subprocess") -> list[dict]:
     events = read_events(path)
     h = trace_header(events)
     task = task_by_id(h["task_id"])
-    ref = _reference_for(h["task_id"])
+    ref = _reference_for(h["task_id"], h.get("model"))
     strat_by_id = {e.get("proposal_id", ""): _parse_strategy(e.get("content", ""))
                    for e in events if e.get("event") == "proposal"}
     rows = []
